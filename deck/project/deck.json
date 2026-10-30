@@ -1,0 +1,19 @@
+{
+  "v": 4,
+  "createdOnFiles": {"v": 1, "at": "2026-10-28T09:00:00Z"},
+  "lists": "css",
+  "title": "제로이드 무신사 입점 제안서",
+  "order": ["cover", "agenda", "overview", "history", "statement", "barrier", "mle", "maltese", "defensamide", "safety", "lineup", "sku", "reviews", "synergy", "plan", "closing"],
+  "sections": {
+    "s1": {"description": "브랜드 소개: 제로이드와 네오팜, 24년의 연혁", "start": "cover"},
+    "s2": {"description": "피부과학: 피부장벽, MLE®, 디펜사마이드™, 안심 성분", "start": "statement"},
+    "s3": {"description": "제품: 6개 라인업과 무신사 추천 입점 제품", "start": "lineup"},
+    "s4": {"description": "고객 리뷰: 공식 홈페이지 리뷰에서 본 고객의 목소리", "start": "reviews"},
+    "s5": {"description": "입점 제안: 무신사와의 시너지와 운영 방안", "start": "synergy"}
+  },
+  "faces": {
+    "noto-sans-kr": {"family": "Noto Sans KR", "href": "https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300..900&display=swap"},
+    "dm-sans": {"family": "DM Sans", "href": "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400..700&display=swap"}
+  },
+  "designSystems": []
+}

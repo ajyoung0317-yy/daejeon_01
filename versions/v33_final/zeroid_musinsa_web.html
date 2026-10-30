@@ -1,0 +1,578 @@
+<title>제로이드 × 무신사 웹 제안서</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>
+tailwind.config = {
+  corePlugins: { preflight: true },
+  theme: {
+    extend: {
+      colors: {
+        ink: 'var(--ink)', ink2: 'var(--ink-2)', ink3: 'var(--ink-3)',
+        paper: 'var(--paper)', mist: 'var(--mist)', line: 'var(--line)',
+        blue: { DEFAULT: 'var(--blue)', deep: 'var(--blue-deep)', soft: 'var(--blue-soft)' }
+      },
+      fontFamily: {
+        en: ['Archivo', 'Arial Black', 'sans-serif'],
+        ko: ['"Noto Sans KR"', '"Malgun Gothic"', 'sans-serif']
+      }
+    }
+  }
+};
+</script>
+<style>
+/* 레이아웃: 흰 바탕 에디토리얼 그리드 + 파란 단색 강조 한 가지. 섹션마다 큰 영문 헤드라인, 그 아래 한 줄 한국어 결론 */
+:root{
+  --paper:#FFFFFF;      /* 클린 화이트 */
+  --mist:#F5F7F1;       /* 초록 기운의 옅은 바탕 */
+  --ink:#12160F;        /* 본문 검정 */
+  --ink-2:#3B4237;      /* 보조 본문 */
+  --ink-3:#5F665A;      /* 캡션 (흰 바탕 대비 5.6:1) */
+  --line:#DFE5D8;       /* 구분선 */
+  --blue:#4E6B26;       /* 제로이드 인텐시브 그린 (제품 라벨 색을 진하게) */
+  --blue-deep:#2F4416;  /* 진한 그린 (강조 배경) */
+  --blue-soft:#EEF3E3;  /* 그린 틴트 */
+  --f-en:'Archivo','Arial Black',sans-serif;
+  --f-ko:'Noto Sans KR','Malgun Gothic',sans-serif;
+  color-scheme:light;
+}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-ko);word-break:keep-all;-webkit-font-smoothing:antialiased;line-height:1.6}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--paper)}
+.gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1200px;margin-inline:auto}
+.en{font-family:var(--f-en)}
+.disp{font-family:var(--f-en);font-weight:900;font-stretch:72%;text-transform:uppercase;letter-spacing:-.01em;line-height:.86}
+.wide{font-family:var(--f-en);font-weight:900;font-stretch:125%;letter-spacing:-.02em;line-height:.85}
+.eyebrow{font-family:var(--f-en);font-weight:800;font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+h1,h2,h3{text-wrap:balance}
+.num{font-variant-numeric:tabular-nums}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+
+/* 상단 바 */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:rgba(255,255,255,.92);backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line)}
+.topbar nav{scrollbar-width:none}.topbar nav::-webkit-scrollbar{display:none}
+.navlink{font-size:13px;font-weight:700;color:var(--ink-2);padding:6px 2px;border-bottom:2px solid transparent;white-space:nowrap}
+.navlink:hover,.navlink.on{color:var(--ink);border-bottom-color:var(--blue)}
+
+/* 섹션 헤드 */
+.sh{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-bottom:36px}
+@media (min-width:900px){.sh{grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);align-items:end}}
+.sh .big{font-size:clamp(48px,9vw,112px)}
+.sh h2{font-size:clamp(20px,2.3vw,28px);font-weight:900;letter-spacing:-.03em;line-height:1.3;margin-top:14px}
+.sh h2 em{font-style:normal;color:var(--blue)}
+.sh > p{font-size:16px;color:var(--ink-2);max-width:60ch}
+
+/* 공통 표 */
+.tbl{width:100%;border-collapse:collapse;font-size:14px;min-width:620px}
+.tbl th{font-family:var(--f-en);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;text-align:left;padding:10px 12px;border-bottom:2px solid var(--ink)}
+.tbl td{padding:13px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl tr.me td{background:var(--blue-soft);font-weight:700}
+.tbl td.k{font-weight:900}
+
+/* 스위치 */
+.sw{position:relative;width:46px;height:26px;border-radius:999px;background:#CDD3C7;flex:none;transition:background .2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(18,22,15,.25);transition:transform .2s}
+[aria-checked="true"] .sw{background:var(--blue)}
+[aria-checked="true"] .sw::after{transform:translateX(20px)}
+
+/* 탭 */
+.tab[aria-selected="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tab[aria-selected="true"] .tab-sub{color:#C8CDC2}
+
+/* 팝업 카드 */
+.pcard{transition:transform .25s ease,box-shadow .25s ease,border-color .25s}
+.pcard:hover{transform:translateY(-4px);box-shadow:0 18px 40px -18px rgba(47,68,22,.35);border-color:var(--blue)}
+.pcard .peek{transition:opacity .25s, transform .25s;opacity:0;transform:translateY(6px)}
+.pcard:hover .peek,.pcard:focus-visible .peek{opacity:1;transform:none}
+@media (hover:none){.pcard .peek{opacity:1;transform:none}}
+
+/* 모달 */
+.modal{position:fixed;inset:0;z-index:80;display:flex;align-items:flex-end;justify-content:center;background:rgba(18,22,15,.55);padding:env(safe-area-inset-top,0px) 0 0}
+@media (min-width:760px){.modal{align-items:center}}
+.sheet{background:var(--paper);width:100%;max-width:720px;max-height:88vh;overflow:auto;border-radius:18px 18px 0 0;padding:28px max(20px,env(safe-area-inset-left,0px)) calc(28px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-right,0px));animation:up .28s ease}
+@media (min-width:760px){.sheet{border-radius:18px}}
+@keyframes up{from{transform:translateY(24px);opacity:.4}to{transform:none;opacity:1}}
+
+/* 히터 타임라인 */
+.hour{transition:background .2s,color .2s}
+.hour[aria-pressed="true"]{background:var(--blue);color:#fff}
+.hour[aria-pressed="true"] .hour-sub{color:#DCE8C6}
+
+/* 막대 */
+.bar{height:10px;border-radius:999px;background:var(--line);overflow:hidden}
+.bar > i{display:block;height:100%;background:var(--blue);border-radius:999px;transition:width .45s ease}
+.ticker{white-space:nowrap;overflow:hidden}
+.ticker span{display:inline-block;padding-right:48px}
+@media (prefers-reduced-motion:no-preference){.ticker .run{display:inline-block;animation:tick 40s linear infinite}@keyframes tick{to{transform:translateX(-50%)}}}
+
+/* 마지막 줄에 단어 하나만 떨어지지 않게: 줄바꿈을 문단 전체 기준으로 고르게 */
+p,li,td,th,dd,dt,figcaption,blockquote,h3,h4,h5,.fix,.when,.src,.sub,.lead,.note,.callout,.statement{text-wrap:pretty}
+</style>
+
+<!-- ───────── 상단 바 ───────── -->
+<header class="topbar gut">
+  <div class="wrap flex items-center gap-6 h-14">
+    <a href="#top" class="wide text-[22px]" aria-label="맨 위로">ZEROID</a>
+    <span class="en text-[11px] font-extrabold tracking-[.14em] text-ink3 hidden sm:inline">× MUSINSA BEAUTY</span>
+    <nav class="ml-auto flex gap-5 overflow-x-auto" aria-label="섹션 이동">
+      <a class="navlink" href="#why">왜 지금</a>
+      <a class="navlink" href="#products">제품</a>
+      <a class="navlink" href="#persona">퍼소나</a>
+      <a class="navlink" href="#only">단독 구성</a>
+      <a class="navlink" href="#sim">시뮬레이션</a>
+      <a class="navlink" href="#deal">조건</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ───────── 히어로 ───────── -->
+<section class="gut pt-10 pb-14 md:pt-16 md:pb-20">
+  <div class="wrap">
+    <p class="eyebrow text-blue">Brand Entry Proposal · 2026 Winter · 1차 4종</p>
+    <h1 class="wide mt-5 text-[clamp(64px,15vw,200px)]">ZEROID</h1>
+    <div class="mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b-2 border-ink pb-5">
+      <span class="en font-extrabold text-[clamp(18px,2.4vw,28px)]">× MUSINSA BEAUTY</span>
+      <span class="ml-auto text-[13px] text-ink3">(주)네오팜 · 대외비 · 무신사 뷰티 검토용</span>
+    </div>
+    <div class="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,.9fr)] items-end">
+      <div class="min-w-0">
+        <p class="eyebrow text-ink3">Concept</p>
+        <h2 class="mt-3 text-[clamp(30px,4.6vw,58px)] font-black leading-[1.15] tracking-[-.04em]">9 to 6 윈터 배리어.<br>덧바르는 보습에서<br><span class="text-blue">지키는 보습</span>으로.</h2>
+        <p class="mt-6 text-[17px] text-ink2 max-w-[52ch]">히터 아래에서 하루를 보내는 2030 직장인의 겨울 피부. 올리브영에서 검증된 제로이드 장벽 크림을, 무신사에서만 파는 루틴 세트로 12월 중순에 처음 소개합니다.</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="#sim" class="inline-flex items-center gap-2 bg-blue text-white font-bold px-5 py-3 rounded-full hover:bg-blue-deep">입점 시뮬레이션 해 보기 <span aria-hidden="true">→</span></a>
+          <a href="#close" class="inline-flex items-center gap-2 border-2 border-ink font-bold px-5 py-3 rounded-full hover:bg-ink hover:text-white">한 장 요약 보기</a>
+        </div>
+      </div>
+      <figure class="min-w-0 bg-mist rounded-[20px] relative overflow-hidden px-6 pt-12 pb-8 flex items-end justify-center gap-[4%]">
+        <span class="absolute top-4 left-4 en text-[11px] font-extrabold tracking-[.12em] bg-blue text-white px-2.5 py-1 rounded-full">WINTER DRY CARE</span>
+        <img src="img/cut/so-cream.png" alt="제로이드 수딩 크림" class="h-[clamp(150px,22vw,250px)] w-auto drop-shadow-xl">
+        <img src="img/cut/in-cream.png" alt="제로이드 인텐시브 크림" class="h-[clamp(190px,28vw,320px)] w-auto drop-shadow-xl">
+        <img src="img/cut/in-mist.png" alt="제로이드 인텐시브 크림 미스트" class="h-[clamp(150px,22vw,250px)] w-auto drop-shadow-xl">
+      </figure>
+    </div>
+    <dl class="mt-12 grid grid-cols-2 lg:grid-cols-4 border-t-2 border-ink">
+      <div class="py-5 pr-4 border-b border-line"><dt class="text-[13px] text-ink3">무신사 ‘장벽크림’ 1,301개 중 제로이드</dt><dd class="wide text-[clamp(40px,5vw,64px)] mt-2 num">0<span class="text-[.4em] ml-1">개</span></dd></div>
+      <div class="py-5 px-4 border-b border-l border-line"><dt class="text-[13px] text-ink3">올리브영 인텐시브 크림 리뷰 · ★4.8</dt><dd class="wide text-[clamp(40px,5vw,64px)] mt-2 num">14,336</dd></div>
+      <div class="py-5 pr-4 lg:px-4 border-b lg:border-l border-line"><dt class="text-[13px] text-ink3">2024.08 올리브영 입점 하루 만에</dt><dd class="wide text-[clamp(40px,5vw,64px)] mt-2">1<span class="text-[.4em] ml-1">위</span></dd></div>
+      <div class="py-5 px-4 border-b border-l border-line"><dt class="text-[13px] text-ink3">런칭 쇼케이스 목표 대비 매출</dt><dd class="wide text-[clamp(40px,5vw,64px)] mt-2 num">200<span class="text-[.4em] ml-1">%</span></dd></div>
+    </dl>
+    <p class="mt-3 text-[12.5px] text-ink3">출처: 무신사·올리브영 온라인몰 2026.10.28 확인 · 코스인코리아 2024.10.16 보도 · 리뷰 수는 구성 상품 합산 표기</p>
+  </div>
+</section>
+
+<div class="bg-ink text-white py-3 ticker" aria-hidden="true"><div class="run en font-extrabold tracking-[.14em] text-[13px]"><span>HEATER ON 10:00–19:00</span><span>9 TO 6 WINTER BARRIER</span><span>MUSINSA ONLY SET × 2</span><span>GRAND OPEN 12.14</span><span>HEATER ON 10:00–19:00</span><span>9 TO 6 WINTER BARRIER</span><span>MUSINSA ONLY SET × 2</span><span>GRAND OPEN 12.14</span></div></div>
+
+<!-- ───────── WHY: 히터 아래 하루 ───────── -->
+<section id="why" class="gut py-16 md:py-24 bg-mist">
+  <div class="wrap">
+    <div class="sh">
+      <div><p class="eyebrow text-blue">Part 1 · Why now</p><p class="disp big mt-3">Heater<br>9 to 6</p><h2>히터 아래 하루, <em>직장인 피부는 마릅니다</em></h2></div>
+      <p>시간대를 눌러 보세요. 출근부터 잠들기 전까지, 겨울 피부가 수분을 잃는 다섯 순간입니다. 제로이드 공식 홈페이지 리뷰 429건 중 28%가 ‘건조·당김·각질’을 말했습니다.</p>
+    </div>
+    <div class="grid grid-cols-5 gap-2" role="group" aria-label="겨울 하루 시간대">
+      <button class="hour text-left rounded-xl bg-paper border border-line p-3 md:p-4" aria-pressed="false" data-h="0"><span class="en font-black text-[clamp(16px,2.4vw,30px)] num">08:30</span><span class="hour-sub block text-[12px] text-ink3 mt-1">출근</span></button>
+      <button class="hour text-left rounded-xl bg-paper border border-line p-3 md:p-4" aria-pressed="false" data-h="1"><span class="en font-black text-[clamp(16px,2.4vw,30px)] num">10:00</span><span class="hour-sub block text-[12px] text-ink3 mt-1">히터 시작</span></button>
+      <button class="hour text-left rounded-xl bg-paper border border-line p-3 md:p-4" aria-pressed="true" data-h="2"><span class="en font-black text-[clamp(16px,2.4vw,30px)] num">15:00</span><span class="hour-sub block text-[12px] text-ink3 mt-1">건조 정점</span></button>
+      <button class="hour text-left rounded-xl bg-paper border border-line p-3 md:p-4" aria-pressed="false" data-h="3"><span class="en font-black text-[clamp(16px,2.4vw,30px)] num">19:00</span><span class="hour-sub block text-[12px] text-ink3 mt-1">퇴근</span></button>
+      <button class="hour text-left rounded-xl bg-paper border border-line p-3 md:p-4" aria-pressed="false" data-h="4"><span class="en font-black text-[clamp(16px,2.4vw,30px)] num">23:00</span><span class="hour-sub block text-[12px] text-ink3 mt-1">난방 켠 방</span></button>
+    </div>
+    <div class="mt-3 rounded-2xl bg-paper border border-line p-6 md:p-8 grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]" aria-live="polite">
+      <div class="min-w-0"><p class="eyebrow text-ink3" id="hEnv">히터 바람 정점</p><h3 class="mt-2 text-[24px] font-black tracking-[-.03em]" id="hTitle">속당김 · 화장 들뜸</h3><p class="mt-2 text-ink2" id="hText">겉은 번들거리는데 속은 당기고, 볼 각질 위로 메이크업이 들뜹니다.</p></div>
+      <div class="min-w-0 border-t md:border-t-0 md:border-l border-line pt-5 md:pt-0 md:pl-6"><p class="eyebrow text-blue">Zeroid routine</p><p class="mt-2 text-[18px] font-bold" id="hFix">책상 위 인텐시브 크림 미스트로 수시 보습</p><p class="mt-1 text-[13px] text-ink3" id="hProd">SET 01 히터 오피스 키트 구성품</p></div>
+    </div>
+    <div class="mt-10 grid sm:grid-cols-3 gap-0 border-t-2 border-ink">
+      <div class="py-5 pr-5"><p class="wide text-[54px] text-blue num">28%</p><p class="text-[14px] text-ink2 mt-1">‘건조·당김·각질’을 말한 리뷰 (120건)</p></div>
+      <div class="py-5 sm:px-5 border-t sm:border-t-0 sm:border-l border-line"><p class="wide text-[54px] num">21%</p><p class="text-[14px] text-ink2 mt-1">‘정착·재구매·몇 년째’를 말한 리뷰 (91건)</p></div>
+      <div class="py-5 sm:pl-5 border-t sm:border-t-0 sm:border-l border-line"><p class="wide text-[54px] num">12%</p><p class="text-[14px] text-ink2 mt-1">‘겨울’을 직접 언급한 리뷰 (52건)</p></div>
+    </div>
+    <p class="mt-2 text-[12.5px] text-ink3">제로이드 공식 홈페이지 게시 리뷰 429건(2020–2024) 본문 키워드 기준 · 한 리뷰가 여러 항목에 포함될 수 있음</p>
+  </div>
+</section>
+
+<!-- ───────── WHY MUSINSA ───────── -->
+<section class="gut py-16 md:py-24">
+  <div class="wrap">
+    <div class="sh">
+      <div><p class="eyebrow text-blue">Part 1 · Why Musinsa</p><p class="disp big mt-3">Not Yet<br>On Musinsa</p><h2>수요는 검증됐고, <em>무신사에는 아직 없습니다</em></h2></div>
+      <p>쿠팡이 이미 아는 상품을 다시 사는 곳이라면, 무신사는 둘러보다 새 브랜드를 발견하는 곳입니다. 제로이드에 필요한 것은 재구매가 아니라 첫 만남입니다.</p>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-line border border-line rounded-2xl overflow-hidden">
+      <div class="bg-paper p-6"><p class="eyebrow text-blue">Discovery</p><p class="mt-3 text-[18px] font-black">새 고객을 만나는 채널</p><p class="mt-2 text-[14px] text-ink2">아직 제로이드를 써 보지 않은 2030을 둘러보기 동선에서 만납니다.</p></div>
+      <div class="bg-paper p-6"><p class="eyebrow text-blue">Price</p><p class="mt-3 text-[18px] font-black">단품 경쟁 대신 단독 구성</p><p class="mt-2 text-[14px] text-ink2">단품은 더 비싸지 않게, 차이는 무신사에만 있는 세트로 만듭니다.</p></div>
+      <div class="bg-paper p-6"><p class="eyebrow text-blue">Story</p><p class="mt-3 text-[18px] font-black">이야기로 파는 구조</p><p class="mt-2 text-[14px] text-ink2">기획전·스냅·브랜드 페이지로 ‘히터 아래 하루’를 보여 줍니다.</p></div>
+      <div class="bg-paper p-6"><p class="eyebrow text-blue">Role</p><p class="mt-3 text-[18px] font-black">올리브영과 역할 분담</p><p class="mt-2 text-[14px] text-ink2">올리브영은 검증과 재구매, 무신사는 발견과 첫 구매를 맡습니다.</p></div>
+    </div>
+
+    <h3 class="mt-14 text-[22px] font-black tracking-[-.03em]">같은 축에서 싸우지 않습니다</h3>
+    <div class="mt-4 overflow-x-auto">
+      <table class="tbl">
+        <thead><tr><th>비교 축</th><th>경쟁 더마 크림</th><th>제로이드</th></tr></thead>
+        <tbody>
+          <tr><td class="k">무엇으로 말하나</td><td class="text-ink2">피부 타입 (아토·민감 피부용)</td><td><b>생활 장면</b> · 히터 아래 9 to 6, 겨울 사무실</td></tr>
+          <tr><td class="k">어디서 검증됐나</td><td class="text-ink2">병·의원 또는 소비자 채널 중 한 곳</td><td><b>두 곳 모두</b> · 피부과 약 70% 입점 + 올리브영 랭킹 1위</td></tr>
+          <tr><td class="k">무신사에서 무엇을 파나</td><td class="text-ink2">단품·묶음 중심</td><td><b>루틴 세트</b> · 크림 + 미스트처럼 다른 제품을 묶은 단독 구성</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3 class="mt-14 text-[22px] font-black tracking-[-.03em]">무신사 장벽 크림 시장에서의 자리</h3>
+    <div class="mt-4 overflow-x-auto">
+      <table class="tbl num">
+        <thead><tr><th>브랜드 · 제품</th><th>판매가</th><th>ml당</th><th>평점 (리뷰)</th><th>특징</th></tr></thead>
+        <tbody>
+          <tr><td class="k">에스트라 아토베리어365 크림 80ml</td><td>무신사 26,400원</td><td>330원</td><td>4.9 (2만+)</td><td class="text-ink2">2·3개 묶음과 무신사 단독 구성 운영</td></tr>
+          <tr><td class="k">디마프 배리어 리페어크림 50ml</td><td>무신사 28,880원</td><td>578원</td><td>4.9 (566)</td><td class="text-ink2">‘장벽크림’ 검색 상위, 쿠폰·사은품</td></tr>
+          <tr><td class="k">일리윤 세라마이드 아토 집중 크림 500ml</td><td>무신사 26,800원</td><td>54원</td><td>4.9 (232)</td><td class="text-ink2">대용량 가성비, 바디 겸용</td></tr>
+          <tr class="me"><td class="k">제로이드 인텐시브 크림 80ml</td><td>무신사 제안 26,300원</td><td>329원</td><td>4.8 (14,336)</td><td>무신사 미입점 · 에스트라와 비슷한 가격</td></tr>
+          <tr class="me"><td class="k">제로이드 인텐시브 크림 80+50ml 기획</td><td>무신사 제안 31,500원</td><td>242원</td><td>4.8 (14,336)</td><td>무신사 주력 · ml당 가장 낮은 더마 크림 구성</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="mt-5 rounded-xl bg-blue-soft px-5 py-4 text-[15px] max-w-[90ch]"><b>평점은 리뷰 수와 함께 봐 주세요.</b> 리뷰가 많을수록 평점은 내려가기 쉽습니다. 제로이드 4.8은 1만 4천여 건이 쌓인 뒤의 점수로, 리뷰 수백 건대의 4.9와는 무게가 다릅니다.</p>
+    <p class="mt-2 text-[12.5px] text-ink3">무신사·올리브영 온라인몰 2026.10.28 확인 · 할인 적용 판매가 기준 · 일리윤은 바디 겸용 대용량이라 ml당 비교에서 제외해 읽어 주세요</p>
+  </div>
+</section>
+
+<!-- ───────── WHAT: 제품 (팝업 카드) ───────── -->
+<section id="products" class="gut py-16 md:py-24 bg-mist">
+  <div class="wrap">
+    <div class="sh">
+      <div><p class="eyebrow text-blue">Part 2 · What</p><p class="disp big mt-3">1st Line-up<br>4 + 1</p><h2>두 번 검증된 장벽 보습, <em>1차 4종으로 엽니다</em></h2></div>
+      <p>병·의원(전국 피부과 약 70%, 종합병원 100% 입점)과 올리브영에서 모두 검증된 제품만 골랐습니다. 카드를 누르면 상세가 열립니다.</p>
+    </div>
+    <div id="plist" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3"></div>
+
+    <h3 class="mt-14 text-[22px] font-black tracking-[-.03em]">아쉬운 점도 먼저 말씀드립니다</h3>
+    <p class="mt-2 text-ink2 max-w-[70ch]">공식 홈페이지 게시 리뷰 429건 중 아쉬움을 말한 리뷰는 15건(3.5%)이었고, 게시 리뷰 중 자극 불만은 없었습니다. 대부분 가격과 용량 이야기라 무신사 단독 구성으로 풀 수 있습니다.</p>
+    <div class="mt-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div class="rounded-2xl bg-paper border border-line p-5"><p class="wide text-[40px] num">8<span class="text-[.45em] ml-1">건</span></p><p class="mt-2 font-black">가격이 부담된다</p><p class="mt-3 text-[13.5px] font-bold text-blue">→ 크림 2·3개 묶음 할인</p></div>
+      <div class="rounded-2xl bg-paper border border-line p-5"><p class="wide text-[40px] num">5<span class="text-[.45em] ml-1">건</span></p><p class="mt-2 font-black">용량이 작다</p><p class="mt-3 text-[13.5px] font-bold text-blue">→ 80+50ml 기획을 주력으로</p></div>
+      <div class="rounded-2xl bg-paper border border-line p-5"><p class="wide text-[40px] num">3<span class="text-[.45em] ml-1">건</span></p><p class="mt-2 font-black">건조 부위엔 조금 가볍다</p><p class="mt-3 text-[13.5px] font-bold text-blue">→ 건성은 SET 01로 안내</p></div>
+      <div class="rounded-2xl bg-paper border border-line p-5"><p class="wide text-[40px] num">3<span class="text-[.45em] ml-1">건</span></p><p class="mt-2 font-black">용기·구매처가 불편하다</p><p class="mt-3 text-[13.5px] font-bold text-blue">→ 미스트·립케어 휴대 루틴</p></div>
+    </div>
+    <p class="mt-2 text-[12.5px] text-ink3">브랜드가 운영하는 게시판 리뷰라 외부 몰과 분포가 다를 수 있습니다. 무신사 리뷰는 별점 분포와 아쉬운 점까지 매월 보고합니다.</p>
+  </div>
+</section>
+
+<!-- ───────── HOW: 퍼소나 탭 ───────── -->
+<section id="persona" class="gut py-16 md:py-24">
+  <div class="wrap">
+    <div class="sh">
+      <div><p class="eyebrow text-blue">Part 3 · How</p><p class="disp big mt-3">3 Persona<br>3 Kits</p><h2>세 명의 직장인, <em>구성 하나씩</em></h2></div>
+      <p>퍼소나는 제로이드 리뷰에서 뽑은 가설입니다. 무신사 고객은 MD님이 더 잘 아시기에, 런칭 2주 판매 데이터로 검증해 구성을 다시 맞춥니다.</p>
+    </div>
+    <div class="grid grid-cols-3 gap-2" role="tablist" aria-label="퍼소나 선택">
+      <button class="tab text-left rounded-xl border-2 border-line px-4 py-3" role="tab" id="tab-0" aria-controls="ppanel" aria-selected="true" data-p="0"><span class="block font-black">01 지수</span><span class="tab-sub block text-[12px] text-ink3">건성 · 히터 바로 아래</span></button>
+      <button class="tab text-left rounded-xl border-2 border-line px-4 py-3" role="tab" id="tab-1" aria-controls="ppanel" aria-selected="false" tabindex="-1" data-p="1"><span class="block font-black">02 하은</span><span class="tab-sub block text-[12px] text-ink3">수부지 · 속건조</span></button>
+      <button class="tab text-left rounded-xl border-2 border-line px-4 py-3" role="tab" id="tab-2" aria-controls="ppanel" aria-selected="false" tabindex="-1" data-p="2"><span class="block font-black">03 서연</span><span class="tab-sub block text-[12px] text-ink3">야근 · 정착할 크림</span></button>
+    </div>
+    <div id="ppanel" role="tabpanel" aria-labelledby="tab-0" class="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,.85fr)]"></div>
+  </div>
+</section>
+
+<!-- ───────── HOW: 무신사 단독 (팝업 카드) ───────── -->
+<section id="only" class="gut py-16 md:py-24 bg-ink text-white">
+  <div class="wrap">
+    <div class="sh">
+      <div><p class="eyebrow text-[#B5CF85]">Part 3 · Musinsa Only</p><p class="disp big mt-3">Only On<br>Musinsa</p><h2 class="text-white">올리브영에 없는 구성, <em class="!text-[#B5CF85]">무신사에서만</em></h2></div>
+      <p class="!text-[#C8CDC2]">올리브영 기획은 같은 제품에 증정을 붙이고, 무신사 단독은 다른 제품끼리 루틴으로 묶습니다. 같은 구성이 다른 곳에 없어 가격이 비교되지 않습니다. 카드를 눌러 가격 계산을 확인하세요.</p>
+    </div>
+    <div id="sets" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+    <p class="mt-4 text-[12.5px] text-[#B3B9AC] max-w-[90ch]">단품 기준가는 올리브영 판매가와 온라인 최저가 중 낮은 쪽(2026.10.29 확인) · 공급률 확정 전 제안가 · 1차 세트는 단품 묶음 포장(수축 포장 + 세트 스티커), 전용 박스는 2차 검토</p>
+    <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-[#2E3528] rounded-2xl overflow-hidden">
+      <div class="bg-ink p-6"><p class="eyebrow text-[#B5CF85]">D-7</p><p class="mt-2 font-black">체험단 발송</p><p class="mt-1 text-[14px] text-[#C8CDC2]">2030 직장인 50명(안)에게 세트 발송, ‘사무실 책상 위’ 사진 미션</p></div>
+      <div class="bg-blue p-6"><p class="eyebrow text-[#DCE8C6]">D-day</p><p class="mt-2 font-black">리뷰 30건으로 오픈</p><p class="mt-1 text-[14px] text-[#E8F0D8]">체험단 리뷰·스냅이 오픈일에 함께 보이도록 (체험단 표기)</p></div>
+      <div class="bg-ink p-6"><p class="eyebrow text-[#B5CF85]">D+14</p><p class="mt-2 font-black">구매 리뷰 전환</p><p class="mt-1 text-[14px] text-[#C8CDC2]">첫 구매 고객 리뷰 혜택, 아쉬운 점까지 월간 보고</p></div>
+      <div class="bg-ink p-6"><p class="eyebrow text-[#B5CF85]">+5 Weeks</p><p class="mt-2 font-black">재구매 알림</p><p class="mt-1 text-[14px] text-[#C8CDC2]">크림 80ml를 다 쓸 무렵 묶음 쿠폰 (6–8주 사용 가정)</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── WHAT IF: 입점 시뮬레이션 ───────── -->
+<section id="sim" class="gut py-16 md:py-24 bg-mist">
+  <div class="wrap">
+    <div class="sh">
+      <div><p class="eyebrow text-blue">Part 4 · What if</p><p class="disp big mt-3">Entry<br>Simulator</p><h2>조건을 켜고 끄면, <em>3개월 결과가 바뀝니다</em></h2></div>
+      <p>기준안은 모든 조건을 켠 상태의 3개월 목표(주문 1,700건)입니다. 조건을 하나씩 꺼 보면 각 항목이 결과에 얼마나 기여하는지 보입니다.</p>
+    </div>
+    <div class="grid gap-4 lg:grid-cols-[minmax(0,.9fr)_minmax(0,1.1fr)]">
+      <div class="min-w-0 rounded-2xl bg-paper border border-line p-5 md:p-6">
+        <p class="eyebrow text-ink3">거래 방식</p>
+        <div class="mt-3 grid grid-cols-2 gap-2" role="radiogroup" aria-label="거래 방식">
+          <button id="dealA" class="deal rounded-xl border-2 px-4 py-3 text-left" role="radio" aria-checked="true" data-d="A"><span class="block font-black">PLAN A · 위탁</span><span class="block text-[12px] text-ink3">추천 · 재고 부담 없음</span></button>
+          <button id="dealB" class="deal rounded-xl border-2 px-4 py-3 text-left" role="radio" aria-checked="false" data-d="B"><span class="block font-black">PLAN B · 매입</span><span class="block text-[12px] text-ink3">단독 세트 매입</span></button>
+        </div>
+        <p class="eyebrow text-ink3 mt-7">브랜드가 먼저 하는 것</p>
+        <ul class="mt-2 divide-y divide-line">
+          <li><button id="t-campaign" class="tg w-full flex items-center gap-4 py-3 text-left" role="switch" aria-checked="true" data-k="campaign"><span class="min-w-0 flex-1"><span class="block font-bold">겨울 보습 기획전 편입</span><span class="block text-[12.5px] text-ink3">11–2월 기획전 노출 [협의]</span></span><span class="sw"></span></button></li>
+          <li><button id="t-ad" class="tg w-full flex items-center gap-4 py-3 text-left" role="switch" aria-checked="true" data-k="ad"><span class="min-w-0 flex-1"><span class="block font-bold">검색광고 브랜드 집행</span><span class="block text-[12.5px] text-ink3">‘장벽크림’·‘겨울 보습’ 키워드, 런칭 2주 집중</span></span><span class="sw"></span></button></li>
+          <li><button id="t-seed" class="tg w-full flex items-center gap-4 py-3 text-left" role="switch" aria-checked="true" data-k="seed"><span class="min-w-0 flex-1"><span class="block font-bold">직장인 체험단 50명</span><span class="block text-[12.5px] text-ink3">오픈 첫 주 리뷰 확보</span></span><span class="sw"></span></button></li>
+          <li><button id="t-sets" class="tg w-full flex items-center gap-4 py-3 text-left" role="switch" aria-checked="true" data-k="sets"><span class="min-w-0 flex-1"><span class="block font-bold">무신사 단독 세트 2종</span><span class="block text-[12.5px] text-ink3">SET 01 · SET 02 + 크림 묶음</span></span><span class="sw"></span></button></li>
+        </ul>
+        <label for="mix" class="eyebrow text-ink3 mt-7 block">주문 중 세트 비중 <span id="mixV" class="num text-ink">40%</span></label>
+        <input id="mix" type="range" min="0" max="60" step="5" value="40" class="w-full mt-3 accent-[#4E6B26]">
+        <div class="flex justify-between text-[12px] text-ink3 num"><span>0% · 단품 위주</span><span>60% · 세트 위주</span></div>
+      </div>
+
+      <div class="min-w-0 rounded-2xl bg-blue-deep text-white p-5 md:p-7" aria-live="polite">
+        <div class="flex flex-wrap items-baseline gap-x-3"><p class="eyebrow text-[#C5D7A4]">3개월 결과 (안)</p><span id="simTag" class="ml-auto text-[12px] font-bold bg-white/15 rounded-full px-3 py-1">기준안</span></div>
+        <div class="mt-4 grid grid-cols-2 gap-px bg-white/15 rounded-xl overflow-hidden">
+          <div class="bg-blue-deep p-4"><p class="text-[12.5px] text-[#D2DFB8]">주문</p><p class="wide text-[clamp(34px,5vw,56px)] num mt-1"><span id="oOrders">1,700</span><span class="text-[.38em] ml-1">건</span></p></div>
+          <div class="bg-blue-deep p-4"><p class="text-[12.5px] text-[#D2DFB8]">거래액</p><p class="wide text-[clamp(34px,5vw,56px)] num mt-1"><span id="oGmv">6,780</span><span class="text-[.38em] ml-1">만 원</span></p></div>
+          <div class="bg-blue-deep p-4"><p class="text-[12.5px] text-[#D2DFB8]">무신사 리뷰</p><p class="wide text-[clamp(34px,5vw,56px)] num mt-1"><span id="oRev">300</span><span class="text-[.38em] ml-1">건</span></p></div>
+          <div class="bg-blue-deep p-4"><p class="text-[12.5px] text-[#D2DFB8]">객단가</p><p class="wide text-[clamp(34px,5vw,56px)] num mt-1"><span id="oAov">39,880</span><span class="text-[.38em] ml-1">원</span></p></div>
+        </div>
+        <div class="mt-5"><div class="flex justify-between text-[12.5px] text-[#D2DFB8]"><span>기준안 대비 주문</span><span id="oPct" class="num">100%</span></div><div class="bar mt-2 !bg-white/15"><i id="oBar" style="width:100%"></i></div></div>
+        <div class="mt-6 grid sm:grid-cols-2 gap-4 text-[14px]">
+          <div><p class="eyebrow text-[#C5D7A4]">무신사가 지는 부담</p><p id="oMus" class="mt-1">재고 부담 없음 (위탁). 기획전 편입과 단독 상품 표기를 요청드립니다.</p></div>
+          <div><p class="eyebrow text-[#C5D7A4]">오픈 첫 주</p><p id="oWeek" class="mt-1">체험단 리뷰 30건이 보이는 상태로 오픈합니다.</p></div>
+        </div>
+        <p class="mt-6 text-[12px] text-[#BCCC9C] leading-relaxed">기준안 근거: 올리브영 리뷰 월 약 550건의 1/5(월 100건) × 3개월 = 리뷰 300건, 구매 리뷰 작성률 15% 가정 → 주문 약 1,700건. 객단가는 단품 3만 원, 세트 평균 54,700원으로 계산. 조건을 끌 때의 감소율(기획전 −25%, 검색광고 −15%, 체험단 −10%, 단독 세트 −10%)은 설명을 위한 가정이며, 무신사 데이터로 미팅에서 다시 맞춥니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── 일정 ───────── -->
+<section class="gut py-16 md:py-24">
+  <div class="wrap">
+    <div class="sh">
+      <div><p class="eyebrow text-blue">Part 3 · Timeline</p><p class="disp big mt-3">Open<br>12.14</p><h2>11월 미팅, <em>12월 중순 오픈</em> (안)</h2></div>
+      <p>31종이 아니라 4종만 엽니다. 심사·계약 2주를 포함한 7주 일정이며, 연말 선물·겨울 기획전 일정을 알려 주시면 오픈일을 맞춥니다.</p>
+    </div>
+    <ol class="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-line border border-line rounded-2xl overflow-hidden">
+      <li class="bg-paper p-5"><p class="wide text-[30px]">W1</p><p class="text-[12.5px] text-ink3 num">11.02–11.08</p><p class="mt-2 font-black">제안 미팅 · 조건 협의</p><p class="text-[14px] text-ink2">가격, 공급률, 거래 방식, 단독 구성 범위</p></li>
+      <li class="bg-paper p-5"><p class="wide text-[30px]">W2–3</p><p class="text-[12.5px] text-ink3 num">11.09–11.22</p><p class="mt-2 font-black">입점 심사 · 계약</p><p class="text-[14px] text-ink2">상품 정보·성적서 전달, 재고·CS 담당 확정</p></li>
+      <li class="bg-paper p-5"><p class="wide text-[30px]">W4–6</p><p class="text-[12.5px] text-ink3 num">11.23–12.13</p><p class="mt-2 font-black">상세페이지 · 입고</p><p class="text-[14px] text-ink2">4종 상세페이지 심의, 세트 묶음 포장, 체험단 발송</p></li>
+      <li class="bg-blue text-white p-5"><p class="wide text-[30px]">W7</p><p class="text-[12.5px] text-[#DCE8C6] num">12.14–12.20</p><p class="mt-2 font-black">그랜드 오픈</p><p class="text-[14px] text-[#E8F0D8]">런칭 혜택 2주, 겨울 보습 기획전 편입</p></li>
+    </ol>
+    <div class="mt-3 grid sm:grid-cols-4 gap-2 text-[14px]">
+      <div class="rounded-xl bg-mist p-4"><span class="eyebrow text-blue">Winter</span><p class="mt-1 font-bold">11–2월 · 실내 건조</p><p class="text-ink2 text-[13px]">1차 4종 런칭</p></div>
+      <div class="rounded-xl bg-mist p-4"><span class="eyebrow text-blue">Spring</span><p class="mt-1 font-bold">3–5월 · 환절기 진정</p><p class="text-ink2 text-[13px]">수딩 라인 + 세럼 마스크</p></div>
+      <div class="rounded-xl bg-mist p-4"><span class="eyebrow text-blue">Summer</span><p class="mt-1 font-bold">6–8월 · 피지·자외선</p><p class="text-ink2 text-[13px]">핌프로브, 데일리 선크림</p></div>
+      <div class="rounded-xl bg-mist p-4"><span class="eyebrow text-blue">Fall</span><p class="mt-1 font-bold">9–10월 · 장벽 회복</p><p class="text-ink2 text-[13px]">인텐시브 로션·앰플</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── 주고받기 ───────── -->
+<section id="deal" class="gut py-16 md:py-24 bg-mist">
+  <div class="wrap">
+    <div class="sh">
+      <div><p class="eyebrow text-blue">Part 4 · Deal table</p><p class="disp big mt-3">Give &amp;<br>Take</p><h2>주고받을 것을 <em>한 표로</em></h2></div>
+      <p>왼쪽은 제로이드가 먼저 드리는 것, 오른쪽은 그 대가로 요청드리는 것입니다. 대괄호는 미팅에서 함께 맞출 숫자입니다.</p>
+    </div>
+    <div class="overflow-x-auto rounded-2xl bg-paper border border-line px-2">
+      <table class="tbl">
+        <thead><tr><th>무신사 관점</th><th>제로이드가 드리는 것</th><th>그 대가로 요청</th></tr></thead>
+        <tbody>
+          <tr><td class="k">가격 경쟁력</td><td>단품은 올리브영·온라인 최저가보다 비싸지 않게 · 주 1회 점검</td><td class="text-blue font-bold">겨울 보습 기획전 편입</td></tr>
+          <tr><td class="k">단독성</td><td>단독 세트 2종 + 크림 2·3개 묶음 · 립케어 10ml 증정</td><td class="text-blue font-bold">단독 상품 표기, 기획전 단독 구좌</td></tr>
+          <tr><td class="k">런칭 리뷰</td><td>2030 직장인 체험단 비용 브랜드 부담 [50명 (안)]</td><td class="text-blue font-bold">신규 입점 브랜드 노출 구좌</td></tr>
+          <tr><td class="k">트래픽</td><td>검색광고 브랜드 집행 [월 __원] · 런칭 2주 집중</td><td class="text-blue font-bold">광고·판매 데이터 주간 공유</td></tr>
+          <tr><td class="k">런칭 할인</td><td>첫 구매 쿠폰 할인분 브랜드 부담 [__%]</td><td class="text-blue font-bold">런칭 3개월 수수료 조건 협의</td></tr>
+          <tr><td class="k">재고 안정성</td><td>안전재고 [__주분] · 출고 리드타임 [__일]</td><td class="text-blue font-bold">위탁 시작, 3개월 뒤 매입 전환 검토</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── 한 장 요약 ───────── -->
+<section id="close" class="gut py-16 md:py-24 bg-blue text-white">
+  <div class="wrap">
+    <p class="eyebrow text-[#DCE8C6]">One page</p>
+    <p class="mt-4 text-[clamp(26px,4vw,48px)] font-black leading-[1.2] tracking-[-.04em] max-w-[22ch]">이미 팔린 장벽 크림을, 무신사 고객이 처음 만나게 합니다.</p>
+    <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/25 rounded-2xl overflow-hidden">
+      <div class="bg-blue p-5"><p class="eyebrow text-[#DCE8C6]">정말 팔릴까?</p><p class="mt-2 font-black text-[17px]">이미 팔린 제품</p><p class="mt-1 text-[14px] text-[#E8F0D8]">초도 물량 하루 완판, 랭킹 1위, 리뷰 14,336건</p></div>
+      <div class="bg-blue p-5"><p class="eyebrow text-[#DCE8C6]">가격 문제는?</p><p class="mt-2 font-black text-[17px]">단품은 더 비싸지 않게</p><p class="mt-1 text-[14px] text-[#E8F0D8]">차이는 단독 구성으로, 가격은 주 1회 점검</p></div>
+      <div class="bg-blue p-5"><p class="eyebrow text-[#DCE8C6]">리뷰 0건인데?</p><p class="mt-2 font-black text-[17px]">첫 주 리뷰 30건</p><p class="mt-1 text-[14px] text-[#E8F0D8]">체험단 50명(안)과 무신사 스냅</p></div>
+      <div class="bg-blue p-5"><p class="eyebrow text-[#DCE8C6]">부담은 얼마?</p><p class="mt-2 font-black text-[17px]">위탁으로 시작</p><p class="mt-1 text-[14px] text-[#E8F0D8]">체험단·광고·런칭 할인은 브랜드가 먼저</p></div>
+    </div>
+    <div class="mt-10 border-t border-white/40 pt-6 flex flex-wrap items-end gap-6">
+      <div class="min-w-0"><p class="eyebrow text-[#DCE8C6]">11월 첫 주 미팅에서 정할 것</p><p class="mt-2 text-[clamp(22px,3vw,34px)] font-black">공급률 · 거래 방식 · 겨울 기획전 편입</p></div>
+      <div class="ml-auto text-[14px] text-[#E8F0D8]"><p class="font-bold text-white">(주)네오팜 · 제로이드 브랜드팀</p><p>[담당자명] · [연락처] · [이메일]</p></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="gut py-8 bg-ink text-[#B3B9AC] text-[12.5px]">
+  <div class="wrap flex flex-wrap gap-4 justify-between items-end">
+    <span class="wide text-white text-[40px]">ZEROID</span>
+    <p class="max-w-[70ch]">(주)네오팜 · 무신사 뷰티 입점 웹 제안서 · 2026.10.29 · 대외비 · 숫자 중 (안) 표시는 미팅에서 확정할 제안치이며, 퍼소나는 리뷰 기반 가설입니다.</p>
+  </div>
+</footer>
+
+<!-- ───────── 팝업 ───────── -->
+<div id="modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<script>
+(function(){
+  var won=function(n){return n.toLocaleString('ko-KR')};
+
+  /* 겨울 하루 */
+  var HOURS=[
+    {env:'출근 · 영하의 찬바람',t:'문을 나서자마자 당김',x:'찬바람에 입가와 볼이 트고, 마스크를 벗을 때마다 따갑습니다.',fix:'출근 전 인텐시브 크림, 입술엔 립케어',prod:'SET 01 · 립케어 10ml 증정품'},
+    {env:'사무실 · 히터 시작',t:'건조한 실내 공기',x:'히터가 켜지면서 아침에 바른 보습제가 빠르게 마릅니다.',fix:'가벼운 수딩 로션으로 한 겹 더',prod:'SET 02 속건조 보습 세트 구성품'},
+    {env:'히터 바람 정점',t:'속당김 · 화장 들뜸',x:'겉은 번들거리는데 속은 당기고, 볼 각질 위로 메이크업이 들뜹니다.',fix:'책상 위 인텐시브 크림 미스트로 수시 보습',prod:'SET 01 히터 오피스 키트 구성품'},
+    {env:'퇴근 · 다시 찬바람',t:'따가운 퇴근길',x:'실내외 온도 차가 큰 퇴근길, 하루치 건조함이 한꺼번에 느껴집니다.',fix:'가방 속 미스트·립케어로 한 번 더',prod:'휴대 루틴 · 미스트 100ml, 립케어 10ml'},
+    {env:'난방 켠 방',t:'밤새 마르는 피부',x:'다음 날 아침까지 수분을 붙잡아 둘 마지막 시간입니다.',fix:'인텐시브 크림을 한 겹 두껍게',prod:'인텐시브 크림 80+50ml 기획 · 무신사 주력'}
+  ];
+  var hBtns=[].slice.call(document.querySelectorAll('.hour'));
+  function setHour(i){
+    hBtns.forEach(function(b,j){b.setAttribute('aria-pressed',j===i?'true':'false')});
+    var h=HOURS[i];
+    document.getElementById('hEnv').textContent=h.env;
+    document.getElementById('hTitle').textContent=h.t;
+    document.getElementById('hText').textContent=h.x;
+    document.getElementById('hFix').textContent=h.fix;
+    document.getElementById('hProd').textContent=h.prod;
+  }
+  hBtns.forEach(function(b,i){b.addEventListener('click',function(){setHour(i)})});
+
+  /* 제품 */
+  var P=[
+    {id:'in-cream',line:'INTENSIVE',name:'인텐시브 크림',tag:'BEST',desc:'악건성 피부를 위한 고보습 장벽 케어 크림',oy:'★4.8 · 리뷰 14,336',price:'80ml 26,300원 · 80+50ml 기획 31,500원',oyp:'올리브영 28,800원 / 31,500원',role:'건성 직장인의 겨울 베이스. 무신사 주력은 ml당 242원인 80+50ml 기획입니다.',kit:'SET 01 · 2·3개 묶음',rate:'건성에 좋아요 47% · 보습에 좋아요 65% · 자극 없이 순해요 75%'},
+    {id:'so-cream',line:'SOOTHING',name:'수딩 크림',tag:'BEST',desc:'피부장벽 보습을 돕는 저자극 크림',oy:'★4.8 · 리뷰 10,456',price:'80+50ml 기획 29,900원',oyp:'올리브영 29,900원',role:'겉은 번들, 속은 당기는 수부지의 속건조 케어.',kit:'SET 02',rate:'복합성에 좋아요 57% · 보습에 좋아요 54% · 자극 없이 순해요 75%'},
+    {id:'so-lotion',line:'SOOTHING',name:'수딩 로션',tag:'',desc:'피부장벽 보습을 돕는 저자극 로션',oy:'리뷰 2,381',price:'160ml 26,690원',oyp:'올리브영 27,000원',role:'수부지의 가벼운 첫 보습. 크림과 겹쳐 바르는 레이어링용.',kit:'SET 02',rate:'사계절 원스텝 로션 · 상세 평가 요약은 미팅 시 제공'},
+    {id:'in-mist',line:'INTENSIVE',name:'인텐시브 크림 미스트',tag:'NEW',desc:'뿌리는 크림 고보습 미스트',oy:'★4.9 · 리뷰 86',price:'100ml 17,900원',oyp:'올리브영 17,900원',role:'책상 위 오후 3시 보습. 단품 경쟁 대신 세트 구성품으로 씁니다.',kit:'SET 01 · SET 02',rate:'건성에 좋아요 61% · 보습에 좋아요 76% · 자극 없이 순해요 79%'},
+    {id:'in-lip',line:'INTENSIVE',name:'인텐시브 립케어 10ml',tag:'GIFT',desc:'건조하고 갈라진 입술을 위한 고보습 케어',oy:'병·의원 채널 제품',price:'판매하지 않음 · SET 01 증정',oyp:'올리브영 미판매',role:'병·의원 채널 제품을 무신사에서만 체험. 증정 수량은 협의합니다.',kit:'SET 01 증정품',rate:'출근길 찬바람에 트는 입술용'}
+  ];
+  document.getElementById('plist').innerHTML=P.map(function(p,i){
+    return '<button class="pcard text-left rounded-2xl bg-paper border border-line p-3 flex flex-col" data-prod="'+i+'" aria-haspopup="dialog">'+
+      '<span class="relative block rounded-xl bg-mist aspect-square overflow-hidden"><img src="img/cut/'+p.id+'.png" alt="" class="absolute inset-0 m-auto h-[78%] w-auto">'+
+      (p.tag?'<span class="absolute top-2 left-2 en text-[10.5px] font-extrabold tracking-[.1em] '+(p.tag==='GIFT'?'bg-ink':'bg-blue')+' text-white rounded-full px-2 py-0.5">'+p.tag+'</span>':'')+'</span>'+
+      '<span class="en text-[11px] font-extrabold tracking-[.12em] text-ink3 mt-3">'+p.line+'</span>'+
+      '<span class="font-black text-[16px] leading-snug">'+p.name+'</span>'+
+      '<span class="text-[13px] text-ink2 mt-1">'+p.oy+'</span>'+
+      '<span class="peek mt-2 text-[12.5px] font-bold text-blue">'+p.kit+' · 자세히 보기 +</span></button>';
+  }).join('');
+
+  /* 단독 구성 */
+  var S=[
+    {no:'SET 01 · 건성',name:'히터 오피스 키트',imgs:['in-cream','in-mist','in-lip'],items:[['인텐시브 크림 80+50ml 기획',31500],['인텐시브 크림 미스트 100ml',17900],['인텐시브 립케어 10ml (증정)',0]],price:44500,when:'책상 위 오후 3시 보습 · 연말 선물 노출',who:'01 지수'},
+    {no:'SET 02 · 수부지',name:'속건조 보습 세트',imgs:['so-lotion','so-cream','in-mist'],items:[['수딩 로션 160ml',26690],['수딩 크림 80+50ml 기획',29900],['인텐시브 크림 미스트 100ml',17900]],price:64900,when:'겉은 가볍게, 속은 촉촉하게',who:'02 하은'},
+    {no:'BUNDLE · 정착',name:'인텐시브 크림 2·3개 묶음',imgs:['in-cream','in-cream','in-cream'],items:[['2개 묶음 (80ml × 2)',52600],['3개 묶음 (80ml × 3)',78900]],price:null,bundle:[49900,70900],when:'겨울 내내 쓸 양을 한 번에, 가격 부담은 묶음 할인으로',who:'03 서연'}
+  ];
+  document.getElementById('sets').innerHTML=S.map(function(s,i){
+    var base=s.items.reduce(function(a,b){return a+b[1]},0);
+    var pr=s.price?('<span class="wide text-[34px] num">'+won(s.price)+'<span class="text-[.45em] ml-1">원</span></span><span class="text-[13px] text-[#B3B9AC] line-through num ml-2">'+won(base)+'원</span>'):('<span class="wide text-[34px] num">'+won(s.bundle[0])+'<span class="text-[.45em] ml-1">원~</span></span>');
+    return '<button class="pcard text-left rounded-2xl bg-[#1A2015] border border-[#2E3528] p-5 flex flex-col" data-set="'+i+'" aria-haspopup="dialog">'+
+      '<span class="en text-[12px] font-extrabold tracking-[.12em] text-[#B5CF85]">'+s.no+'</span>'+
+      '<span class="mt-1 text-[22px] font-black">'+s.name+'</span>'+
+      '<span class="mt-4 grid grid-cols-3 gap-2">'+s.imgs.map(function(m){return '<span class="relative block rounded-lg bg-white aspect-square"><img src="img/cut/'+m+'.png" alt="" class="absolute inset-0 m-auto h-[80%] w-auto"></span>'}).join('')+'</span>'+
+      '<span class="mt-4 flex items-baseline flex-wrap">'+pr+'</span>'+
+      '<span class="mt-1 text-[13.5px] text-[#C8CDC2]">'+s.when+'</span>'+
+      '<span class="peek mt-3 text-[13px] font-bold text-[#B5CF85]">가격 계산 보기 +</span></button>';
+  }).join('');
+
+  /* 팝업 */
+  var modal=document.getElementById('modal'),sheet=document.getElementById('sheet'),lastFocus=null;
+  function open(html){lastFocus=document.activeElement;sheet.innerHTML=html+'<button id="mClose" class="mt-6 w-full rounded-full bg-ink text-white font-bold py-3">닫기</button>';modal.hidden=false;document.body.style.overflow='hidden';document.getElementById('mClose').focus();document.getElementById('mClose').addEventListener('click',close)}
+  function close(){modal.hidden=true;document.body.style.overflow='';if(lastFocus)lastFocus.focus()}
+  modal.addEventListener('click',function(e){if(e.target===modal)close()});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!modal.hidden)close()});
+  document.getElementById('plist').addEventListener('click',function(e){
+    var b=e.target.closest('[data-prod]');if(!b)return;var p=P[+b.dataset.prod];
+    open('<div class="flex gap-5 items-start"><span class="relative block w-28 shrink-0 rounded-xl bg-mist aspect-square"><img src="img/cut/'+p.id+'.png" alt="" class="absolute inset-0 m-auto h-[80%] w-auto"></span>'+
+      '<div class="min-w-0"><p class="eyebrow text-blue">'+p.line+'</p><h3 id="mTitle" class="text-[24px] font-black tracking-[-.03em]">'+p.name+'</h3><p class="text-ink2 text-[14px]">'+p.desc+'</p></div></div>'+
+      '<dl class="mt-6 divide-y divide-line border-y border-line text-[14.5px]">'+
+      '<div class="grid grid-cols-[120px_1fr] gap-3 py-3"><dt class="text-ink3">무신사 판매가 (안)</dt><dd class="font-black num">'+p.price+'</dd></div>'+
+      '<div class="grid grid-cols-[120px_1fr] gap-3 py-3"><dt class="text-ink3">비교</dt><dd class="num">'+p.oyp+'</dd></div>'+
+      '<div class="grid grid-cols-[120px_1fr] gap-3 py-3"><dt class="text-ink3">올리브영</dt><dd class="num">'+p.oy+'</dd></div>'+
+      '<div class="grid grid-cols-[120px_1fr] gap-3 py-3"><dt class="text-ink3">고객 평가</dt><dd>'+p.rate+'</dd></div>'+
+      '<div class="grid grid-cols-[120px_1fr] gap-3 py-3"><dt class="text-ink3">무신사 역할</dt><dd>'+p.role+'</dd></div>'+
+      '<div class="grid grid-cols-[120px_1fr] gap-3 py-3"><dt class="text-ink3">들어가는 구성</dt><dd class="font-bold text-blue">'+p.kit+'</dd></div></dl>'+
+      '<p class="mt-3 text-[12.5px] text-ink3">올리브영 2026.10.28 · 온라인 최저가 다나와 2026.10.29 확인 · 판매가는 공급률 확정 후 조정</p>');
+  });
+  document.getElementById('sets').addEventListener('click',function(e){
+    var b=e.target.closest('[data-set]');if(!b)return;var s=S[+b.dataset.set];
+    var base=s.items.reduce(function(a,x){return a+x[1]},0);
+    var rows=s.items.map(function(x){return '<tr><td class="py-2.5 pr-3">'+x[0]+'</td><td class="py-2.5 text-right num">'+(x[1]?won(x[1])+'원':'증정')+'</td></tr>'}).join('');
+    var bottom=s.price?('<tr class="border-t-2 border-ink"><td class="py-2.5 font-bold">따로 살 때</td><td class="py-2.5 text-right num line-through text-ink3">'+won(base)+'원</td></tr><tr><td class="py-2.5 font-black text-blue">무신사 단독가 (안)</td><td class="py-2.5 text-right font-black text-blue num text-[20px]">'+won(s.price)+'원</td></tr><tr><td class="py-1 text-ink3 text-[13px]">할인</td><td class="py-1 text-right text-[13px] num">약 '+Math.round((1-s.price/base)*100)+'% ↓</td></tr>')
+      :('<tr class="border-t-2 border-ink"><td class="py-2.5 font-black text-blue">2개 묶음 (안)</td><td class="py-2.5 text-right font-black text-blue num">'+won(s.bundle[0])+'원 · 약 5% ↓</td></tr><tr><td class="py-2.5 font-black text-blue">3개 묶음 (안)</td><td class="py-2.5 text-right font-black text-blue num">'+won(s.bundle[1])+'원 · 약 10% ↓</td></tr>');
+    open('<p class="eyebrow text-blue">'+s.no+'</p><h3 id="mTitle" class="text-[26px] font-black tracking-[-.03em]">'+s.name+'</h3><p class="text-ink2">'+s.when+' · 퍼소나 '+s.who+'</p>'+
+      '<div class="mt-5 grid grid-cols-3 gap-2">'+s.imgs.map(function(m){return '<span class="relative block rounded-xl bg-mist aspect-square"><img src="img/cut/'+m+'.png" alt="" class="absolute inset-0 m-auto h-[80%] w-auto"></span>'}).join('')+'</div>'+
+      '<table class="w-full mt-5 text-[14.5px]"><tbody>'+rows+bottom+'</tbody></table>'+
+      '<p class="mt-3 text-[12.5px] text-ink3">단품 기준가는 올리브영 판매가와 온라인 최저가 중 낮은 쪽 · 따로 사는 것보다 언제나 싸게 설계 · 공급률 확정 전 제안가</p>');
+  });
+
+  /* 퍼소나 */
+  var PS=[
+    {q:'“오후만 되면 얼굴이 쩍쩍 당겨요”',who:'지수, 29세 · 회계팀 대리',desk:'자리 바로 위가 히터 송풍구',skin:'건성 · 민감성',shop:'출퇴근길 모바일로 둘러보다 후기를 보고 구매',steps:[['07:30','인텐시브 크림을 베이스로'],['08:30','출근길 입술엔 립케어'],['15:00','책상 위 크림 미스트']],set:0,rv:['“건조한 사무실에서 일하고 와도 당기지 않아요”','인텐시브 크림 · 공식 홈페이지 리뷰 #15267']},
+    {q:'“기름은 도는데 속은 사막 같아요”',who:'하은, 27세 · 마케터',desk:'히터와 마스크 사이, 오후마다 번들',skin:'수분 부족 지성 (수부지)',shop:'무거운 크림은 피하고, 가벼운 루틴을 찾음',steps:[['08:00','수딩 로션으로 가볍게'],['14:00','당기는 볼에만 수딩 크림'],['23:00','로션 + 크림 레이어링']],set:1,rv:['“쉽게 당기는 요즘, 무겁지 않게 촉촉해요”','수딩 크림 · 올리브영 2026.09.24']},
+    {q:'“1일 1팩까지 했는데 더 건조해졌어요”',who:'서연, 30세 · 브랜드 디자이너',desk:'마감 주간 야근, 밤까지 히터 켠 사무실',skin:'복합성~건성',shop:'더 좋은 것을 사 모으다 지쳐, 정착할 크림을 찾음',steps:[['22:00','야근 중 크림 미스트'],['00:30','인텐시브 크림 한 겹, 두껍게'],['+2주','바르는 단계가 줄어든 루틴']],set:2,rv:['“밤에 듬뿍 바르면 다음 날 화장이 먹어요”','인텐시브 크림 · 올리브영 2026.09.28']}
+  ];
+  var tabs=[].slice.call(document.querySelectorAll('.tab')),panel=document.getElementById('ppanel');
+  function showP(i,focus){
+    tabs.forEach(function(t,j){var on=j===i;t.setAttribute('aria-selected',on?'true':'false');t.tabIndex=on?0:-1});
+    if(focus)tabs[i].focus();
+    panel.setAttribute('aria-labelledby','tab-'+i);
+    var p=PS[i],s=S[p.set];
+    panel.innerHTML='<div class="min-w-0 rounded-2xl border border-line p-6 md:p-8">'+
+      '<p class="eyebrow text-blue">Persona 0'+(i+1)+'</p><h3 class="mt-2 text-[clamp(24px,3vw,34px)] font-black leading-[1.25] tracking-[-.04em]">'+p.q+'</h3>'+
+      '<p class="mt-3 font-bold">'+p.who+'</p><p class="text-[14px] text-blue font-bold">'+p.desk+'</p>'+
+      '<dl class="mt-5 grid sm:grid-cols-2 gap-3 text-[14px]"><div class="rounded-xl bg-mist p-4"><dt class="text-ink3 text-[12.5px]">피부</dt><dd class="font-bold mt-1">'+p.skin+'</dd></div><div class="rounded-xl bg-mist p-4"><dt class="text-ink3 text-[12.5px]">쇼핑 방식</dt><dd class="font-bold mt-1">'+p.shop+'</dd></div></dl>'+
+      '<ol class="mt-6 grid grid-cols-3 gap-2">'+p.steps.map(function(st){return '<li class="rounded-xl border border-line p-3"><p class="en font-black text-[22px] num">'+st[0]+'</p><p class="text-[13.5px] text-ink2 mt-1">'+st[1]+'</p></li>'}).join('')+'</ol>'+
+      '<blockquote class="mt-6 border-l-4 border-blue pl-4"><p class="font-bold">'+p.rv[0]+'</p><p class="text-[12.5px] text-ink3 mt-1">'+p.rv[1]+' · 리뷰 원문 요약</p></blockquote></div>'+
+      '<button class="pcard min-w-0 text-left rounded-2xl bg-blue-deep text-white p-6 md:p-8 flex flex-col" data-set="'+p.set+'" aria-haspopup="dialog">'+
+      '<span class="eyebrow text-[#C5D7A4]">이 사람을 위한 무신사 단독 구성</span><span class="mt-2 text-[26px] font-black">'+s.name+'</span>'+
+      '<span class="mt-5 grid grid-cols-3 gap-2">'+s.imgs.map(function(m){return '<span class="relative block rounded-lg bg-white aspect-square"><img src="img/cut/'+m+'.png" alt="" class="absolute inset-0 m-auto h-[80%] w-auto"></span>'}).join('')+'</span>'+
+      '<span class="mt-5 wide text-[40px] num">'+won(s.price||s.bundle[0])+'<span class="text-[.4em] ml-1">원'+(s.price?'':'~')+'</span></span>'+
+      '<span class="text-[14px] text-[#D2DFB8]">'+s.when+'</span><span class="mt-auto pt-6 text-[13.5px] font-bold">가격 계산 보기 +</span></button>';
+  }
+  tabs.forEach(function(t,i){
+    t.addEventListener('click',function(){showP(i)});
+    t.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();showP((i+(e.key==='ArrowRight'?1:2))%3,true)}});
+  });
+  panel.addEventListener('click',function(e){var b=e.target.closest('[data-set]');if(b)document.querySelector('#sets [data-set="'+b.dataset.set+'"]').click()});
+
+  /* 시뮬레이션 */
+  var st={deal:'A',campaign:true,ad:true,seed:true,sets:true,mix:40};
+  var BASE=1700,SINGLE=30000,SETAVG=54700,RATE=250/1700;
+  var CUT={campaign:.25,ad:.15,seed:.10,sets:.10};
+  function render(){
+    var f=1;['campaign','ad','seed','sets'].forEach(function(k){if(!st[k])f*=(1-CUT[k])});
+    var orders=Math.round(BASE*f/10)*10;
+    var share=st.sets?st.mix/100:0;
+    var aov=Math.round(SINGLE*(1-share)+SETAVG*share);
+    var gmv=Math.round(orders*aov/10000);
+    var rev=(st.seed?50:0)+Math.round(orders*RATE/10)*10;
+    document.getElementById('oOrders').textContent=won(orders);
+    document.getElementById('oGmv').textContent=won(gmv);
+    document.getElementById('oRev').textContent=won(rev);
+    document.getElementById('oAov').textContent=won(aov);
+    var pct=Math.round(orders/BASE*100);
+    document.getElementById('oPct').textContent=pct+'%';
+    document.getElementById('oBar').style.width=pct+'%';
+    var all=st.campaign&&st.ad&&st.seed&&st.sets;
+    document.getElementById('simTag').textContent=all?'기준안':'조건 변경됨';
+    document.getElementById('oMus').textContent=st.deal==='A'?'재고 부담 없음 (위탁). 기획전 편입과 단독 상품 표기를 요청드립니다.':'단독 세트를 매입하시면 공급률 [협의]로 화답하고, 단독 운영 기간 [__개월]을 보장합니다.';
+    document.getElementById('oWeek').textContent=st.seed?'체험단 리뷰 30건이 보이는 상태로 오픈합니다.':'리뷰 0건으로 오픈합니다. 첫 구매 리뷰가 쌓일 때까지 2–3주가 걸립니다.';
+    document.getElementById('mixV').textContent=(st.sets?st.mix:0)+'%';
+    document.getElementById('mix').disabled=!st.sets;
+    [].forEach.call(document.querySelectorAll('.deal'),function(b){var on=b.dataset.d===st.deal;b.setAttribute('aria-checked',on?'true':'false');b.style.borderColor=on?'var(--blue)':'var(--line)';b.style.background=on?'var(--blue-soft)':'var(--paper)'});
+  }
+  [].forEach.call(document.querySelectorAll('.tg'),function(b){b.addEventListener('click',function(){var k=b.dataset.k;st[k]=!st[k];b.setAttribute('aria-checked',st[k]?'true':'false');render()})});
+  [].forEach.call(document.querySelectorAll('.deal'),function(b){b.addEventListener('click',function(){st.deal=b.dataset.d;render()})});
+  document.getElementById('mix').addEventListener('input',function(e){st.mix=+e.target.value;render()});
+
+  /* 내비 강조 */
+  var links=[].slice.call(document.querySelectorAll('.navlink'));
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){links.forEach(function(l){l.classList.toggle('on',l.getAttribute('href')==='#'+en.target.id)})}})},{rootMargin:'-45% 0px -50% 0px'});
+    ['why','products','persona','only','sim','deal'].forEach(function(id){var el=document.getElementById(id);if(el)io.observe(el)});
+  }
+
+  setHour(2);showP(0);render();
+})();
+</script>
