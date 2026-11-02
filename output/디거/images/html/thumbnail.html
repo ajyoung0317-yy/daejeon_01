@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root {
+    --ink: #1f2328; --muted: #6b7280;
+    --accent: #0b8a5f; --label: #6ee7b7;
+    --mono: "Cascadia Code", Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #111; font-family: "Pretendard", "Malgun Gothic", sans-serif; }
+
+  /* ===== 대표 이미지: 1080x1080 고정, 글씨 영역은 화면의 25% 이하 ===== */
+  .canvas { position: relative; width: 1080px; height: 1080px; overflow: hidden;
+    /* 공식 배포 이미지가 있으면 background-image: url('../source/파일.jpg') 로 바꾼다 */
+    background: radial-gradient(120% 90% at 30% 20%, #2f4a43 0%, #16211f 55%, #0c1110 100%);
+    background-size: cover; background-position: center; }
+  .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,.72) 100%); }
+  .deco { position: absolute; top: 108px; left: 108px; right: 108px; font: 26px/1.7 var(--mono); color: rgba(255,255,255,.28); }
+  .copy { position: absolute; left: 108px; right: 108px; bottom: 112px; }
+  .tag { display: inline-block; padding: 8px 20px; border-radius: 999px; background: var(--label); color: #064e3b; font-size: 26px; font-weight: 800; }
+  .line { margin-top: 18px; color: #fff; font-size: 66px; font-weight: 900; line-height: 1.22; letter-spacing: -1.5px; word-break: keep-all;
+    -webkit-text-stroke: 2px rgba(0,0,0,.35); paint-order: stroke fill; }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="deco">&gt; movie.play("디거")<br>&gt; release: 2026-10</div>
+  <div class="shade"></div>
+  <div class="copy">
+    <span class="tag">영화 리뷰</span>
+    <div class="line">톰 크루즈 × 이냐리투<br>호불호 갈린 작품 🍿</div>
+  </div>
+</div>
+</body>
+</html>
