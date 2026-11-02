@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  /* ===== 공통 토큰 (모든 템플릿 동일) ===== */
+  :root {
+    --page: #f4f6f5; --paper: #ffffff; --bar: #dff5ec;
+    --ink: #1f2328; --muted: #6b7280; --line: #e6e8eb;
+    --accent: #0b8a5f; --accent-2: #0a7d8c; --accent-soft: #eef8f3;
+    --mono: "Cascadia Code", Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--page); font-family: "Pretendard", "Malgun Gothic", sans-serif; color: var(--ink); }
+  .canvas { width: 860px; padding: 36px; background: var(--page); }
+  .window { background: var(--paper); border-radius: 14px; box-shadow: 0 6px 20px rgba(0,0,0,.08); overflow: hidden; }
+  .bar { height: 34px; background: var(--bar); display: flex; align-items: center; gap: 8px; padding: 0 14px; }
+  .bar i { width: 12px; height: 12px; border-radius: 50%; display: block; }
+  .bar i:nth-child(1) { background: #ff6159; } .bar i:nth-child(2) { background: #ffbd2e; } .bar i:nth-child(3) { background: #28c941; }
+  .bar span { margin-left: 10px; font: 13px var(--mono); color: var(--muted); }
+
+  /* ===== 인용/강조 박스 ===== */
+  .quote { padding: 44px 56px 42px; text-align: center; }
+  .mark { font: 800 64px/1 Georgia, serif; color: var(--accent); height: 40px; }
+  .text { margin-top: 10px; font-size: 32px; font-weight: 800; line-height: 1.45; letter-spacing: -0.5px; word-break: keep-all; }
+  .text em { font-style: normal; color: var(--accent); }
+  .who { margin-top: 20px; font-size: 16px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="window">
+    <div class="bar"><i></i><i></i><i></i><span>quote.md</span></div>
+    <div class="quote">
+      <div class="mark">“</div>
+      <p class="text">이런 때일수록<br>우리의 삶을 지탱하는 것은 <em>사랑</em></p>
+      <p class="who">— 이창동 감독, 주간경향 인터뷰</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>
