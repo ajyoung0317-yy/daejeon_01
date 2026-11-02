@@ -136,4 +136,6 @@ def main(args):
 
 
 if __name__ == "__main__":
+    # Windows 콘솔(cp949)에서 ✍️ 같은 문자를 출력하다 멈추지 않도록 UTF-8로 내보낸다
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     main(sys.argv[1:])
