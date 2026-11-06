@@ -1,0 +1,810 @@
+<title>제로이드 × 무신사 뷰티</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: 무신사식 흑백 에디토리얼. 굵은 영문 워드마크 + 헤어라인 그리드 + 스토어 상품 리스트형 카드, 제로이드 올리브 그린은 포인트로만 */
+:root{
+  --paper:#FFFFFF; --ink:#000000; --ink-2:#3B3B3B; --ink-3:#8A8A8A;
+  --gray:#F2F2F2; --gray-2:#E6E6E6; --hair:#E0E0E0;
+  --green:#5A7A26; --green-soft:#EEF3E3;
+  --f-en:'Archivo', 'Arial Black', 'Helvetica Neue', sans-serif;
+  --f-ko:'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0B0B0B; --ink:#F4F4F4; --ink-2:#CFCFCF; --ink-3:#8E8E8E;
+  --gray:#171717; --gray-2:#222222; --hair:#2B2B2B;
+  --green:#A7C76B; --green-soft:#1C2414; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --paper:#0B0B0B; --ink:#F4F4F4; --ink-2:#CFCFCF; --ink-3:#8E8E8E;
+  --gray:#171717; --gray-2:#222222; --hair:#2B2B2B;
+  --green:#A7C76B; --green-soft:#1C2414; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-ko);font-size:16px;line-height:1.65;word-break:keep-all;overflow-wrap:anywhere;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+h1,h2,h3,h4,h5{margin:0;line-height:1.25;text-wrap:balance}
+p{margin:0}
+a{color:inherit}
+.en{font-family:var(--f-en)}
+.note{font-size:12px;color:var(--ink-3)}
+.tag{display:inline-block;font-family:var(--f-en);font-size:11px;font-weight:800;letter-spacing:.04em;padding:3px 7px;background:var(--ink);color:var(--paper);line-height:1.2}
+.tag.g{background:var(--green);color:var(--paper)}
+.tag.o{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+
+/* store bar + ticker */
+.bar{background:#000;color:#FFF}
+.bar .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:12px;font-family:var(--f-en);font-weight:800;font-size:13px;letter-spacing:.06em}
+.bar .mid{color:#9A9A9A;font-weight:600}
+.ticker{border-block:1px solid var(--ink);overflow:hidden;white-space:nowrap}
+.ticker .track{display:inline-flex;gap:40px;padding-block:10px;font-family:var(--f-en);font-weight:800;font-stretch:80%;font-size:15px;letter-spacing:.04em}
+.ticker .track span::after{content:"✳";margin-left:40px;color:var(--green)}
+@media (prefers-reduced-motion:no-preference){.ticker .track{animation:tick 38s linear infinite}@keyframes tick{to{transform:translateX(-50%)}}}
+
+/* cover */
+.cover{padding-block:28px 56px}
+.wordmark{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;border-bottom:2px solid var(--ink);padding-bottom:10px}
+.wordmark h1{font-family:var(--f-en);font-weight:900;font-stretch:125%;font-size:clamp(52px,12.6vw,188px);line-height:.82;letter-spacing:-.03em;white-space:nowrap}
+.wordmark .x{flex:none;font-family:var(--f-en);font-weight:800;font-size:clamp(14px,1.6vw,20px);text-align:right;line-height:1.3;padding-bottom:8px}
+.wordmark .x b{display:block;font-weight:900;font-stretch:80%;font-size:clamp(22px,3vw,40px);letter-spacing:-.01em}
+.cover-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:40px;margin-top:28px;align-items:stretch}
+.hero-shot{background:var(--gray);position:relative;display:flex;align-items:flex-end;justify-content:center;gap:clamp(10px,3vw,40px);padding:56px 24px 40px;min-height:460px}
+.hero-shot img{display:block;width:auto;max-width:none;height:250px;filter:drop-shadow(0 18px 16px rgba(0,0,0,.12))}
+.hero-shot .mid{height:330px}
+.hero-shot .lbl{position:absolute;top:16px;left:16px;display:flex;gap:6px}
+.hero-shot .cap{position:absolute;bottom:14px;right:16px;font-family:var(--f-en);font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--ink-3)}
+.cover-copy{display:flex;flex-direction:column;justify-content:space-between;gap:28px}
+.cover-copy h2{font-weight:900;font-size:clamp(34px,4.6vw,60px);letter-spacing:-.045em;line-height:1.12}
+.cover-copy h2 em{font-style:normal;color:var(--green)}
+.cover-copy .sub{font-size:17px;color:var(--ink-2);margin-top:18px;max-width:34ch}
+.spec{border-top:2px solid var(--ink);margin:0}
+.spec div{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--hair);font-size:14px}
+.spec dt{font-family:var(--f-en);font-weight:800;font-size:12px;letter-spacing:.06em;padding-top:2px}
+.spec dd{margin:0;color:var(--ink-2)}
+
+/* section scaffold */
+.sec{padding-block:72px;border-top:2px solid var(--ink)}
+.sec-head{display:grid;grid-template-columns:120px 1fr minmax(0,.9fr);gap:24px;margin-bottom:40px;align-items:start}
+.sec-head .no{font-family:var(--f-en);font-weight:900;font-size:56px;line-height:.9;letter-spacing:-.04em}
+.sec-head .t .en{display:block;font-weight:900;font-stretch:75%;font-size:clamp(40px,6vw,76px);line-height:.9;letter-spacing:-.02em;text-transform:uppercase}
+.sec-head .t h2{font-size:clamp(20px,2.2vw,26px);font-weight:900;letter-spacing:-.03em;margin-top:12px}
+.sec-head .t h2 em{font-style:normal;color:var(--green)}
+.sec-head .lead{font-size:16px;color:var(--ink-2);padding-top:6px}
+
+/* index */
+.index{border-top:2px solid var(--ink)}
+.index a{display:grid;grid-template-columns:80px 1fr auto;gap:16px;align-items:baseline;padding:14px 0;border-bottom:1px solid var(--hair);text-decoration:none}
+.index a:hover .k,.index a:focus-visible .k{color:var(--green)}
+.index a:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.index .n{font-family:var(--f-en);font-weight:900;font-size:22px}
+.index .k{font-family:var(--f-en);font-weight:900;font-stretch:75%;font-size:clamp(26px,3.4vw,40px);line-height:1;text-transform:uppercase;letter-spacing:-.01em}
+.index .k small{font-family:var(--f-ko);font-size:15px;font-weight:700;font-stretch:100%;letter-spacing:0;margin-left:14px;color:var(--ink-2);text-transform:none}
+.index .arr{font-family:var(--f-en);font-weight:800}
+
+/* columns with hairlines */
+.cols{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--ink)}
+.cols > div{padding:22px 20px 22px 0;border-right:1px solid var(--hair);display:flex;flex-direction:column;gap:8px;min-width:0}
+.cols > div + div{padding-left:20px}
+.cols > div:last-child{border-right:none}
+.cols .k{font-family:var(--f-en);font-weight:800;font-size:12px;letter-spacing:.08em;color:var(--green)}
+.cols b{font-size:18px;font-weight:900;letter-spacing:-.02em}
+.cols p{font-size:14px;color:var(--ink-2)}
+.facts-row{display:flex;flex-wrap:wrap;gap:6px 24px;margin-top:20px;font-size:13px;color:var(--ink-3)}
+
+/* history */
+.years{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--ink)}
+.years > div{padding:20px 16px 24px 0;border-bottom:1px solid var(--hair);display:flex;flex-direction:column;gap:6px}
+.years .y{font-family:var(--f-en);font-weight:900;font-size:44px;line-height:1;letter-spacing:-.03em}
+.years .hi .y{color:var(--green)}
+.years p{font-size:14px;color:var(--ink-2)}
+
+/* science */
+.sci{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1px solid var(--ink)}
+.sci > div{padding:22px 20px 22px 0;display:flex;flex-direction:column;gap:10px}
+.sci > div + div{padding-left:20px;border-left:1px solid var(--hair)}
+.sci .k{font-family:var(--f-en);font-weight:800;font-size:12px;letter-spacing:.08em;color:var(--green)}
+.sci h3{font-size:20px;font-weight:900;letter-spacing:-.02em}
+.sci p{font-size:14px;color:var(--ink-2)}
+.flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:28px;border:1px solid var(--ink)}
+.flow > div{padding:20px;display:flex;flex-direction:column;gap:6px}
+.flow > div + div{border-left:1px solid var(--ink)}
+.flow > div.on{background:var(--ink);color:var(--paper)}
+.flow > div.on p{color:var(--paper);opacity:.8}
+.flow .n{font-family:var(--f-en);font-weight:900;font-size:13px;letter-spacing:.06em}
+.flow b{font-size:17px;font-weight:900}
+.flow p{font-size:14px;color:var(--ink-2)}
+.micro{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:28px}
+.micro figure{margin:0;display:flex;flex-direction:column;gap:8px}
+.micro .pair{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:#000}
+.micro img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
+.micro .lbl{display:grid;grid-template-columns:1fr 1fr;font-family:var(--f-en);font-size:11px;font-weight:800;letter-spacing:.06em}
+.micro figcaption{font-size:13px;color:var(--ink-2)}
+.free{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.free span{font-size:13px;font-weight:700;padding:6px 12px;box-shadow:inset 0 0 0 1px var(--ink)}
+.free span s{text-decoration-thickness:1px}
+
+/* products (store list) */
+.plist{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:32px 16px}
+.pd{display:flex;flex-direction:column;gap:10px;min-width:0}
+.pd .ph,.kit .ph,.rv header .ph,.set .thumbs div{position:relative;overflow:hidden}
+.pd .ph img,.kit .ph img,.rv header .ph img,.set .thumbs img{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);height:78%;width:auto;max-width:88%;object-fit:contain}
+.pd .ph{background:var(--gray);aspect-ratio:1}
+.pd .ph img{filter:drop-shadow(0 12px 10px rgba(0,0,0,.10))}
+.pd .ph .tags{position:absolute;top:10px;left:10px;display:flex;gap:4px}
+.pd .rank{position:absolute;bottom:10px;left:12px;font-family:var(--f-en);font-weight:900;font-size:28px;line-height:1}
+.pd .brand{font-family:var(--f-en);font-weight:900;font-size:13px;letter-spacing:.02em}
+.pd strong{font-size:15px;font-weight:700;line-height:1.4}
+.pd p{font-size:13px;color:var(--ink-2);line-height:1.5}
+.pd .why{font-size:13px;font-weight:700;color:var(--green)}
+.pd .rc{font-size:12px;color:var(--ink-3)}
+.pd .rc b{color:var(--ink)}
+.lineup{margin-top:44px;border-top:1px solid var(--ink)}
+.lineup div{display:grid;grid-template-columns:140px 180px 1fr;gap:16px;padding:12px 0;border-bottom:1px solid var(--hair);font-size:14px;align-items:baseline}
+.lineup b{font-family:var(--f-en);font-weight:900;font-size:15px}
+.lineup span{font-weight:700}
+.lineup p{color:var(--ink-2)}
+
+/* review data */
+.big{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--ink);margin-bottom:40px}
+.big > div{padding:20px 16px 20px 0;display:flex;flex-direction:column;gap:4px}
+.big > div + div{padding-left:16px;border-left:1px solid var(--hair)}
+.big b{font-family:var(--f-en);font-weight:900;font-size:clamp(44px,5vw,64px);line-height:1;letter-spacing:-.04em}
+.big span{font-size:13px;color:var(--ink-2)}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:48px}
+.two h3{font-size:15px;font-weight:900;margin-bottom:14px}
+.bars{display:flex;flex-direction:column;gap:9px}
+.barr{display:grid;grid-template-columns:150px 1fr 40px;gap:12px;align-items:center;font-size:13px}
+.barr .track{height:8px;background:var(--gray-2)}
+.barr .fill{height:100%;background:var(--ink)}
+.barr .fill.g{background:var(--green)}
+.barr .v{font-family:var(--f-en);font-weight:800;text-align:right}
+.barr .k{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* black band */
+.black{background:#000;color:#FFF;border-top:none}
+.black .sec-head .lead{color:#BDBDBD}
+.black .sec-head .t h2 em{color:#A7C76B}
+.quotes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid #FFF}
+.quotes > div{padding:22px 18px 22px 0;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
+.quotes > div + div{padding-left:18px;border-left:1px solid #333}
+.quotes p{font-size:15px;line-height:1.6}
+.quotes p::before{content:"“";display:block;font-family:var(--f-en);font-weight:900;font-size:40px;line-height:.8;color:#A7C76B}
+.quotes .src{font-size:12px;color:#8E8E8E;font-weight:700}
+.statement{margin-top:40px;font-weight:900;font-size:clamp(24px,3.2vw,40px);letter-spacing:-.04em;line-height:1.25}
+.statement em{font-style:normal;color:#A7C76B}
+
+/* personas */
+.moments{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--ink);margin-bottom:36px}
+.moments > div{padding:18px 16px 18px 0;display:flex;flex-direction:column;gap:4px}
+.moments > div + div{padding-left:16px;border-left:1px solid var(--hair)}
+.moments b{font-family:var(--f-en);font-weight:900;font-size:34px;line-height:1;letter-spacing:-.03em}
+.moments p{font-size:14px;color:var(--ink-2)}
+.tabs{display:flex;gap:28px;overflow-x:auto;border-bottom:1px solid var(--hair);margin-bottom:32px}
+.tab{flex:none;font:inherit;font-size:16px;font-weight:700;background:none;border:0;border-bottom:3px solid transparent;color:var(--ink-3);padding:10px 0 12px;cursor:pointer;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.tab:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.persona{display:flex;flex-direction:column;gap:40px}
+.profile{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:40px}
+.who{display:flex;flex-direction:column;gap:14px}
+.who h3{font-size:clamp(28px,3.4vw,42px);font-weight:900;letter-spacing:-.045em;line-height:1.2}
+.who .name{font-size:15px;font-weight:700;color:var(--ink-2)}
+.kit{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:8px}
+.kit figure{margin:0;display:flex;flex-direction:column;gap:6px}
+.kit .ph{background:var(--gray);aspect-ratio:1;display:grid;place-items:center}
+.kit img{height:80%;width:auto;max-width:88%;object-fit:contain}
+.kit figcaption{font-size:12px;font-weight:700;line-height:1.35}
+.facts{border-top:2px solid var(--ink);margin:0}
+.facts div{display:grid;grid-template-columns:96px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--hair);font-size:14px}
+.facts dt{font-weight:900}
+.facts dd{margin:0;color:var(--ink-2)}
+.journey{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid var(--ink)}
+.step{padding:18px 14px 18px 0;display:flex;flex-direction:column;gap:8px;min-width:0}
+.step + .step{padding-left:14px;border-left:1px solid var(--hair)}
+.step .when{font-family:var(--f-en);font-weight:900;font-size:22px;line-height:1;letter-spacing:-.02em}
+.step .when small{display:block;font-family:var(--f-ko);font-size:12px;font-weight:700;color:var(--ink-3);letter-spacing:0;margin-top:4px}
+.step.peak{background:var(--green-soft)}
+.step.peak .when{color:var(--green)}
+.step h4{font-size:15px;font-weight:900}
+.step .pain{font-size:13px;color:var(--ink-2)}
+.step .fix{font-size:13px;font-weight:700;border-top:1px solid var(--ink);padding-top:8px}
+.step .feel{font-size:13px;font-weight:700;color:var(--green)}
+.reviews{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border-top:1px solid var(--ink)}
+.rv{padding:24px 24px 24px 0;display:flex;flex-direction:column;gap:12px;min-width:0}
+.rv + .rv{padding-left:24px;padding-right:0;border-left:1px solid var(--hair)}
+.rv header{display:grid;grid-template-columns:64px 1fr;gap:14px;align-items:center}
+.rv header .ph{background:var(--gray);aspect-ratio:1;display:grid;place-items:center}
+.rv header img{height:80%;width:auto;max-width:88%;object-fit:contain}
+.rv header strong{display:block;font-size:14px;font-weight:700}
+.stars{font-size:13px;letter-spacing:1px}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.chips span{font-size:11px;font-weight:700;background:var(--gray-2);padding:2px 8px}
+.rv h5{font-size:18px;font-weight:900;letter-spacing:-.03em;line-height:1.4}
+.part{display:grid;grid-template-columns:56px 1fr;gap:10px;font-size:14px;color:var(--ink-2)}
+.part > span{font-size:11px;font-weight:900;color:var(--ink);padding-top:2px}
+.rv .md{font-size:13px;background:var(--gray);padding:12px 14px}
+.rv .md b{color:var(--green)}
+
+/* proposal */
+.sets{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.set{display:flex;flex-direction:column;gap:12px;border-top:2px solid var(--ink);padding-top:14px}
+.set .no{font-family:var(--f-en);font-weight:900;font-size:13px;letter-spacing:.06em;color:var(--green)}
+.set strong{font-size:18px;font-weight:900;letter-spacing:-.03em}
+.set .thumbs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+.set .thumbs div{background:var(--gray);aspect-ratio:1;display:grid;place-items:center}
+.set .thumbs img{height:78%;width:auto;max-width:86%;object-fit:contain}
+.set p{font-size:13px;color:var(--ink-2)}
+.set .price{font-family:var(--f-en);font-weight:900;font-size:20px}
+.ops{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--ink);margin-top:48px}
+.ops > div{padding:20px 16px 20px 0;display:flex;flex-direction:column;gap:6px}
+.ops > div + div{padding-left:16px;border-left:1px solid var(--hair)}
+.ops .k{font-family:var(--f-en);font-weight:900;font-size:12px;letter-spacing:.08em;color:var(--green)}
+.ops b{font-size:16px;font-weight:900}
+.ops p{font-size:13px;color:var(--ink-2)}
+.check{list-style:none;margin:0;padding:0;border-top:1px solid var(--ink);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:32px;counter-reset:c}
+.check li{counter-increment:c;display:grid;grid-template-columns:40px 1fr;gap:8px;padding:12px 0;border-bottom:1px solid var(--hair);font-size:14px}
+.check li::before{content:counter(c,decimal-leading-zero);font-family:var(--f-en);font-weight:900}
+footer{background:#000;color:#FFF;padding-block:40px}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;align-items:flex-end}
+footer .wm{font-family:var(--f-en);font-weight:900;font-stretch:125%;font-size:clamp(40px,8vw,96px);line-height:.85;letter-spacing:-.03em}
+footer p{font-size:12px;color:#9A9A9A;max-width:60ch}
+
+@media (max-width:960px){
+  .cover-grid,.profile,.two{grid-template-columns:1fr}
+  .sec-head{grid-template-columns:1fr;gap:10px}
+  .sec-head .no{font-size:36px}
+  .cols,.years,.big,.ops,.quotes,.sets{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cols > div:nth-child(3),.big > div:nth-child(3),.ops > div:nth-child(3),.quotes > div:nth-child(3){padding-left:0;border-left:none}
+  .cols > div{border-right:none;border-bottom:1px solid var(--hair)}
+  .plist{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sci,.flow,.micro,.moments,.reviews,.check{grid-template-columns:1fr}
+  .sci > div + div,.moments > div + div{padding-left:0;border-left:none;border-top:1px solid var(--hair)}
+  .flow > div + div{border-left:none;border-top:1px solid var(--ink)}
+  .rv + .rv{padding-left:0;border-left:none;border-top:1px solid var(--hair)}
+  .rv{padding-right:0}
+  .journey{grid-template-columns:1fr}
+  .step + .step{padding-left:0;border-left:none;border-top:1px solid var(--hair)}
+  .step.peak{padding-left:12px}
+  .lineup div{grid-template-columns:110px 1fr}
+  .lineup p{grid-column:1 / -1}
+  .hero-shot{min-height:360px}
+  .hero-shot img{height:190px}
+  .hero-shot .mid{height:250px}
+}
+@media (max-width:520px){
+  .cols,.years,.big,.ops,.quotes,.sets{grid-template-columns:1fr}
+  .big > div + div,.ops > div + div,.quotes > div + div{padding-left:0;border-left:none;border-top:1px solid var(--hair)}
+  .quotes > div + div{border-top-color:#333}
+  .hero-shot{min-height:280px;padding:44px 12px 32px}
+  .hero-shot img{height:130px}
+  .hero-shot .mid{height:175px}
+  .barr{grid-template-columns:104px 1fr 34px}
+  .index .k small{display:block;margin:6px 0 0}
+  .bar .mid{display:none}
+  .wordmark{flex-direction:column;align-items:flex-start}
+  .wordmark h1{font-size:clamp(48px,19vw,96px)}
+  .wordmark .x{text-align:left}
+  .spec div{grid-template-columns:96px 1fr}
+}
+</style>
+
+<div class="bar"><div class="wrap"><span>MUSINSA BEAUTY</span><span class="mid">BRAND ENTRY PROPOSAL</span><span>2026 WINTER</span></div></div>
+
+<header class="cover">
+  <div class="wrap">
+    <div class="wordmark">
+      <h1>ZEROID</h1>
+      <p class="x">× <b>MUSINSA BEAUTY</b></p>
+    </div>
+    <div class="cover-grid">
+      <div class="hero-shot">
+        <div class="lbl"><span class="tag">BEST</span><span class="tag g">WINTER PICK</span></div>
+        <img src="img/cut/so-cream.png" alt="제로이드 수딩 크림">
+        <img class="mid" src="img/cut/in-mist.png" alt="제로이드 인텐시브 크림 미스트">
+        <img src="img/cut/in-cream.png" alt="제로이드 인텐시브 크림">
+        <span class="cap">SOOTHING CREAM / INTENSIVE CREAM MIST / INTENSIVE CREAM</span>
+      </div>
+      <div class="cover-copy">
+        <div>
+          <h2>출근부터 퇴근까지,<br><em>직장인 피부</em>엔<br>제로이드</h2>
+          <p class="sub">병·의원에서 먼저 찾던 피부장벽 보습 브랜드. 히터 아래 하루 9시간을 보내는 2030 직장인에게 제로이드를 소개합니다.</p>
+        </div>
+        <dl class="spec">
+          <div><dt>BRAND</dt><dd>제로이드 ZEROID</dd></div>
+          <div><dt>COMPANY</dt><dd>(주)네오팜 · 대표 김양수</dd></div>
+          <div><dt>SINCE</dt><dd>2002 · 전국 병·의원 유통 · 해외 12개국 수출</dd></div>
+          <div><dt>CATEGORY</dt><dd>더마 스킨케어 · 장벽 보습 · 6개 라인 31종</dd></div>
+          <div><dt>CONTACT</dt><dd>[담당자명] · [연락처] · [이메일]</dd></div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="ticker" aria-hidden="true"><div class="track">
+  <span>BARRIER CARE FROM 9 TO 6</span><span>MLE® MULTI LAMELLAR EMULSION</span><span>DEFENSAMIDE™</span><span>10 FREE</span><span>SINCE 2002</span><span>4.90 / 429 REVIEWS</span>
+  <span>BARRIER CARE FROM 9 TO 6</span><span>MLE® MULTI LAMELLAR EMULSION</span><span>DEFENSAMIDE™</span><span>10 FREE</span><span>SINCE 2002</span><span>4.90 / 429 REVIEWS</span>
+</div></div>
+
+<main>
+<section class="sec" style="border-top:none">
+  <div class="wrap">
+    <nav class="index" aria-label="목차">
+      <a href="#brand"><span class="n">01</span><span class="k">Brand<small>브랜드 소개</small></span><span class="arr">→</span></a>
+      <a href="#history"><span class="n">02</span><span class="k">History<small>연혁</small></span><span class="arr">→</span></a>
+      <a href="#science"><span class="n">03</span><span class="k">Science<small>피부과학</small></span><span class="arr">→</span></a>
+      <a href="#products"><span class="n">04</span><span class="k">Products<small>대표 제품 8</small></span><span class="arr">→</span></a>
+      <a href="#reviews"><span class="n">05</span><span class="k">Reviews<small>고객 리뷰 429</small></span><span class="arr">→</span></a>
+      <a href="#why"><span class="n">06</span><span class="k">Why Musinsa<small>입점 이유</small></span><span class="arr">→</span></a>
+      <a href="#personas"><span class="n">07</span><span class="k">9 to 6 Persona<small>직장인 퍼소나</small></span><span class="arr">→</span></a>
+      <a href="#proposal"><span class="n">08</span><span class="k">Proposal<small>입점 제안</small></span><span class="arr">→</span></a>
+    </nav>
+  </div>
+</section>
+
+<section class="sec" id="brand">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="no">01</span>
+      <div class="t"><span class="en">Brand</span><h2>건강한 피부과학 솔루션, <em>제로이드</em></h2></div>
+      <p class="lead">각종 피부 고민으로 병원을 찾는 사람들의 바람에서 출발해, 전문가의 노하우와 연구원의 도전으로 만든 메디컬 스킨케어 브랜드입니다.</p>
+    </div>
+    <div class="cols">
+      <div><span class="k">TECHNOLOGY</span><b>네오팜 독자 장벽 기술</b><p>피부 지질 구조를 재현한 MLE® 작용 시스템</p></div>
+      <div><span class="k">CONFIDENCE</span><b>전 제품 자극 테스트</b><p>색소·향료·파라벤 등 10가지 성분 무첨가</p></div>
+      <div><span class="k">DIVERSITY</span><b>피부 고민별 6개 라인</b><p>악건성부터 지성 트러블, 두피, 선케어까지</p></div>
+      <div><span class="k">TRUST</span><b>병·의원에서 쌓은 신뢰</b><p>전국 병·의원에서 만날 수 있는 브랜드</p></div>
+    </div>
+    <div class="facts-row"><span>운영사 (주)네오팜</span><span>대전광역시 테크노2로 309-8</span><span>패밀리 브랜드 아토팜 · 리얼베리어 · 더마비</span></div>
+  </div>
+</section>
+
+<section class="sec" id="history">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="no">02</span>
+      <div class="t"><span class="en">History</span><h2>한 가지 연구를 이어 온 <em>24년</em></h2></div>
+      <p class="lead">브랜드 런칭부터 혁신 성분 수상, 의료기기 인증, 해외 수출까지.</p>
+    </div>
+    <div class="years">
+      <div><span class="y">2002</span><p>제로이드 브랜드 런칭</p></div>
+      <div><span class="y">2009</span><p>수딩 라인 리뉴얼</p></div>
+      <div><span class="y">2010</span><p>인텐시브 라인 출시, 싱가포르·인도네시아 수출</p></div>
+      <div class="hi"><span class="y">2011</span><p>디펜사마이드™ 인코스메틱스 혁신 성분상 은상</p></div>
+      <div><span class="y">2012</span><p>더마뉴얼 라인 출시</p></div>
+      <div class="hi"><span class="y">2014</span><p>핌프로브 라인 출시, MD 의료기기 인증</p></div>
+      <div><span class="y">2019</span><p>루트힐 두피 라인 출시</p></div>
+      <div><span class="y">2020</span><p>미국 등 해외 12개국 수출</p></div>
+    </div>
+    <p class="note" style="margin-top:16px">[2020년 이후 연혁: 선케어 라인, 크림 미스트·크림 마스크 등 신제품 출시 시점 담당자 확인 후 추가]</p>
+  </div>
+</section>
+
+<section class="sec" id="science">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="no">03</span>
+      <div class="t"><span class="en">Science</span><h2>수분을 <em>붙잡는 장벽</em>부터 채웁니다</h2></div>
+      <p class="lead">히터 바람은 피부 속 수분을 빼앗습니다. 제로이드는 수분을 덧바르는 대신, 수분이 빠져나가지 않도록 피부장벽 구조 자체를 채우는 방식으로 접근합니다.</p>
+    </div>
+    <div class="sci">
+      <div><span class="k">SKIN BARRIER</span><h3>피부장벽</h3><p>각질층에서 각질세포와 지질(세라마이드·콜레스테롤·지방산)이 다중층상구조를 이루어 수분을 지키고 외부 자극을 막습니다. 장벽이 손상되면 건조하고 민감한 피부가 됩니다.</p></div>
+      <div><span class="k">MLE®</span><h3>다중층상 라멜라 제형</h3><p>네오팜 독자 기술 세라마이드-9S로 건강한 피부의 다중층상구조를 동일하게 재현했습니다. 장벽을 강화해 건조하고 민감한 피부의 보호·보습 기능 강화에 도움을 줍니다.</p></div>
+      <div><span class="k">DEFENSAMIDE™</span><h3>디펜사마이드™</h3><p>장벽이 약해지면 떨어지는 피부 방어력을 강화합니다. 2011년 세계 최대 화장품 원료 박람회 인코스메틱스 혁신 성분상 은상.</p></div>
+    </div>
+    <div class="flow" aria-label="MLE® 작용 시스템">
+      <div><span class="n">STEP 01</span><b>장벽 약화</b><p>수분이 많이 빠져나가고 외부 물질이 쉽게 침투합니다.</p></div>
+      <div class="on"><span class="n">STEP 02</span><b>MLE® 보충</b><p>피부지질 유사성분 MLE®가 피부장벽을 튼튼하게 채웁니다.</p></div>
+      <div><span class="n">STEP 03</span><b>장벽 정상화</b><p>적정 수분을 유지하고 외부 오염으로부터 피부를 지킵니다.</p></div>
+    </div>
+    <div class="micro">
+      <figure>
+        <div class="pair"><img src="img/sci-skin-lamellar.png" alt="전자현미경으로 본 피부 지질의 라멜라 구조"><img src="img/sci-mle-lamellar.png" alt="전자현미경으로 본 MLE® 제형의 라멜라 구조"></div>
+        <div class="lbl"><span>SKIN LAMELLAR</span><span>MLE LAMELLAR®</span></div>
+        <figcaption>전자현미경 · 피부 지질과 MLE® 제형이 같은 층상 구조를 보입니다.</figcaption>
+      </figure>
+      <figure>
+        <div class="pair"><img src="img/sci-skin-pol.png" alt="편광현미경으로 본 피부 지질의 몰타크로스"><img src="img/sci-mle-pol.png" alt="편광현미경으로 본 MLE® 제형의 몰타크로스"></div>
+        <div class="lbl"><span>SKIN LAMELLAR</span><span>MLE LAMELLAR®</span></div>
+        <figcaption>편광현미경 · 둘 다 십자형 무늬(몰타크로스)의 액정구조가 나타납니다.</figcaption>
+      </figure>
+    </div>
+    <div style="margin-top:28px">
+      <p style="font-weight:900">10 FREE · 전 제품 피부 자극 테스트 완료</p>
+      <div class="free"><span><s>색소</s></span><span><s>향료</s></span><span><s>에탄올</s></span><span><s>파라벤</s></span><span><s>미네랄오일</s></span><span><s>페녹시에탄올</s></span><span><s>PG</s></span><span><s>벤질알코올</s></span><span><s>BHT</s></span><span><s>트리에탄올아민</s></span></div>
+    </div>
+    <p class="note" style="margin-top:14px">이미지 출처: 제로이드 공식 홈페이지 · 외부 제출 전 사용 승인 필요</p>
+  </div>
+</section>
+
+<section class="sec" id="products">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="no">04</span>
+      <div class="t"><span class="en">Products</span><h2>31개 제품 중 <em>대표 8종</em></h2></div>
+      <p class="lead">제로이드 전 라인의 무신사 뷰티 입점을 제안합니다. 리뷰가 가장 많은 스테디셀러와 이번 겨울 시즌에 앞세울 제품 8종을 골랐습니다.</p>
+    </div>
+    <div class="plist" id="plist"></div>
+    <div class="lineup">
+      <div><b>INTENSIVE</b><span>악건성·문제성 고보습</span><p>크림 · 로션 · 오인트 크림 · 크림 미스트 · 리케닉 크림 · 하이드레이팅 앰플 · 크림 마스크 · 립케어 · SOS 플러스 밤 · 크림 토너 · 페이셜 크림 클렌저</p></div>
+      <div><b>SOOTHING</b><span>건조·민감 저자극</span><p>크림 · 로션 · 포밍 클렌저 · 세럼 마스크 · 시트 마스크 · 젤 크림 · 페미닌 포밍 워시</p></div>
+      <div><b>PIMPROVE</b><span>지성·트러블 진정</span><p>모이스처라이저 · 레드 컨트롤 크림 · 토너 · 젤 클렌저 · 포밍 클렌저 · 카밍 앰플</p></div>
+      <div><b>DERMANEWAL</b><span>피부 관리 후 애프터케어</span><p>클렌징 젤 · 프로텍트 크림 · 리페어 크림 · 비비 크림</p></div>
+      <div><b>SUN CARE</b><span>저자극 무기자차</span><p>데일리 선크림 SPF50+ · 이지워시 마일드 선크림 SPF30</p></div>
+      <div><b>ROOTHEAL</b><span>건조·민감 두피</span><p>마일드 샴푸</p></div>
+    </div>
+    <p class="note" style="margin-top:12px">BEST·NEW는 공식 홈페이지 표기 · 리뷰 수는 홈페이지 기준 · 의료기기(MD) 6종과 써지엔젤 플러스는 병·의원 전용으로 제외</p>
+  </div>
+</section>
+
+<section class="sec" id="reviews">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="no">05</span>
+      <div class="t"><span class="en">Reviews</span><h2>민감한 피부가 <em>오래 정착한</em> 브랜드</h2></div>
+      <p class="lead">공식 홈페이지 리뷰 429건을 모두 읽고 정리했습니다. 평균 별점은 4.90입니다.</p>
+    </div>
+    <div class="big">
+      <div><b>92%</b><span>별점 5점 리뷰</span></div>
+      <div><b>69%</b><span>스스로 ‘민감성’ 피부라고 표기</span></div>
+      <div><b>49%</b><span>피부과·병원에서 처음 만남</span></div>
+      <div><b>52</b><span>‘겨울’을 직접 언급한 리뷰</span></div>
+    </div>
+    <div class="two">
+      <div>
+        <h3>제품별 리뷰 수</h3>
+        <div class="bars">
+          <div class="barr"><span class="k">수딩 크림</span><div class="track"><div class="fill" style="width:100%"></div></div><span class="v">144</span></div>
+          <div class="barr"><span class="k">인텐시브 크림</span><div class="track"><div class="fill" style="width:35.4%"></div></div><span class="v">51</span></div>
+          <div class="barr"><span class="k">수딩 로션</span><div class="track"><div class="fill" style="width:33.3%"></div></div><span class="v">48</span></div>
+          <div class="barr"><span class="k">인텐시브 로션</span><div class="track"><div class="fill" style="width:26.4%"></div></div><span class="v">38</span></div>
+          <div class="barr"><span class="k">인텐시브 오인트 크림</span><div class="track"><div class="fill" style="width:15.3%"></div></div><span class="v">22</span></div>
+          <div class="barr"><span class="k">핌프로브 모이스처라이저</span><div class="track"><div class="fill" style="width:12.5%"></div></div><span class="v">18</span></div>
+          <div class="barr"><span class="k">포밍 클렌저</span><div class="track"><div class="fill" style="width:12.5%"></div></div><span class="v">18</span></div>
+        </div>
+        <p class="note" style="margin-top:10px">의료기기(MD) 리뷰 51건, 기타 제품 약 40건 제외</p>
+      </div>
+      <div>
+        <h3>리뷰에 자주 나온 이야기</h3>
+        <div class="bars">
+          <div class="barr"><span class="k">건조·당김·각질</span><div class="track"><div class="fill g" style="width:100%"></div></div><span class="v">120</span></div>
+          <div class="barr"><span class="k">정착·재구매·몇 년째</span><div class="track"><div class="fill" style="width:75.8%"></div></div><span class="v">91</span></div>
+          <div class="barr"><span class="k">겨울</span><div class="track"><div class="fill g" style="width:43.3%"></div></div><span class="v">52</span></div>
+          <div class="barr"><span class="k">남편·남자친구·아들</span><div class="track"><div class="fill" style="width:25%"></div></div><span class="v">30</span></div>
+          <div class="barr"><span class="k">사무실·회사·출퇴근</span><div class="track"><div class="fill g" style="width:8.3%"></div></div><span class="v">10</span></div>
+        </div>
+        <p class="note" style="margin-top:10px">리뷰 본문 키워드 기준 · 한 리뷰가 여러 항목에 포함될 수 있음 · 초록 막대는 겨울 수분 관련</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec black" id="why">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="no">06</span>
+      <div class="t"><span class="en">Why Musinsa</span><h2>만족하는데, <em>살 곳이 없었습니다</em></h2></div>
+      <p class="lead">“병원 아니면 인터넷뿐”이라는 이야기가 리뷰에 직접 나옵니다.</p>
+    </div>
+    <div class="quotes">
+      <div><p>몇 년째 대체품이 없어 계속 쓰지만, 구매처가 인터넷밖에 없는 점이 아쉽다고 했습니다.</p><span class="src">핌프로브 모이스처라이저 · #16581</span></div>
+      <div><p>피부과를 더 이상 다니지 않아 한 번에 여러 개를 쟁여 둔다며, 다른 곳에서도 쉽게 사고 싶다고 했습니다.</p><span class="src">핌프로브 모이스처라이저 · 4년 사용 · #15440</span></div>
+      <div><p>피부과 아니면 인터넷에서만 살 수 있어 구매를 한참 미뤘다고 썼습니다.</p><span class="src">인텐시브 크림 · #15308</span></div>
+      <div><p>제품은 만족하지만 쉽게 살 수 없는 접근성 때문에 별 하나를 비워 뒀다고 밝혔습니다.</p><span class="src">수딩 크림 · ★4 · #15445</span></div>
+    </div>
+    <p class="statement">무신사 뷰티는 병원 밖에서 제로이드를<br><em>꾸준히 살 수 있는 새로운 정규 채널</em>이 됩니다.</p>
+  </div>
+</section>
+
+<section class="sec" id="personas">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="no">07</span>
+      <div class="t"><span class="en">9 to 6 Persona</span><h2>히터 아래 하루 9시간, <em>2030 직장인</em>의 겨울</h2></div>
+      <p class="lead">무신사 뷰티의 핵심 고객인 2030 직장인을 겨울 실내 건조 상황에 맞춰 네 명으로 나눴습니다. 퍼소나는 가상의 인물이고, 리뷰는 실제 리뷰를 바탕으로 다시 정리했습니다. 원문 번호(#)로 홈페이지 원문을 찾을 수 있습니다.</p>
+    </div>
+    <div class="moments">
+      <div><b>08:30</b><p>영하의 찬바람에서 히터 켠 실내로. 온도 차이에 피부가 먼저 당깁니다.</p></div>
+      <div><b>15:00</b><p>히터 바람이 가장 오래 닿는 시간. 속당김과 메이크업 들뜸이 시작됩니다.</p></div>
+      <div><b>23:00</b><p>하루 동안 빠져나간 수분을 다음 날 아침까지 붙잡아 둘 시간입니다.</p></div>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="퍼소나 선택">
+      <button class="tab" role="tab" id="t-heater" aria-controls="p-heater" aria-selected="true">01 히터 바로 아래 자리</button>
+      <button class="tab" role="tab" id="t-combo" aria-controls="p-combo" aria-selected="false">02 겉은 번들, 속은 당김</button>
+      <button class="tab" role="tab" id="t-men" aria-controls="p-men" aria-selected="false">03 겨울에도 지성인 남성</button>
+      <button class="tab" role="tab" id="t-sos" aria-controls="p-sos" aria-selected="false">04 야근 다음 날 회복</button>
+    </div>
+
+    <!-- 01 -->
+    <div class="persona" role="tabpanel" id="p-heater" aria-labelledby="t-heater">
+      <div class="profile">
+        <div class="who">
+          <span class="tag g">PERSONA 01 · DRY</span>
+          <h3>“오후만 되면<br>얼굴이 쩍쩍 당겨요”</h3>
+          <p class="name">지수, 29세 · 회계팀 대리 · 자리 바로 위에 히터 송풍구</p>
+          <div class="kit">
+            <figure><div class="ph"><img src="img/cut/in-cream.png" alt=""></div><figcaption>인텐시브 크림</figcaption></figure>
+            <figure><div class="ph"><img src="img/cut/in-urea.png" alt=""></div><figcaption>리케닉 크림</figcaption></figure>
+            <figure><div class="ph"><img src="img/cut/in-mist.png" alt=""></div><figcaption>크림 미스트</figcaption></figure>
+            <figure><div class="ph"><img src="img/cut/in-lip.png" alt=""></div><figcaption>립케어</figcaption></figure>
+          </div>
+        </div>
+        <dl class="facts">
+          <div><dt>피부</dt><dd>건성 · 민감성, 겨울이면 볼과 입가가 트고 손등까지 거칠어짐</dd></div>
+          <div><dt>근무</dt><dd>하루 9시간 히터 아래 사무실, 모니터 앞에서 자리를 거의 비우지 못함</dd></div>
+          <div><dt>고민</dt><dd>아침에 바른 크림이 점심 이후 사라지고, 덧바르자니 메이크업이 무너짐</dd></div>
+          <div><dt>쇼핑</dt><dd>무신사에서 겨울 아우터와 함께 보습템을 장바구니에 담는 편</dd></div>
+          <div><dt>만족 지점</dt><dd>퇴근해서 집에 와도 건조하다는 느낌이 들지 않는 것</dd></div>
+        </dl>
+      </div>
+      <div class="journey">
+        <div class="step"><span class="when">07:30<small>기상</small></span><h4>밤새 마른 피부</h4><p class="pain">난방 켠 방에서 자고 일어나면 볼이 당김</p><p class="fix">인텐시브 크림을 베이스로</p><p class="feel">“아침부터 결이 부드러워요”</p></div>
+        <div class="step"><span class="when">08:30<small>출근길</small></span><h4>찬바람에 트는 입가</h4><p class="pain">마스크 벗을 때마다 입술이 갈라짐</p><p class="fix">인텐시브 립케어</p><p class="feel">“각질 없이 출근해요”</p></div>
+        <div class="step peak"><span class="when">15:00<small>히터 아래</small></span><h4>오후의 속당김</h4><p class="pain">크림은 사라지고 화장은 들뜸</p><p class="fix">크림 미스트를 화장 위로</p><p class="feel">“자리에서 바로 덧뿌려요”</p></div>
+        <div class="step"><span class="when">19:00<small>퇴근</small></span><h4>집에 와도 괜찮은 피부</h4><p class="pain">예전엔 퇴근하면 얼굴이 따가움</p><p class="fix">인텐시브 크림 + 리케닉 크림</p><p class="feel">“건조하다는 느낌이 없어요”</p></div>
+        <div class="step"><span class="when">23:00<small>잠들기 전</small></span><h4>거친 결 정리</h4><p class="pain">볼·팔꿈치·손등의 거친 결</p><p class="fix">리케닉 크림을 한 겹 더</p><p class="feel">“바로 결이 달라져요”</p></div>
+      </div>
+      <div class="reviews">
+        <article class="rv">
+          <header><div class="ph"><img src="img/cut/in-urea.png" alt=""></div><div><strong>리케닉 크림 우레아 + 인텐시브 크림</strong><span class="stars" aria-label="별점 5점">★★★★★</span><div class="chips"><span>건성</span><span>민감성</span><span>2020.09.10</span><span>#15267</span></div></div></header>
+          <h5>건조한 사무실에서 하루를 보내고 와도 당기지 않는 조합</h5>
+          <div class="part"><span>BEFORE</span><p>민감성 피부가 된 뒤로 어떤 제품을 발라도 화끈거렸습니다. 제로이드만은 괜찮아서 몇 년째 제로이드만 쓰고 있고, 지금까지 쓴 돈만 50만 원이 넘는다고 합니다.</p></div>
+          <div class="part"><span>HOW</span><p>인텐시브 크림을 매일 베이스로 바르고, 특히 건조한 가을·겨울·봄에는 그 위에 리케닉 크림을 함께 바릅니다.</p></div>
+          <div class="part"><span>AFTER</span><p>리케닉 크림을 처음 바른 날 바로 피부결이 부드러워지는 걸 느꼈습니다. 두 크림을 같이 바르면 건조한 사무실에서 일하고 집에 와도 건성 피부인데 건조하다는 느낌이 거의 들지 않는다고 적었습니다.</p></div>
+          <p class="md"><b>MD POINT</b> · 리뷰에 ‘건조한 사무실’이 직접 등장합니다. 겨울 오피스 기획전의 대표 리뷰로 쓸 수 있습니다.</p>
+        </article>
+        <article class="rv">
+          <header><div class="ph"><img src="img/cut/in-cream.png" alt=""></div><div><strong>인텐시브 크림</strong><span class="stars" aria-label="별점 5점">★★★★★</span><div class="chips"><span>건성</span><span>민감성</span><span>2020.09.10</span><span>#15264</span></div></div></header>
+          <h5>건조한 매장에서 무너진 장벽, 사계절 필수템이 되기까지</h5>
+          <div class="part"><span>BEFORE</span><p>원래 피부결에 자신이 있었지만, 아르바이트하던 매장이 지나치게 건조했고 졸업 작품과 이별 같은 스트레스까지 겹치며 갑자기 민감성 피부가 됐습니다.</p></div>
+          <div class="part"><span>HOW</span><p>동생의 추천으로 시작했습니다. 인텐시브 크림은 사계절 내내 쓰고, 건조한 가을부터 봄까지는 리케닉 크림을 더합니다.</p></div>
+          <div class="part"><span>AFTER</span><p>다른 제품은 화끈거리기만 했는데 제로이드는 괜찮았고 몇 년째 정착했습니다. 비슷한 장벽 크림은 번들거리기만 했는데, 인텐시브 크림은 속을 촉촉하게 채우면서 겉은 번들거리지 않는다고 비교했습니다.</p></div>
+          <p class="md"><b>MD POINT</b> · ‘건조한 실내에서 일하다 장벽이 무너졌다’는 사회 초년생의 이야기가 2030 고객과 닮아 있습니다.</p>
+        </article>
+      </div>
+    </div>
+
+    <!-- 02 -->
+    <div class="persona" role="tabpanel" id="p-combo" aria-labelledby="t-combo" hidden>
+      <div class="profile">
+        <div class="who">
+          <span class="tag g">PERSONA 02 · COMBINATION</span>
+          <h3>“기름은 도는데<br>속은 사막 같아요”</h3>
+          <p class="name">하은, 27세 · 마케터 · 히터와 마스크를 하루 종일</p>
+          <div class="kit">
+            <figure><div class="ph"><img src="img/cut/so-lotion.png" alt=""></div><figcaption>수딩 로션</figcaption></figure>
+            <figure><div class="ph"><img src="img/cut/so-cream.png" alt=""></div><figcaption>수딩 크림</figcaption></figure>
+            <figure><div class="ph"><img src="img/cut/in-ampoule.png" alt=""></div><figcaption>하이드레이팅 앰플</figcaption></figure>
+            <figure><div class="ph"><img src="img/cut/so-serummask.png" alt=""></div><figcaption>수딩 세럼 마스크</figcaption></figure>
+          </div>
+        </div>
+        <dl class="facts">
+          <div><dt>피부</dt><dd>복합성 수부지 · 이마·코는 지성, 볼은 속건조, 환절기 홍조</dd></div>
+          <div><dt>근무</dt><dd>히터 + 마스크 + 잦은 미팅, 메이크업 지속력이 중요</dd></div>
+          <div><dt>고민</dt><dd>무거운 크림은 트러블, 가벼운 제품은 속당김. 각질 제거를 과하게 하다 장벽이 무너진 경험</dd></div>
+          <div><dt>쇼핑</dt><dd>성분과 후기를 비교하고 무신사 랭킹을 참고</dd></div>
+          <div><dt>만족 지점</dt><dd>겉은 보송한데 속은 촉촉한 ‘속보습’</dd></div>
+        </dl>
+      </div>
+      <div class="journey">
+        <div class="step"><span class="when">07:40<small>세안 후</small></span><h4>세안 직후 속당김</h4><p class="pain">스킨을 바르면 오히려 따가운 날</p><p class="fix">스킨 대신 하이드레이팅 앰플부터</p><p class="feel">“시작부터 덜 당겨요”</p></div>
+        <div class="step"><span class="when">08:00<small>메이크업 전</small></span><h4>들뜨지 않는 베이스</h4><p class="pain">각질 위에 파운데이션이 뜸</p><p class="fix">수딩 로션 한 겹 (T존은 얇게)</p><p class="feel">“속은 촉촉, 겉은 보송”</p></div>
+        <div class="step peak"><span class="when">14:00<small>히터·마스크</small></span><h4>번들거림과 속건조 동시</h4><p class="pain">마스크 속 트러블, 볼은 당김</p><p class="fix">아침에 수딩 크림을 볼에만 덧바름</p><p class="feel">“유수분이 맞춰지는 느낌”</p></div>
+        <div class="step"><span class="when">21:00<small>집</small></span><h4>붉어진 볼 진정</h4><p class="pain">하루 종일 달아오른 볼</p><p class="fix">수딩 세럼 마스크</p><p class="feel">“열감이 가라앉아요”</p></div>
+        <div class="step"><span class="when">+10M<small>10개월 뒤</small></span><h4>계절이 바뀌어도</h4><p class="pain">여름이 오면 크림이 무거워짐</p><p class="fix">같은 라인의 수딩 로션으로 전환</p><p class="feel">“홍조도 사라졌어요”</p></div>
+      </div>
+      <div class="reviews">
+        <article class="rv">
+          <header><div class="ph"><img src="img/cut/so-cream.png" alt=""></div><div><strong>수딩 크림</strong><span class="stars" aria-label="별점 5점">★★★★★</span><div class="chips"><span>복합성</span><span>민감성</span><span>2020.09.30</span><span>#16544</span></div></div></header>
+          <h5>겨울에 무너진 수부지 장벽, 10개월의 기록</h5>
+          <div class="part"><span>BEFORE</span><p>볼은 중성~지성, 이마와 코는 지성인 복합성 피부입니다. 지난 겨울 장벽이 무너진 상태에서 각질 제거까지 과하게 해 얼굴이 홍조와 트러블로 뒤덮였고, 무엇을 발라도 따갑고 건조했습니다.</p></div>
+          <div class="part"><span>HOW</span><p>피부가 예민할 때는 스킨과 토너를 아예 쓰지 않고 보습제 하나만 발랐습니다. 건조할 때는 스킨 대신 퍼스트 에센스나 앰플부터 시작하라는 팁을 남겼습니다.</p></div>
+          <div class="part"><span>AFTER</span><p>10개월 가까이 쓰며 저자극, 속건조 해결, 장벽 개선을 장점으로 꼽았습니다. 여름 즈음 장벽이 회복되고 홍조도 사라졌고, 더워지자 수딩 로션으로 바꿔 유수분 밸런스를 유지했다고 합니다.</p></div>
+          <p class="md"><b>MD POINT</b> · ‘스킨 대신 앰플 → 크림 하나’라는 겨울 루틴을 상세페이지 사용법으로 그대로 옮길 수 있습니다.</p>
+        </article>
+        <article class="rv">
+          <header><div class="ph"><img src="img/cut/so-cream.png" alt=""></div><div><strong>수딩 크림</strong><span class="stars" aria-label="별점 5점">★★★★★</span><div class="chips"><span>복합성</span><span>민감성</span><span>2021.04.21</span><span>#17645</span></div></div></header>
+          <h5>일주일 동안 수딩 크림만, 인텐시브와 비교한 솔직 후기</h5>
+          <div class="part"><span>BEFORE</span><p>환절기와 마스크 때문에 트러블이 많이 생겼고 속건조가 심한 상태였습니다.</p></div>
+          <div class="part"><span>HOW</span><p>스킨을 빼고 일주일 동안 수딩 크림만 발랐습니다. 용량이 넉넉해 몸에도 부담 없이 썼습니다.</p></div>
+          <div class="part"><span>AFTER</span><p>로션에 가까운 크림 제형으로 흡수가 빠르고 끈적임이 적었고, 트러블이 진정되고 속건조가 해결됐다고 합니다. 다만 인텐시브 크림보다 지속력은 짧아 한겨울이나 건성 피부에는 아쉬울 수 있다고 솔직하게 덧붙였습니다.</p></div>
+          <p class="md"><b>MD POINT</b> · 고객이 직접 라인 차이를 설명합니다. 상세페이지 ‘수딩 vs 인텐시브’ 선택 가이드의 근거입니다.</p>
+        </article>
+      </div>
+    </div>
+
+    <!-- 03 -->
+    <div class="persona" role="tabpanel" id="p-men" aria-labelledby="t-men" hidden>
+      <div class="profile">
+        <div class="who">
+          <span class="tag g">PERSONA 03 · OILY MEN</span>
+          <h3>“지성인데 겨울엔<br>얼굴이 따가워요”</h3>
+          <p class="name">도윤, 32세 · 영업직 · 외근과 사무실을 오가는 하루</p>
+          <div class="kit">
+            <figure><div class="ph"><img src="img/cut/so-cleanser.png" alt=""></div><figcaption>포밍 클렌저</figcaption></figure>
+            <figure><div class="ph"><img src="img/cut/pi-moist.png" alt=""></div><figcaption>핌프로브 모이스처라이저</figcaption></figure>
+            <figure><div class="ph"><img src="img/cut/in-lotion.png" alt=""></div><figcaption>인텐시브 로션</figcaption></figure>
+            <figure><div class="ph"><img src="img/cut/in-cream.png" alt=""></div><figcaption>인텐시브 크림</figcaption></figure>
+          </div>
+        </div>
+        <dl class="facts">
+          <div><dt>피부</dt><dd>지성 · 수분 부족, 면도 후 따가움, 피부과 시술 경험</dd></div>
+          <div><dt>근무</dt><dd>찬바람 외근 → 히터 켠 차·사무실, 하루에 온도 차이를 여러 번 겪음</dd></div>
+          <div><dt>고민</dt><dd>지성이라 보습을 건너뛰다 겨울에 더 예민해짐. 무겁고 번들거리는 크림은 싫음</dd></div>
+          <div><dt>쇼핑</dt><dd>무신사에서 옷 사면서 기초를 같이 담음. 단계는 적을수록 좋음</dd></div>
+          <div><dt>만족 지점</dt><dd>출근부터 퇴근까지 편안하고, 바르는 단계가 단순한 것</dd></div>
+        </dl>
+      </div>
+      <div class="journey">
+        <div class="step"><span class="when">07:00<small>면도</small></span><h4>면도 후 따가움</h4><p class="pain">면도 직후 붉어지고 당김</p><p class="fix">포밍 클렌저로 순하게 세안</p><p class="feel">“씻고 나서 안 당겨요”</p></div>
+        <div class="step"><span class="when">07:20<small>두 단계</small></span><h4>시간 없는 아침</h4><p class="pain">여러 개 바르기 귀찮음</p><p class="fix">핌프로브 + 볼에만 인텐시브 로션</p><p class="feel">“두 개면 끝나요”</p></div>
+        <div class="step"><span class="when">11:00<small>외근</small></span><h4>찬바람 ↔ 히터</h4><p class="pain">차 안 히터와 바깥 찬바람</p><p class="fix">아침에 얇게 여러 번 겹쳐 바른 크림</p><p class="feel">“퇴근까지 촉촉”</p></div>
+        <div class="step peak"><span class="when">16:00<small>사무실</small></span><h4>지성도 예민해지는 겨울</h4><p class="pain">T존은 번들, 볼은 따가움</p><p class="fix">겨울엔 인텐시브 크림을 얇게</p><p class="feel">“번들거리지 않고 편해요”</p></div>
+        <div class="step"><span class="when">SPRING<small>봄이 오면</small></span><h4>계절에 맞춰 교체</h4><p class="pain">날이 풀리면 크림이 무거움</p><p class="fix">다시 핌프로브 단독으로</p><p class="feel">“계절마다 같은 브랜드로”</p></div>
+      </div>
+      <div class="reviews">
+        <article class="rv">
+          <header><div class="ph"><img src="img/cut/in-cream.png" alt=""></div><div><strong>인텐시브 크림 · 로션 (MD 버전)</strong><span class="stars" aria-label="별점 5점">★★★★★</span><div class="chips"><span>지성</span><span>30대 남성</span><span>2020.09.12</span><span>#15397</span></div></div></header>
+          <h5>“지성에게 인텐시브 크림은 겨울에만”, 출근부터 퇴근까지</h5>
+          <div class="part"><span>BEFORE</span><p>심한 지성 피부로, 흉터와 모공을 줄이려고 자극이 강한 피부과 레이저 시술을 여러 차례 받았습니다.</p></div>
+          <div class="part"><span>HOW</span><p>겨울은 지성 피부도 예민하고 건조해지는 계절이라 그때만 크림을 쓰고, 한 번에 많이 바르지 않고 얇게 여러 번 덧바릅니다. 여름에는 가벼운 로션으로 바꿉니다.</p></div>
+          <div class="part"><span>AFTER</span><p>겨울에도 출근부터 퇴근까지 촉촉하고 편안했다고 합니다. 지성이라도 보습을 건너뛰면 오히려 번들거린다고 조언했고, 20대 때보다 피부가 튼튼해졌다고 느낀다고 적었습니다.</p></div>
+          <p class="md"><b>MD POINT</b> · 리뷰 대상은 의료기기(MD) 버전입니다. 무신사에서는 일반 인텐시브 크림·로션으로 대응하고 사용법 위주로 인용합니다.</p>
+        </article>
+        <article class="rv">
+          <header><div class="ph"><img src="img/cut/pi-moist.png" alt=""></div><div><strong>수딩 크림 · 오인트 · 핌프로브</strong><span class="stars" aria-label="별점 5점">★★★★★</span><div class="chips"><span>복합성</span><span>민감성</span><span>2020.09.28</span><span>#16537</span></div></div></header>
+          <h5>계절마다 세 가지를 바꿔 쓰는 ‘화장품 다이어트’</h5>
+          <div class="part"><span>BEFORE</span><p>수분 부족형 지성 피부로, 한 달의 절반 이상을 여드름에 시달리며 맞는 화장품을 찾아 헤맸습니다.</p></div>
+          <div class="part"><span>HOW</span><p>겨울에는 인텐시브 오인트 크림, 봄·가을에는 수딩 크림, 여름에는 핌프로브 모이스처라이저로 바꿔 씁니다. 앰플과 크림 두 개만 바릅니다.</p></div>
+          <div class="part"><span>AFTER</span><p>아주 심할 때를 빼면 여드름이 많이 줄었고 보습감이 좋아졌다고 합니다. 단계가 단순해져 바쁜 아침에도 부담이 없고, 가격은 조금 비싸지만 효과와 양을 생각하면 충분히 쓸 만하다고 평가했습니다.</p></div>
+          <p class="md"><b>MD POINT</b> · ‘계절별 라인 갈아타기’는 무신사 시즌 기획전과 재구매 동선으로 이어집니다.</p>
+        </article>
+      </div>
+    </div>
+
+    <!-- 04 -->
+    <div class="persona" role="tabpanel" id="p-sos" aria-labelledby="t-sos" hidden>
+      <div class="profile">
+        <div class="who">
+          <span class="tag g">PERSONA 04 · OVERWORKED</span>
+          <h3>“1일 1팩까지 했는데<br>더 건조해졌어요”</h3>
+          <p class="name">서연, 30세 · 브랜드 디자이너 · 마감 주간엔 야근과 회식</p>
+          <div class="kit">
+            <figure><div class="ph"><img src="img/cut/in-mask.png" alt=""></div><figcaption>크림 마스크</figcaption></figure>
+            <figure><div class="ph"><img src="img/cut/in-oint.png" alt=""></div><figcaption>오인트 크림</figcaption></figure>
+            <figure><div class="ph"><img src="img/cut/in-ampoule.png" alt=""></div><figcaption>하이드레이팅 앰플</figcaption></figure>
+            <figure><div class="ph"><img src="img/cut/in-balm.png" alt=""></div><figcaption>SOS 플러스 밤</figcaption></figure>
+          </div>
+        </div>
+        <dl class="facts">
+          <div><dt>피부</dt><dd>복합성~건성, T존 외엔 건조, 반복되는 트러블</dd></div>
+          <div><dt>근무</dt><dd>마감 주간 야근, 히터 켠 사무실에서 밤까지</dd></div>
+          <div><dt>고민</dt><dd>매일 마스크팩과 페이스 오일을 써도 건조함이 계속됨</dd></div>
+          <div><dt>쇼핑</dt><dd>‘더 좋은 것’을 계속 사 모으다 지친 상태, 정착할 브랜드를 찾음</dd></div>
+          <div><dt>만족 지점</dt><dd>적게 발라도 아침까지 촉촉한 것, 루틴이 단순해지는 것</dd></div>
+        </dl>
+      </div>
+      <div class="journey">
+        <div class="step"><span class="when">22:00<small>야근</small></span><h4>밤까지 이어진 히터</h4><p class="pain">늦게까지 사무실, 피부가 푸석</p><p class="fix">책상 서랍 속 SOS 플러스 밤</p><p class="feel">“건조한 부위만 콕”</p></div>
+        <div class="step"><span class="when">00:30<small>귀가</small></span><h4>지쳐도 한 가지는</h4><p class="pain">여러 단계 바를 힘이 없음</p><p class="fix">인텐시브 크림 마스크 한 장</p><p class="feel">“붙이고 바로 잠들어요”</p></div>
+        <div class="step peak"><span class="when">07:30<small>다음 날</small></span><h4>회식 다음 날 아침</h4><p class="pain">푸석하고 화장이 안 먹음</p><p class="fix">앰플 + 오인트 크림 섞어 바르기</p><p class="feel">“일어나도 얼굴이 촉촉해요”</p></div>
+        <div class="step"><span class="when">+2W<small>2주 뒤</small></span><h4>덜어내는 루틴</h4><p class="pain">마스크팩·오일 과다</p><p class="fix">크림 하나로 단순화</p><p class="feel">“트러블이 한 번도 없었어요”</p></div>
+        <div class="step"><span class="when">+2Y<small>2년 뒤</small></span><h4>정착</h4><p class="pain">새 제품 찾아 헤매던 습관</p><p class="fix">제로이드 하나로 꾸준히</p><p class="feel">“오일은 이제 안 써요”</p></div>
+      </div>
+      <div class="reviews">
+        <article class="rv">
+          <header><div class="ph"><img src="img/cut/in-cream.png" alt=""></div><div><strong>인텐시브 크림</strong><span class="stars" aria-label="별점 5점">★★★★★</span><div class="chips"><span>건성</span><span>2020.09.10</span><span>#15307</span></div></div></header>
+          <h5>1일 1팩과 페이스 오일을 끊고, 크림 하나로 2년</h5>
+          <div class="part"><span>BEFORE</span><p>피부가 건조해져 아침저녁 페이스 오일과 매일 마스크팩을 했지만 한쪽 볼에 트러블이 6개월 넘게 반복됐습니다. 피부과에서 많이 바르기보다 피부 스스로의 힘을 길러 주라는 조언을 들었습니다.</p></div>
+          <div class="part"><span>HOW</span><p>피부과 치료 후 바르라고 비치된 크림이 제로이드였고, 갈 때마다 발라 보다 직접 사기 시작해 2년 넘게 제로이드만 씁니다.</p></div>
+          <div class="part"><span>AFTER</span><p>쓰는 동안 트러블이 한 번도 없었고, 이제는 마스크팩이나 오일을 쓰지 않는다고 합니다. 건조함도 거의 사라졌다고 적었습니다.</p></div>
+          <p class="md"><b>MD POINT</b> · ‘더 바르기’에 지친 고객에게 ‘제대로 된 하나’를 제안하는 스킨 미니멀리즘 메시지입니다.</p>
+        </article>
+        <article class="rv">
+          <header><div class="ph"><img src="img/cut/in-oint.png" alt=""></div><div><strong>인텐시브 오인트 크림</strong><span class="stars" aria-label="별점 5점">★★★★★</span><div class="chips"><span>복합성</span><span>2020.09.10</span><span>#15342</span></div></div></header>
+          <h5>겨울엔 앰플 위에 오인트, 일어나도 촉촉한 아침</h5>
+          <div class="part"><span>BEFORE</span><p>T존은 지성이고 나머지는 건성인 복합성 피부입니다. 성분 좋은 크림을 찾다 제로이드를 알게 됐습니다.</p></div>
+          <div class="part"><span>HOW</span><p>사계절 쓰면서 여름에는 가볍게, 겨울에는 앰플을 먼저 바른 뒤 오인트 크림을 다른 크림과 섞어 바릅니다.</p></div>
+          <div class="part"><span>AFTER</span><p>무겁지 않게 촉촉하게 발리고 보습력이 좋으며, 쓰는 동안 트러블이 생기지 않는다고 합니다. 겨울에도 아침에 일어나면 얼굴이 촉촉하다며 몇 통째 쓰는 중입니다.</p></div>
+          <p class="md"><b>MD POINT</b> · ‘앰플 + 크림’ 조합은 겨울 집중 보습 세트 구성의 근거가 됩니다.</p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="proposal">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="no">08</span>
+      <div class="t"><span class="en">Proposal</span><h2>무신사 뷰티 <em>입점 제안</em></h2></div>
+      <p class="lead">제로이드 전 라인을 입점하고, 이번 겨울에는 ‘9 to 6 오피스 보습’을 메인 테마로 대표 8종과 퍼소나별 세트를 앞세웁니다.</p>
+    </div>
+    <div class="sets">
+      <div class="set"><span class="no">SET 01 · PERSONA 01</span><strong>히터 오피스 키트</strong><div class="thumbs"><div><img src="img/cut/in-cream.png" alt=""></div><div><img src="img/cut/in-mist.png" alt=""></div><div><img src="img/cut/in-lip.png" alt=""></div></div><p>인텐시브 크림 + 크림 미스트 + 립케어</p><span class="price">₩ [__]</span></div>
+      <div class="set"><span class="no">SET 02 · PERSONA 02</span><strong>수부지 속보습 세트</strong><div class="thumbs"><div><img src="img/cut/in-ampoule.png" alt=""></div><div><img src="img/cut/so-lotion.png" alt=""></div><div><img src="img/cut/so-cream.png" alt=""></div></div><p>하이드레이팅 앰플 + 수딩 로션 + 수딩 크림</p><span class="price">₩ [__]</span></div>
+      <div class="set"><span class="no">SET 03 · PERSONA 03</span><strong>겨울 지성 2-STEP</strong><div class="thumbs"><div><img src="img/cut/so-cleanser.png" alt=""></div><div><img src="img/cut/pi-moist.png" alt=""></div><div><img src="img/cut/in-lotion.png" alt=""></div></div><p>포밍 클렌저 + 핌프로브 모이스처라이저 + 인텐시브 로션</p><span class="price">₩ [__]</span></div>
+      <div class="set"><span class="no">SET 04 · PERSONA 04</span><strong>야근 다음 날 SOS</strong><div class="thumbs"><div><img src="img/cut/in-mask.png" alt=""></div><div><img src="img/cut/in-oint.png" alt=""></div><div><img src="img/cut/in-balm.png" alt=""></div></div><p>크림 마스크 + 오인트 크림 + SOS 플러스 밤</p><span class="price">₩ [__]</span></div>
+    </div>
+    <div class="ops">
+      <div><span class="k">PDP</span><b>상세페이지</b><p>퍼소나별 ‘9 to 6’ 여정 컷, 수딩 vs 인텐시브 선택 가이드, 현미경 비교 이미지</p></div>
+      <div><span class="k">CAMPAIGN</span><b>기획전</b><p>11–2월 ‘오피스 겨울 보습’ 기획전 편입, 아우터 구매 고객 대상 추천</p></div>
+      <div><span class="k">REVIEW</span><b>리뷰 확보</b><p>무신사 체험단으로 최신 리뷰 확보 (홈페이지 리뷰는 2020–21년 집중)</p></div>
+      <div><span class="k">TERMS</span><b>거래 조건</b><p>공급가 [__%] · 물류 [위탁/직배송] · 런칭 [2026.__]</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="todo">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="no">09</span>
+      <div class="t"><span class="en">Checklist</span><h2>제출 전 <em>확인할 것</em></h2></div>
+      <p class="lead">담당자와 함께 채우거나 승인받아야 하는 항목입니다.</p>
+    </div>
+    <ol class="check">
+      <li>제품 사진·현미경 이미지 등 홈페이지 자산의 외부 사용 승인</li>
+      <li>리뷰 원문을 인용할 경우 작성자 동의와 표시광고 기준 확인</li>
+      <li>질환명이나 치료처럼 읽히는 표현은 광고 문구에서 제외</li>
+      <li>의료기기(MD) 제품 리뷰는 일반 화장품 문구로 쓰지 않기</li>
+      <li>세트 구성, 판매가, 공급가, 런칭 일정</li>
+      <li>2020년 이후 연혁과 신제품 출시 시점</li>
+      <li>최근 리뷰 확보 (자사몰·외부 채널, 2022년 이후)</li>
+      <li>크림 미스트·립케어 등 신제품의 상세 스펙과 용량</li>
+    </ol>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="wm">ZEROID</span>
+    <p>(주)네오팜 · 무신사 뷰티 입점 제안 초안 v5 · 제품·과학 이미지와 리뷰 데이터 출처 zeroid.co.kr (2026.10.28 수집) · 퍼소나 인물은 가상이며 리뷰는 원문을 바탕으로 재구성했습니다.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var P=[
+    ['so-cream','SOOTHING','수딩 크림','피부 장벽 강화에 도움을 주는 저자극 피부 친화 크림','BEST',1,144,'리뷰 1위 스테디셀러 · 수부지 속보습'],
+    ['in-cream','INTENSIVE','인텐시브 크림','악건성·문제성 피부를 위한 고보습 장벽 케어 크림','BEST',1,51,'건성의 겨울 베이스 크림'],
+    ['so-lotion','SOOTHING','수딩 로션','피부 장벽 강화에 도움을 주는 저자극 피부 친화 로션','',1,48,'남성·입문용 원스텝 로션'],
+    ['in-mist','INTENSIVE','인텐시브 크림 미스트','뿌리는 크림 고보습 미스트','NEW',1,0,'사무실에서 화장 위로 덧뿌리기'],
+    ['in-urea','INTENSIVE','리케닉 크림 우레아 10%','거칠고 건조한 피부를 위한 2중 보호막 집중 보습 크림','NEW',1,4,'거칠어진 볼·손등 결 정리'],
+    ['in-ampoule','INTENSIVE','인텐시브 하이드레이팅 앰플','피부 속 보습을 위한 집중 수분 공급 앰플','',1,4,'스킨 대신 쓰는 겨울 첫 단계'],
+    ['pi-moist','PIMPROVE','핌프로브 모이스처라이저','산뜻하고 촉촉한 지성 피부용 장벽 케어 겔 로션','BEST',0,18,'지성 피부의 가벼운 보습'],
+    ['sun-daily','SUN CARE','데일리 선크림 SPF50+','민감한 피부를 위한 저자극 데일리 무기자차 선크림','BEST',0,1,'겨울에도 빼먹지 않는 선케어']
+  ];
+  document.getElementById('plist').innerHTML=P.map(function(p,i){
+    var tags=(p[4]?'<span class="tag">'+p[4]+'</span>':'')+(p[5]?'<span class="tag g">WINTER</span>':'');
+    return '<article class="pd"><div class="ph"><img src="img/cut/'+p[0]+'.png" alt="제로이드 '+p[2]+'"><div class="tags">'+tags+'</div><span class="rank">'+(i+1)+'</span></div>'+
+      '<span class="brand">ZEROID <span style="font-weight:600;color:var(--ink-3)">· '+p[1]+'</span></span><strong>'+p[2]+'</strong><p>'+p[3]+'</p><span class="why">'+p[7]+'</span>'+
+      (p[6]?'<span class="rc">홈페이지 리뷰 <b>'+p[6]+'</b></span>':'<span class="rc">신제품</span>')+'</article>';
+  }).join('');
+
+  var tabs=[].slice.call(document.querySelectorAll('.tab'));
+  var keys={heater:'t-heater',combo:'t-combo',men:'t-men',sos:'t-sos'};
+  function show(tab,focus){
+    tabs.forEach(function(t){
+      var on=t===tab;
+      t.setAttribute('aria-selected',on?'true':'false');
+      t.tabIndex=on?0:-1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden=!on;
+    });
+    if(focus) tab.focus();
+  }
+  tabs.forEach(function(t,i){
+    t.addEventListener('click',function(){show(t)});
+    t.addEventListener('keydown',function(e){
+      if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+        e.preventDefault();
+        show(tabs[(i+(e.key==='ArrowRight'?1:tabs.length-1))%tabs.length],true);
+      }
+    });
+  });
+  var h=(location.hash||'').slice(1);
+  show(keys[h]?document.getElementById(keys[h]):tabs[0]);
+})();
+</script>
