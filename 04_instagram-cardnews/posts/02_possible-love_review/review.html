@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>onspace.film_ | 가능한 사랑 리뷰</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  /* review.html#1 ~ #7 로 열면 한 장씩 보입니다 */
+  :root { --point: #E5322D; --hl: #FF7A6E; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: #111; }
+  body { font-family: 'Pretendard', 'Malgun Gothic', sans-serif; color: #fff; word-break: keep-all; }
+  .nw { white-space: nowrap; }
+  em { font-style: normal; font-weight: 700; color: var(--hl); }
+  strong { font-weight: 800; color: #fff; }
+
+  .card { position: relative; width: 1080px; height: 1350px; overflow: hidden; margin: 0 auto 40px; background: #000; }
+  body.single .card { display: none; margin: 0; }
+  body.single .card.on { display: block; }
+
+  .bg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; }
+
+  /* 표지: 사진 꽉 채움 */
+  .cover::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 60%; z-index: 1;
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,.55) 30%, rgba(0,0,0,.9) 62%, rgba(0,0,0,.96) 100%);
+  }
+  /* 본문: 위쪽 사진, 아래 검정 */
+  .shade .bg { height: 940px; -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%); mask-image: linear-gradient(to bottom, #000 72%, transparent 100%); }
+  .shade::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 64%; z-index: 1;
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,.55) 22%, rgba(0,0,0,.92) 40%, #000 50%, #000 100%);
+  }
+
+  .logo { position: absolute; top: 56px; left: 64px; z-index: 3; font-size: 34px; font-weight: 800; letter-spacing: -.5px; text-shadow: 0 2px 10px rgba(0,0,0,.4); }
+  .logo i { font-style: normal; color: var(--point); }
+  .badge { position: absolute; top: 52px; right: 64px; z-index: 3; border: 2px solid rgba(255,255,255,.92);
+           padding: 6px 18px; font-size: 26px; font-weight: 700; background: rgba(0,0,0,.35); }
+  .mark { position: absolute; bottom: 36px; left: 0; right: 0; text-align: center; z-index: 3; font-size: 20px; font-weight: 800; color: rgba(255,255,255,.4); }
+  .credit { position: absolute; bottom: 38px; right: 44px; z-index: 3; font-size: 17px; color: rgba(255,255,255,.4); }
+
+  .body { position: absolute; left: 64px; right: 64px; bottom: 120px; z-index: 2; }
+  .dots { display: flex; gap: 14px; margin-bottom: 26px; }
+  .dots span { width: 12px; height: 12px; border-radius: 50%; background: var(--point); }
+  .light { font-size: 54px; font-weight: 400; line-height: 1.3; letter-spacing: -1.5px; }
+  .bold { font-size: 70px; font-weight: 800; line-height: 1.22; letter-spacing: -2.2px; margin-top: 4px; }
+  .sub { margin-top: 38px; font-size: 30px; line-height: 1.6; letter-spacing: -.5px; color: rgba(255,255,255,.7); }
+
+  .pill { display: inline-block; border: 2px solid rgba(255,255,255,.92); border-radius: 40px; padding: 6px 22px; font-size: 26px; font-weight: 700; margin-bottom: 24px; }
+  h2 { display: flex; align-items: center; gap: 18px; font-size: 56px; font-weight: 800; letter-spacing: -2px; line-height: 1.25; margin-bottom: 28px; }
+  .num { flex: none; width: 54px; height: 54px; border-radius: 50%; background: var(--point); display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 800; letter-spacing: 0; }
+  p.txt { font-size: 31px; line-height: 1.72; letter-spacing: -.8px; color: rgba(255,255,255,.88); }
+
+  /* 별점 */
+  .score { display: flex; align-items: baseline; gap: 18px; margin-bottom: 18px; }
+  .score b { font-size: 120px; font-weight: 800; letter-spacing: -4px; line-height: 1; }
+  .score span { font-size: 40px; color: rgba(255,255,255,.5); }
+  .stars { position: relative; display: inline-block; font-size: 58px; letter-spacing: 8px; color: rgba(255,255,255,.2); margin-bottom: 44px; }
+  .stars i { position: absolute; left: 0; top: 0; overflow: hidden; white-space: nowrap; color: var(--point); font-style: normal; }
+  .quote { font-size: 44px; font-weight: 700; line-height: 1.45; letter-spacing: -1.4px; border-left: 4px solid var(--point); padding-left: 28px; }
+
+  /* 추천 */
+  .reco { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-top: 8px; }
+  .reco div { border: 2px solid rgba(255,255,255,.2); padding: 28px 28px 26px; }
+  .reco h3 { font-size: 32px; font-weight: 800; margin-bottom: 16px; }
+  .reco .yes h3 { color: var(--hl); }
+  .reco .no h3 { color: rgba(255,255,255,.6); }
+  .reco li { list-style: none; font-size: 27px; line-height: 1.5; color: rgba(255,255,255,.85); padding-left: 22px; position: relative; margin-bottom: 10px; letter-spacing: -.5px; }
+  .reco li::before { content: "·"; position: absolute; left: 4px; }
+
+  .center { text-align: center; }
+  .center .dots { justify-content: center; }
+  .cta { display: inline-block; margin-top: 44px; padding: 14px 30px; border-radius: 40px; background: var(--point); font-size: 27px; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- 1. 표지 -->
+<section class="card cover" id="c1">
+  <img class="bg" src="images/r1.jpg" style="object-position: 52% 0%">
+  <div class="logo">onspace<i>.</i>film_</div>
+  <div class="badge">#온우주리뷰</div>
+  <div class="body">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="light">극장에서 먼저 보고 나와 든 생각,</div>
+    <div class="bold">사랑이란 무엇일까</div>
+    <div class="sub"><span class="nw">&lt;가능한 사랑&gt;</span> 스포일러 없는 솔직 리뷰<br>극장 선공개 관람 후기</div>
+  </div>
+  <div class="credit">© Netflix</div>
+</section>
+
+<!-- 2. 별점 + 한 줄 평 -->
+<section class="card shade" id="c2">
+  <img class="bg" src="images/r2.jpg" style="object-position: 50% 50%">
+  <div class="body">
+    <div class="pill">온우주 별점</div>
+    <div class="score"><b>3.5</b><span>/ 5</span></div>
+    <div class="stars">★★★★★<i style="width:70%">★★★★★</i></div>
+    <div class="quote">달은 누구에게나 공평하다는데,<br>세상은 왜 이렇게 차갑기만 할까.</div>
+  </div>
+  <div class="credit">© Netflix</div>
+</section>
+
+<!-- 3. 좋았던 점 1 -->
+<section class="card shade" id="c3">
+  <img class="bg" src="images/r3.jpg" style="object-position: 47% 30%">
+  <div class="body">
+    <div class="pill">좋았던 점</div>
+    <h2><span class="num">1</span>말이 필요 없는 두 배우</h2>
+    <p class="txt"><strong>전도연</strong>과 <strong>설경구</strong>의 연기는 말할 것도 없어요.<br><em>표정 하나, 눈빛 하나</em>가 대사보다 많은 걸 전해요.<br>그 순간들이 오래 남아요.</p>
+  </div>
+  <div class="credit">© Netflix</div>
+</section>
+
+<!-- 4. 좋았던 점 2 -->
+<section class="card shade" id="c4">
+  <img class="bg" src="images/r4.jpg" style="object-position: 50% 50%">
+  <div class="body">
+    <div class="pill">좋았던 점</div>
+    <h2><span class="num">2</span>장면마다 머무는 영상미</h2>
+    <p class="txt">숲, 바다, 밤길. 화면 하나하나가 <em>그림</em> 같아요.<br>이야기보다 장면에 한참 머물게 되는 영화예요.</p>
+  </div>
+  <div class="credit">© Netflix</div>
+</section>
+
+<!-- 5. 생각할 거리 -->
+<section class="card shade" id="c5">
+  <img class="bg" src="images/r5.jpg" style="object-position: 21% 40%">
+  <div class="body">
+    <div class="pill">오래 남은 생각</div>
+    <h2>삶의 가치는 무엇일까,<br>잘 살아간다는 건 무엇일까</h2>
+    <p class="txt">한 가족의 아픔이 누군가에겐 돈벌이가 되는 모습.<br>그 차가움이 <em>안타까워</em> 제목처럼 묻게 돼요.<br><strong>사랑은 정말 가능할까?</strong></p>
+  </div>
+  <div class="credit">© Netflix</div>
+</section>
+
+<!-- 6. 호불호 + 추천 -->
+<section class="card shade" id="c6">
+  <img class="bg" src="images/r6.jpg" style="object-position: 52% 40%">
+  <div class="body">
+    <div class="pill">호불호 포인트</div>
+    <h2>어느 관점에서 보느냐에 따라<br>다르게 남을 영화</h2>
+    <div class="reco">
+      <div class="yes"><h3>이런 분께 추천</h3><ul>
+        <li><span class="nw">&lt;밀양&gt;</span>, <span class="nw">&lt;버닝&gt;</span> 같은 이창동 감독 영화를 좋아한다면</li>
+        <li>보고 나서 오래 곱씹는 영화를 좋아한다면</li>
+        <li>배우들의 연기를 보러 가는 분</li>
+      </ul></div>
+      <div class="no"><h3>이런 분은 고민</h3><ul>
+        <li>빠른 전개와 시원한 결말을 원한다면</li>
+        <li>가볍게 보고 싶은 날이라면</li>
+      </ul></div>
+    </div>
+  </div>
+  <div class="credit">© Netflix</div>
+</section>
+
+<!-- 7. 마무리 -->
+<section class="card shade" id="c7">
+  <img class="bg" src="images/r7.jpg" style="top: 120px; height: 640px; object-position: 50% 40%; -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 8%, #000 75%, transparent 100%); mask-image: linear-gradient(to bottom, transparent 0%, #000 8%, #000 75%, transparent 100%)">
+  <div class="body center">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <h2 style="display:block">여러분에게 사랑이란<br>무엇인가요?</h2>
+    <p class="txt">11월 6일, 넷플릭스에서 <span class="nw">&lt;가능한 사랑&gt;</span>을 보셨다면<br>여러분의 생각도 댓글로 들려주세요.</p>
+    <div class="cta">@onspace.film_ #온우주리뷰</div>
+  </div>
+  <div class="credit">© Netflix</div>
+</section>
+
+<script>
+  const n = location.hash.slice(1);
+  if (n) { document.body.classList.add('single'); document.getElementById('c' + n).classList.add('on'); }
+</script>
+</body>
+</html>
