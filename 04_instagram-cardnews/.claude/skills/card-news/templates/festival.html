@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>onspace.film_ | [영화제 이름] 리뷰</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  /* festival.html#1 처럼 열면 한 장씩, ?guide 를 붙이면 가운데 기준선이 보여요 */
+  :root { --brand: #E5322D; --point: #FF4FA3; --hl: #FF8CC6; --accent: #FF4FA3; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: #111; }
+  body { font-family: 'Pretendard', 'Malgun Gothic', sans-serif; color: #fff; word-break: keep-all; }
+  .nw { white-space: nowrap; }
+  em { font-style: normal; font-weight: 700; color: var(--hl); }
+  strong { font-weight: 800; color: #fff; }
+
+  .card { position: relative; width: 1080px; height: 1350px; overflow: hidden; margin: 0 auto 40px; background: #000; }
+  body.single .card { display: none; margin: 0; }
+  body.single .card.on { display: block; }
+
+  .bg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; }
+
+  /* 표지: 사진 꽉 채움 */
+  .cover::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 60%; z-index: 1;
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,.55) 30%, rgba(0,0,0,.9) 62%, rgba(0,0,0,.96) 100%);
+  }
+  /* 본문: 위쪽 사진, 아래 검정 */
+  .shade .bg { height: 940px; -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%); mask-image: linear-gradient(to bottom, #000 72%, transparent 100%); }
+  .shade::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 64%; z-index: 1;
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,.55) 22%, rgba(0,0,0,.92) 40%, #000 50%, #000 100%);
+  }
+
+  .logo { position: absolute; top: 56px; left: 64px; z-index: 3; font-size: 34px; font-weight: 800; letter-spacing: -.5px; text-shadow: 0 2px 10px rgba(0,0,0,.4); }
+  .logo i { font-style: normal; color: var(--brand); }
+  .badge { position: absolute; top: 52px; right: 64px; z-index: 3; border: 2px solid rgba(255,255,255,.92);
+           padding: 6px 18px; font-size: 26px; font-weight: 700; background: rgba(0,0,0,.35); }
+  .credit { position: absolute; bottom: 38px; right: 44px; z-index: 3; font-size: 17px; color: rgba(255,255,255,.4); }
+
+  /* ── 안쪽 카드: 표지(M1c)와 같은 에디토리얼 톤 ── */
+  .tlabel { position: absolute; left: 72px; top: 84px; z-index: 3; display: flex; align-items: center; gap: 18px; font-size: 22px; font-weight: 600; letter-spacing: 4px; color: rgba(255,255,255,.85); text-shadow: 0 1px 10px rgba(0,0,0,.6); }
+  .tlabel::after { content: ""; width: 120px; height: 3px; background: var(--point); }
+  .body { position: absolute; left: 72px; right: 72px; bottom: 120px; z-index: 2; }
+  .kick { font-size: 30px; font-weight: 700; color: var(--hl); letter-spacing: -.4px; margin-bottom: 16px; }
+  h2 { font-size: 60px; font-weight: 700; letter-spacing: -2.4px; line-height: 1.22; margin-bottom: 30px; }
+  p.txt { font-size: 30px; font-weight: 400; line-height: 1.7; letter-spacing: -.7px; color: rgba(255,255,255,.82); }
+  .meta { font-size: 26px; color: rgba(255,255,255,.55); letter-spacing: -.3px; margin-bottom: 34px; }
+
+  /* 별점 */
+  .score { display: flex; align-items: baseline; gap: 16px; margin-bottom: 14px; }
+  .score b { font-size: 116px; font-weight: 700; letter-spacing: -4px; line-height: 1; }
+  .score span { font-size: 36px; color: rgba(255,255,255,.45); }
+  .stars { position: relative; display: inline-block; font-size: 44px; letter-spacing: 6px; color: rgba(255,255,255,.2); margin-bottom: 44px; }
+  .stars i { position: absolute; left: 0; top: 0; overflow: hidden; white-space: nowrap; color: var(--point); font-style: normal; }
+  .quote { font-size: 44px; font-weight: 600; line-height: 1.42; letter-spacing: -1.4px; border-left: 3px solid var(--point); padding-left: 28px; }
+  .quote small { display: block; margin-top: 14px; font-size: 28px; font-weight: 400; color: rgba(255,255,255,.6); letter-spacing: -.5px; }
+
+  /* 참고: 박스 대신 얇은 구분선 */
+  .note { margin-top: 40px; padding-top: 26px; border-top: 1px solid rgba(255,255,255,.22); }
+  .note h3 { font-size: 26px; font-weight: 700; letter-spacing: 1px; color: rgba(255,255,255,.75); margin-bottom: 12px; }
+  .note p { font-size: 27px; line-height: 1.6; letter-spacing: -.5px; color: rgba(255,255,255,.8); }
+  .note.pink { border-top-color: var(--point); }
+  .note.pink h3 { color: var(--hl); }
+
+  /* 오늘의 라인업 */
+  .lineup { list-style: none; border-top: 1px solid rgba(255,255,255,.25); }
+  .lineup li { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; border-bottom: 1px solid rgba(255,255,255,.25); }
+  .lineup .t { font-size: 38px; font-weight: 700; letter-spacing: -1.2px; }
+  .lineup .t small { display: block; font-size: 22px; font-weight: 400; color: rgba(255,255,255,.5); letter-spacing: 0; margin-top: 4px; }
+  .lineup .s { font-size: 34px; font-weight: 700; color: var(--point); letter-spacing: -.5px; }
+  .lineup .s i { font-style: normal; font-size: 24px; color: rgba(255,255,255,.4); font-weight: 400; margin-left: 4px; }
+  .lineup .tag { margin-left: 14px; vertical-align: 8px; font-size: 19px; font-weight: 700; padding: 2px 12px; border-radius: 20px; border: 1.5px solid var(--point); color: var(--hl); letter-spacing: 0; }
+
+  .center { text-align: center; }
+  .cta { display: inline-block; margin-top: 40px; padding: 12px 28px; border-radius: 40px; border: 2px solid var(--point); color: var(--hl); font-size: 26px; font-weight: 700; }
+
+  /* 마무리 포스터 */
+  .poster { position: absolute; top: 120px; left: 50%; width: 520px; margin-left: -260px; z-index: 2; box-shadow: 0 20px 60px rgba(255,79,163,.25); }
+  .poster img { display: block; width: 100%; }
+  #c2 .body { bottom: 90px; }
+  #c2 h2 { margin-bottom: 20px; }
+  #c2 .lineup li { padding: 16px 4px; }
+  #c2 .lineup .t { font-size: 34px; }
+
+  /* 사진 중심 확인용 기준선: festival.html?guide#3 */
+  .guide-v { position: absolute; left: 539px; top: 0; width: 2px; height: 100%; z-index: 9; background: rgba(0,255,200,.7); }
+  .guide-h { position: absolute; left: 0; right: 0; top: 313px; height: 2px; z-index: 9; background: rgba(0,255,200,.45); }
+
+  /* 표지 (M1c 에디토리얼: 라벨 위, 제목 맨 아래) */
+  .m1c { background: #000; }
+  .m1c .bg { object-position: 50% 30%; }
+  .m1c::before { content: ""; position: absolute; inset: 40% 0 0 0; z-index: 1; background: linear-gradient(to top, rgba(0,0,0,.92) 20%, rgba(0,0,0,.6) 55%, transparent); }
+  .m1c .top-label { position: absolute; left: 72px; top: 84px; z-index: 2; display: flex; align-items: center; gap: 18px; font-size: 22px; font-weight: 600; letter-spacing: 4px; color: rgba(255,255,255,.8); text-shadow: 0 1px 8px rgba(0,0,0,.5); }
+  .m1c .top-label::after { content: ""; width: 120px; height: 3px; background: var(--point); }
+  .m1c .bot { position: absolute; left: 72px; right: 72px; bottom: 200px; z-index: 2; }
+  .m1c .kick { font-size: 30px; font-weight: 700; color: var(--hl); letter-spacing: -.5px; margin-bottom: 14px; }
+  .m1c .kick b { color: var(--point); font-weight: 800; margin-left: 10px; }
+  .m1c .sub2 { margin-top: 26px; font-size: 28px; font-weight: 500; color: rgba(255,255,255,.72); letter-spacing: -.4px; }
+  .m1c h1 { font-size: 100px; font-weight: 700; line-height: 1.12; letter-spacing: -3.5px; }
+</style>
+</head>
+<body>
+<!--
+  영화제 리뷰 틀 (핑크). 기준: posts/06_서울국제프라이드영화제_리뷰
+  [대괄호] 안을 채우고, 영화 수만큼 "영화 블록"(별점 카드 + 좋았던 점 카드)을 반복해요.
+  카드 id는 c1, c2, c3 … 순서대로 다시 매겨요.
+  사진 위치는 style="object-position: X% Y%" 로 맞춰요. 대상이 작으면 transform: scale(1.3) 추가.
+-->
+
+<!-- 1. 표지 -->
+<section class="card m1c" id="c1">
+  <img class="bg" src="images/r1.jpg" style="object-position: 50% 30%" onerror="this.remove()">
+  <div class="top-label">ONSPACE REVIEW [번호 두 자리]</div>
+  <div class="bot">
+    <div class="kick">[제N회 영화제 이름]</div>
+    <h1>[표지 제목 첫 줄],<br>[표지 제목 둘째 줄]</h1>
+    <div class="sub2">&lt;[영화1]&gt; · &lt;[영화2]&gt; 스포일러 없는 리뷰</div>
+  </div>
+  <div class="credit">출처: [영화제 이름]</div>
+</section>
+
+<!-- 2. 오늘의 라인업 -->
+<section class="card shade" id="c2">
+  <div class="tlabel">THE DAY · [MM.DD]</div>
+  <img class="bg" src="images/r2.jpg" style="object-position: 50% 40%" onerror="this.remove()">
+  <div class="body">
+    <div class="kick">[M월 D일 요일]</div>
+    <h2>[하루를 한 줄로]</h2>
+    <ul class="lineup">
+      <li><div class="t">[영화1]<span class="tag">원픽</span><small>[원제]</small></div><div class="s">[5.0]<i>/ 5</i></div></li>
+      <li><div class="t">[영화2]<small>[원제]</small></div><div class="s">[3.5]<i>/ 5</i></div></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 3. 현장 이야기 -->
+<section class="card shade" id="c3">
+  <div class="tlabel">FIELD NOTE</div>
+  <img class="bg" src="images/r3.jpg" style="object-position: 50% 40%" onerror="this.remove()">
+  <div class="body">
+    <div class="kick">현장 이야기</div>
+    <h2>[현장 첫인상 한 줄]</h2>
+    <p class="txt">[현장 분위기 2~4줄. 줄마다 &lt;br&gt;로 끊어요.<br>강조할 말은 <em>이렇게</em> 감싸요.]</p>
+    <div class="note pink"><h3>[가장 기억에 남는 것]</h3><p>[한두 줄. 핵심은 <strong>굵게</strong>]</p></div>
+  </div>
+</section>
+
+<!-- ── 영화 블록 시작: 영화마다 아래 두 장을 반복 ── -->
+<!-- 4. 영화1 별점 -->
+<section class="card shade" id="c4">
+  <div class="tlabel">01 [ENGLISH TITLE]</div>
+  <img class="bg" src="images/r4.jpg" style="object-position: 50% 30%" onerror="this.remove()">
+  <div class="body">
+    <div class="kick">01 &lt;[영화1]&gt;</div>
+    <div class="meta">[원제] · [감독 또는 수상] · [수입·배급사]</div>
+    <div class="score"><b>[5.0]</b><span>/ 5</span></div>
+    <!-- 별 칸 너비: 별점 ÷ 5 × 100%. 단 3.5는 70%, 4.5는 90% -->
+    <div class="stars">★★★★★<i style="width:100%">★★★★★</i></div>
+    <div class="quote">[한 줄 평 첫 줄]<br>[한 줄 평 둘째 줄]</div>
+  </div>
+  <div class="credit">출처: [영화제 이름]</div>
+</section>
+
+<!-- 5. 영화1 좋았던 점 -->
+<section class="card shade" id="c5">
+  <div class="tlabel">01 [ENGLISH TITLE]</div>
+  <img class="bg" src="images/r5.jpg" style="object-position: 50% 40%" onerror="this.remove()">
+  <div class="body">
+    <div class="kick">좋았던 점</div>
+    <h2>[좋았던 점 제목]</h2>
+    <p class="txt">[좋았던 점 2~3줄]</p>
+    <!-- 원픽이면 note pink, 아니면 그냥 note -->
+    <div class="note"><h3>보기 전 참고</h3><p>[아쉬운 점이나 참고할 점, 개봉·공개 일정]</p></div>
+  </div>
+  <div class="credit">출처: [영화제 이름]</div>
+</section>
+<!-- ── 영화 블록 끝 ── -->
+
+<!-- 마지막. 마무리 -->
+<section class="card shade" id="c6">
+  <div class="tlabel">ONSPACE PICK</div>
+  <div class="poster"><img src="images/r9.jpg" onerror="this.remove()"></div>
+  <div class="body center">
+    <h2>온우주의 원픽은 <span class="nw">&lt;[원픽 영화]&gt;</span><br>여러분의 원픽은 무엇이었나요?</h2>
+    <p class="txt">[영화제 이름]에서 본 영화가 있다면<br>댓글로 들려주세요.</p>
+    <div class="cta">@onspace.film_ #온우주리뷰</div>
+  </div>
+  <div class="credit">공식 포스터 © [배급사]</div>
+</section>
+
+<script>
+  const q = new URLSearchParams(location.search);
+  if (q.has('guide')) { document.body.classList.add('guide'); document.querySelectorAll('.card').forEach(c => c.insertAdjacentHTML('beforeend', '<i class="guide-v"></i><i class="guide-h"></i>')); }
+  const n = location.hash.slice(1);
+  if (n) { document.body.classList.add('single'); document.getElementById('c' + n).classList.add('on'); }
+</script>
+</body>
+</html>

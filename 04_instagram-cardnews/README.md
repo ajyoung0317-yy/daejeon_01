@@ -59,3 +59,24 @@ $file = "file:///" + ((Resolve-Path .\posts\01_possible-love_news\cards.html).Pa
 ```
 
 인스타그램에 올릴 때는 첫 장에서 비율을 **4:5(세로)** 로 바꿔야 위아래가 잘리지 않아요.
+
+## Claude Code 스킬 (card-news)
+
+`.claude/skills/card-news/`에는 이 카드뉴스를 Claude Code로 반복해서 만드는 스킬이 있어요.
+"○○ 리뷰 카드뉴스 만들자", "영화제 다녀왔어"처럼 말하면, 종류와 번호 정하기부터 사진 준비, 틀 채우기, 사진 중심 맞추기, PNG 저장, 캡션 쓰기까지 한 단계씩 진행해요. 인스타그램 업로드는 직접 해요.
+
+```
+.claude/skills/card-news/
+├─ SKILL.md               작업 순서 10단계와 고정 규칙
+├─ templates/
+│  ├─ review.html         #온우주리뷰 (노랑, 7장)
+│  ├─ festival.html       영화제 리뷰 (핑크, 영화 수에 따라)
+│  └─ release.html        월별 개봉작 소식 (블루)
+├─ scripts/
+│  ├─ render.ps1          HTML → 01.png ~ NN.png, -Check로 가운데 기준선 확인 시트
+│  └─ prep_images.ps1     한글 이름 원본 사진 → images/r1.jpg … 복사 (원본 유지)
+└─ references/
+   └─ caption.md          시리즈별 캡션 구조, 별점 표기, 해시태그 순서
+```
+
+시리즈마다 포인트 색을 나눠 써요: 빨강 `#E5322D`는 브랜드, 노랑 `#F2B23A`는 리뷰, 핑크 `#FF4FA3`는 영화제, 블루 `#4FA8FF`는 개봉작.
