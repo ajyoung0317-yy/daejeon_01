@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&display=swap">
+<style>
+  /* ===== 영화 톤 공통 토큰 (film/ 템플릿 동일) ===== */
+  :root {
+    --page: #efebe4; --paper: #faf8f4;
+    --ink: #1c1a17; --muted: #857c71; --line: #ddd6cb;
+    --accent: #8c6a43;
+    --serif: "Noto Serif KR", "Batang", serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--page); font-family: "Pretendard", "Malgun Gothic", sans-serif; color: var(--ink); }
+  .canvas { width: 860px; padding: 36px; background: var(--page); }
+  .paper { background: var(--paper); padding: 44px 52px 48px; }
+  .label { display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 600; letter-spacing: 1px; color: var(--accent); }
+  .label::before { content: ""; width: 28px; height: 1px; background: var(--accent); }
+  h1 { margin-top: 14px; font: 700 30px/1.35 var(--serif); letter-spacing: -0.5px; }
+
+  /* ===== 비교 표 ===== */
+  table { width: 100%; margin-top: 30px; border-collapse: collapse; table-layout: fixed; border-top: 1.5px solid var(--ink); }
+  th, td { padding: 17px 16px; border-bottom: 1px solid var(--line); vertical-align: middle; line-height: 1.45; word-break: keep-all; }
+  thead th { font: 700 21px var(--serif); text-align: center; }
+  thead th:first-child { width: 20%; }
+  thead th.col + th.col { border-left: 1px solid var(--line); }
+  tbody th { font-size: 15px; font-weight: 600; letter-spacing: 0.5px; color: var(--muted); text-align: left; }
+  tbody td { font-size: 18px; font-weight: 500; text-align: center; }
+  tbody td + td { border-left: 1px solid var(--line); }
+  tbody tr:last-child th, tbody tr:last-child td { border-bottom: 1.5px solid var(--ink); }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="paper">
+    <div class="label">크리스와 리 한눈에 보기</div>
+    <h1>오랜 파트너, 엇갈린 임무</h1>
+    <table>
+      <thead>
+        <tr><th></th><th class="col">크리스</th><th class="col">리</th></tr>
+      </thead>
+      <tbody>
+        <tr><th>배우</th><td>존 말코비치</td><td>샘 록웰</td></tr>
+        <tr><th>처지</th><td>은퇴 앞둔 CIA 베테랑</td><td>수십 년 함께한 파트너</td></tr>
+        <tr><th>섬에서의 일</th><td>회고록 준비</td><td>크리스 감시 명령</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>

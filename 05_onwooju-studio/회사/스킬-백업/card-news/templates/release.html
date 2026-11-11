@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>onspace.film_ | [N]월 극장 개봉작</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  /* release.html#1 처럼 열면 한 장씩, ?guide 를 붙이면 가운데 기준선이 보여요. 사진이 없으면 그라데이션 배경 */
+  :root { --brand: #E5322D; --point: #4FA8FF; --hl: #8CC8FF; --accent: var(--point); --rgb: 79,168,255; --bg1: #13263d; --bg2: #0a1320; --ink: #06121f; /* 개봉작 시리즈 = 블루 */ }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: #111; }
+  body { font-family: 'Pretendard', 'Malgun Gothic', sans-serif; color: #fff; word-break: keep-all; }
+  .nw { white-space: nowrap; }
+  em { font-style: normal; font-weight: 700; color: var(--hl); }
+  strong { font-weight: 800; color: #fff; }
+
+  .card { position: relative; width: 1080px; height: 1350px; overflow: hidden; margin: 0 auto 40px;
+          background: radial-gradient(120% 70% at 70% 15%, var(--bg1) 0%, var(--bg2) 45%, #000 80%); }
+  body.single .card { display: none; margin: 0; }
+  body.single .card.on { display: block; }
+
+  .bg { position: absolute; left: 0; top: 0; width: 100%; height: 940px; object-fit: cover; z-index: 0;
+        -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%); mask-image: linear-gradient(to bottom, #000 72%, transparent 100%); }
+  .shade::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 66%; z-index: 1;
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,.55) 22%, rgba(0,0,0,.92) 40%, #000 50%, #000 100%);
+  }
+  /* 사진 없을 때 뒤에 깔리는 큰 영문 제목 (사진이 들어오면 사진이 덮어요) */
+  .ghost { position: absolute; top: 150px; left: 50px; right: 50px; z-index: 0; font-size: 150px; font-weight: 900;
+           line-height: .95; letter-spacing: -6px; color: rgba(var(--rgb),.10); text-transform: uppercase; }
+
+  .logo { position: absolute; top: 56px; left: 64px; z-index: 3; font-size: 34px; font-weight: 800; letter-spacing: -.5px; text-shadow: 0 2px 10px rgba(0,0,0,.4); }
+  .logo i { font-style: normal; color: var(--brand); }
+  .badge { position: absolute; top: 52px; right: 64px; z-index: 3; border: 2px solid rgba(255,255,255,.92);
+           padding: 6px 18px; font-size: 26px; font-weight: 700; background: rgba(0,0,0,.35); }
+  .credit { position: absolute; bottom: 38px; right: 44px; z-index: 3; font-size: 17px; color: rgba(255,255,255,.4); }
+  .page { position: absolute; bottom: 38px; left: 64px; z-index: 3; font-size: 18px; font-weight: 700; color: rgba(255,255,255,.4); letter-spacing: 1px; }
+
+  .body { position: absolute; left: 64px; right: 64px; bottom: 120px; z-index: 2; }
+  .dots { display: flex; gap: 14px; margin-bottom: 26px; }
+  .dots span { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); }
+
+  /* 한국영화 표시 */
+  .k { display: inline-block; vertical-align: middle; margin-left: 10px; padding: 3px 10px; border-radius: 6px; background: var(--brand);
+       color: #fff; font-size: 20px; font-weight: 800; letter-spacing: 0; line-height: 1.2; }
+
+  /* 표지 */
+  .cover .light { font-size: 50px; font-weight: 400; line-height: 1.3; letter-spacing: -1.5px; }
+  .cover .bold { font-size: 80px; font-weight: 800; line-height: 1.18; letter-spacing: -3px; margin-top: 6px; }
+  .cover .sub { margin-top: 30px; font-size: 28px; line-height: 1.6; letter-spacing: -.5px; color: rgba(255,255,255,.7); }
+  .cal { position: absolute; top: 170px; left: 64px; right: 64px; z-index: 2; }
+  .cal li { list-style: none; display: flex; align-items: flex-start; gap: 26px; padding: 18px 0; border-bottom: 1px solid rgba(255,255,255,.14); }
+  .cal li b { flex: none; width: 130px; font-size: 36px; font-weight: 800; color: var(--point); letter-spacing: -1px; line-height: 1.35; }
+  .cal li div { font-size: 30px; font-weight: 600; letter-spacing: -1px; line-height: 1.45; color: rgba(255,255,255,.55); }
+  .cal li div span { white-space: nowrap; }
+  .cal li div span.kr { color: #fff; font-weight: 700; }
+  .cal li div span.kr::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--brand); margin-right: 8px; vertical-align: middle; }
+  .cal li div i { font-style: normal; margin: 0 12px; color: rgba(255,255,255,.25); }
+  .legend { margin-top: 18px; font-size: 22px; color: rgba(255,255,255,.5); }
+  .legend::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--brand); margin-right: 8px; vertical-align: middle; }
+  .big-n { position: absolute; top: 90px; right: 40px; z-index: 0; font-size: 560px; font-weight: 900; line-height: 1; letter-spacing: -30px; color: rgba(var(--rgb),.07); }
+
+  /* 작품 카드 */
+  .date { display: inline-flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+  .date b { background: var(--point); color: var(--ink); font-size: 30px; font-weight: 800; padding: 8px 20px; border-radius: 40px; }
+  .date span { border: 2px solid rgba(255,255,255,.8); border-radius: 40px; padding: 6px 18px; font-size: 24px; font-weight: 700; }
+  h2 { font-size: 72px; font-weight: 800; letter-spacing: -2.5px; line-height: 1.15; }
+  h2 small { display: block; margin-top: 10px; font-size: 26px; font-weight: 500; letter-spacing: 0; color: rgba(255,255,255,.5); }
+  .meta { margin: 24px 0 30px; font-size: 26px; line-height: 1.6; color: rgba(255,255,255,.65); letter-spacing: -.4px; }
+  .meta b { color: rgba(255,255,255,.9); font-weight: 700; margin-right: 8px; }
+  .meta .dim { opacity: .55; }
+  p.txt { font-size: 31px; line-height: 1.7; letter-spacing: -.8px; color: rgba(255,255,255,.88); }
+  .point { margin-top: 30px; font-size: 29px; font-weight: 700; line-height: 1.5; letter-spacing: -.8px; border-left: 4px solid var(--point); padding-left: 24px; }
+  .point i { font-style: normal; color: var(--point); margin-right: 10px; }
+
+  /* 첫째 주 2편 */
+  .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+  .duo > div { border: 2px solid rgba(255,255,255,.2); padding: 30px 28px; background: rgba(0,0,0,.4); }
+  .duo h3 { font-size: 42px; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 8px; }
+  .duo .m { font-size: 22px; color: rgba(255,255,255,.55); margin-bottom: 18px; line-height: 1.5; }
+  .duo p { font-size: 26px; line-height: 1.6; color: rgba(255,255,255,.85); letter-spacing: -.5px; }
+  .duo .tag { display: inline-block; margin-top: 18px; font-size: 22px; font-weight: 700; color: var(--hl); }
+  .week { font-size: 60px; font-weight: 800; letter-spacing: -2px; line-height: 1.2; margin-bottom: 30px; }
+  .strip { margin-top: 22px; display: flex; align-items: center; gap: 18px; padding: 20px 28px; border: 2px solid rgba(var(--rgb),.45); font-size: 26px; letter-spacing: -.5px; color: rgba(255,255,255,.8); }
+  .strip b { color: var(--point); font-weight: 800; }
+  .strip strong { font-size: 30px; }
+
+  /* 마무리 */
+  .center { text-align: center; }
+  .center .dots { justify-content: center; }
+  .re { display: flex; justify-content: center; gap: 22px; margin: 34px 0 10px; }
+  .re div { border: 2px solid rgba(255,255,255,.22); padding: 22px 30px; min-width: 250px; }
+  .re b { display: block; font-size: 24px; color: var(--point); margin-bottom: 6px; }
+  .re span { font-size: 34px; font-weight: 800; letter-spacing: -1px; }
+  .end h2 { font-size: 60px; margin-bottom: 26px; }
+  .cta { display: inline-block; margin-top: 44px; padding: 14px 30px; border-radius: 40px; background: var(--point); color: var(--ink); font-size: 27px; font-weight: 700; }
+  .note { margin-top: 26px; font-size: 21px; color: rgba(255,255,255,.4); }
+  /* 반반 배경 (2번 카드) */
+  .bg.half { width: 50%; }
+  .bg.half.r { left: 50%; }
+  .split-line { position: absolute; top: 0; left: 539px; width: 2px; height: 760px; background: rgba(0,0,0,.6); z-index: 0; }
+  /* 작은 포스터 */
+  .poster { position: absolute; right: 0; top: -40px; width: 220px; border: 2px solid rgba(255,255,255,.25); box-shadow: 0 16px 40px rgba(0,0,0,.7); }
+  /* 포스터를 제목 옆에 (시안: 6번 카드) */
+  .head { display: flex; align-items: flex-end; gap: 36px; margin-bottom: 34px; }
+  .head .meta { margin-bottom: 0; }
+  .poster-in { flex: none; width: 200px; border: 2px solid rgba(255,255,255,.25); box-shadow: 0 16px 40px rgba(0,0,0,.7); }
+  /* 사진 중심 확인용 기준선 */
+  .guide-v { position: absolute; left: 539px; top: 0; width: 2px; height: 100%; z-index: 9; background: rgba(0,255,200,.7); }
+  .guide-h { position: absolute; left: 0; right: 0; top: 313px; height: 2px; z-index: 9; background: rgba(0,255,200,.45); }
+</style>
+</head>
+<body>
+<!--
+  개봉작 소식 틀 (블루). 기준: posts/05_11월개봉작
+  표지 → 영화마다 1장(스틸컷 배경 + 제목 왼쪽 작은 포스터 200px) → 마무리
+  스틸컷은 images/m2.jpg …, 포스터는 images/p2.jpg … 로 넣어요. 한국영화는 제목 옆에 <span class="k">한국영화</span>.
+  같은 주 두 편을 한 장에 묶을 때는 posts/05_11월개봉작/cards.html 2번 카드(.duo)를 참고해요.
+-->
+
+<!-- 1. 표지 -->
+<section class="card cover" id="c1">
+  <div class="big-n">[N]</div>
+  <div class="logo">onspace<i>.</i>film_</div>
+  <div class="badge">[N]월 개봉작</div>
+  <ul class="cal">
+    <li><b>[MM.DD]</b><div><span class="kr">[한국영화]</span><i>/</i><span>[외화]</span></div></li>
+    <li><b>[MM.DD]</b><div><span>[외화]</span></div></li>
+  </ul>
+  <div class="body">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="light">[계절 한 줄]</div>
+    <div class="bold">[N]월, 극장에 걸리는<br>[숫자] 개의 우주</div>
+    <div class="sub">한국영화 [n]편 + 외화 [n]편, 날짜순으로 정리했어요</div>
+    <div class="legend">한국영화</div>
+  </div>
+</section>
+
+<!-- 2. 영화 한 편 (영화마다 반복, .page 번호도 고쳐요) -->
+<section class="card shade" id="c2">
+  <div class="ghost">[English<br>Title]</div>
+  <img class="bg" src="images/m2.jpg" style="object-position: 50% 40%" onerror="this.remove()">
+  <div class="page">01 / [총 편수]</div>
+  <div class="body">
+    <div class="head">
+      <img class="poster-in" src="images/p2.jpg" onerror="this.remove()">
+      <div>
+        <div class="date"><b>[MM.DD]</b><span>[관람 등급 또는 장르]</span></div>
+        <h2>[영화 제목]<small>[원제]</small></h2>
+        <div class="meta"><b>감독</b>[감독] <span class="dim">&lt;[대표작]&gt;</span><br><b>출연</b>[배우들]</div>
+      </div>
+    </div>
+    <p class="txt">[줄거리·화제 2~3줄. 강조는 <em>이렇게</em>, 인물은 <strong>굵게</strong>]</p>
+    <div class="point"><i>✦</i>[이런 분께 / 감상 포인트 한 줄]</div>
+  </div>
+  <div class="credit">© [배급사]</div>
+</section>
+
+<!-- 마지막. 마무리 -->
+<section class="card end" id="c3">
+  <div class="big-n" style="opacity:.6">?</div>
+  <div class="logo">onspace<i>.</i>film_</div>
+  <div class="body center">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <h2>여러분의 [N]월<br>첫 번째 영화는?</h2>
+    <p class="txt">[재개봉 소개 한 줄, 없으면 이 줄과 아래 .re 삭제]</p>
+    <div class="re">
+      <div><b>[MM.DD] 재개봉</b><span>[제목]</span></div>
+    </div>
+    <div class="cta">저장해두고 하나씩 챙겨봐요 🌌</div>
+    <div class="note">개봉일은 배급사 사정에 따라 바뀔 수 있어요 · [M월 D일] 기준</div>
+  </div>
+</section>
+
+<script>
+  const q = new URLSearchParams(location.search);
+  if (q.has('guide')) { document.body.classList.add('guide'); document.querySelectorAll('.card').forEach(c => c.insertAdjacentHTML('beforeend', '<i class="guide-v"></i><i class="guide-h"></i>')); }
+  const n = location.hash.slice(1);
+  if (n) { document.body.classList.add('single'); document.getElementById('c' + n).classList.add('on'); }
+</script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>onspace.film_ | [영화 제목] 리뷰</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  /* review.html#1 처럼 열면 한 장씩, ?guide 를 붙이면 가운데 기준선이 보여요 */
+  :root { --brand: #E5322D; --point: #F2B23A; --hl: #FFC861; --accent: #F2B23A; /* 리뷰 = 노랑 */ }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: #111; }
+  body { font-family: 'Pretendard', 'Malgun Gothic', sans-serif; color: #fff; word-break: keep-all; }
+  .nw { white-space: nowrap; }
+  em { font-style: normal; font-weight: 700; color: var(--hl); }
+  strong { font-weight: 800; color: #fff; }
+
+  .card { position: relative; width: 1080px; height: 1350px; overflow: hidden; margin: 0 auto 40px; background: #000; }
+  body.single .card { display: none; margin: 0; }
+  body.single .card.on { display: block; }
+
+  .bg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; }
+
+  /* 표지: 사진 꽉 채움 */
+  .cover::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 60%; z-index: 1;
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,.55) 30%, rgba(0,0,0,.9) 62%, rgba(0,0,0,.96) 100%);
+  }
+  /* 본문: 위쪽 사진, 아래 검정 */
+  .shade .bg { height: 940px; -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%); mask-image: linear-gradient(to bottom, #000 72%, transparent 100%); }
+  .shade::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 64%; z-index: 1;
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,.55) 22%, rgba(0,0,0,.92) 40%, #000 50%, #000 100%);
+  }
+
+  .logo { position: absolute; top: 56px; left: 64px; z-index: 3; font-size: 34px; font-weight: 800; letter-spacing: -.5px; text-shadow: 0 2px 10px rgba(0,0,0,.4); }
+  .logo i { font-style: normal; color: var(--brand); }
+  .badge { position: absolute; top: 52px; right: 64px; z-index: 3; border: 2px solid rgba(255,255,255,.92);
+           padding: 6px 18px; font-size: 26px; font-weight: 700; background: rgba(0,0,0,.35); }
+  .credit { position: absolute; bottom: 38px; right: 44px; z-index: 3; font-size: 17px; color: rgba(255,255,255,.4); }
+
+  /* ── 안쪽 카드: 표지(M1c)와 같은 에디토리얼 톤 ── */
+  .tlabel { position: absolute; left: 72px; top: 84px; z-index: 3; display: flex; align-items: center; gap: 18px; font-size: 22px; font-weight: 600; letter-spacing: 4px; color: rgba(255,255,255,.85); text-shadow: 0 1px 10px rgba(0,0,0,.6); }
+  .tlabel::after { content: ""; width: 120px; height: 3px; background: var(--point); }
+  .body { position: absolute; left: 72px; right: 72px; bottom: 120px; z-index: 2; }
+  .kick { font-size: 30px; font-weight: 700; color: var(--hl); letter-spacing: -.4px; margin-bottom: 16px; }
+  h2 { font-size: 60px; font-weight: 700; letter-spacing: -2.4px; line-height: 1.22; margin-bottom: 30px; }
+  p.txt { font-size: 30px; font-weight: 400; line-height: 1.7; letter-spacing: -.7px; color: rgba(255,255,255,.82); }
+  .meta { font-size: 26px; color: rgba(255,255,255,.55); letter-spacing: -.3px; margin-bottom: 34px; }
+
+  /* 별점 */
+  .score { display: flex; align-items: baseline; gap: 16px; margin-bottom: 14px; }
+  .score b { font-size: 116px; font-weight: 700; letter-spacing: -4px; line-height: 1; }
+  .score span { font-size: 36px; color: rgba(255,255,255,.45); }
+  .stars { position: relative; display: inline-block; font-size: 44px; letter-spacing: 6px; color: rgba(255,255,255,.2); margin-bottom: 44px; }
+  .stars i { position: absolute; left: 0; top: 0; overflow: hidden; white-space: nowrap; color: var(--point); font-style: normal; }
+  .quote { font-size: 44px; font-weight: 600; line-height: 1.42; letter-spacing: -1.4px; border-left: 3px solid var(--point); padding-left: 28px; }
+  .quote small { display: block; margin-top: 14px; font-size: 28px; font-weight: 400; color: rgba(255,255,255,.6); letter-spacing: -.5px; }
+
+  /* 참고: 박스 대신 얇은 구분선 */
+  .note { margin-top: 40px; padding-top: 26px; border-top: 1px solid rgba(255,255,255,.22); }
+  .note h3 { font-size: 26px; font-weight: 700; letter-spacing: 1px; color: rgba(255,255,255,.75); margin-bottom: 12px; }
+  .note p { font-size: 27px; line-height: 1.6; letter-spacing: -.5px; color: rgba(255,255,255,.8); }
+  .note.pink { border-top-color: var(--point); }
+  .note.pink h3 { color: var(--hl); }
+
+  /* 오늘의 라인업 */
+  .lineup { list-style: none; border-top: 1px solid rgba(255,255,255,.25); }
+  .lineup li { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; border-bottom: 1px solid rgba(255,255,255,.25); }
+  .lineup .t { font-size: 38px; font-weight: 700; letter-spacing: -1.2px; }
+  .lineup .t small { display: block; font-size: 22px; font-weight: 400; color: rgba(255,255,255,.5); letter-spacing: 0; margin-top: 4px; }
+  .lineup .s { font-size: 34px; font-weight: 700; color: var(--point); letter-spacing: -.5px; }
+  .lineup .s i { font-style: normal; font-size: 24px; color: rgba(255,255,255,.4); font-weight: 400; margin-left: 4px; }
+  .lineup .tag { margin-left: 14px; vertical-align: 8px; font-size: 19px; font-weight: 700; padding: 2px 12px; border-radius: 20px; border: 1.5px solid var(--point); color: var(--hl); letter-spacing: 0; }
+
+  .center { text-align: center; }
+  .cta { display: inline-block; margin-top: 40px; padding: 12px 28px; border-radius: 40px; border: 2px solid var(--point); color: var(--hl); font-size: 26px; font-weight: 700; }
+
+  /* 마무리 포스터 */
+  .poster { position: absolute; top: 120px; left: 50%; width: 520px; margin-left: -260px; z-index: 2; box-shadow: 0 20px 60px rgba(242,178,58,.25); }
+  .poster img { display: block; width: 100%; }
+
+  /* 사진 중심 확인용 기준선: review.html?guide#3 */
+  .guide-v { position: absolute; left: 539px; top: 0; width: 2px; height: 100%; z-index: 9; background: rgba(0,255,200,.7); }
+  .guide-h { position: absolute; left: 0; right: 0; top: 313px; height: 2px; z-index: 9; background: rgba(0,255,200,.45); }
+
+  /* 표지 (M1c 에디토리얼: 라벨 위, 제목 맨 아래) */
+  .m1c { background: #000; }
+  .m1c .bg { object-position: 50% 30%; }
+  .m1c::before { content: ""; position: absolute; inset: 40% 0 0 0; z-index: 1; background: linear-gradient(to top, rgba(0,0,0,.92) 20%, rgba(0,0,0,.6) 55%, transparent); }
+  .m1c .top-label { position: absolute; left: 72px; top: 84px; z-index: 2; display: flex; align-items: center; gap: 18px; font-size: 22px; font-weight: 600; letter-spacing: 4px; color: rgba(255,255,255,.8); text-shadow: 0 1px 8px rgba(0,0,0,.5); }
+  .m1c .top-label::after { content: ""; width: 120px; height: 3px; background: var(--point); }
+  .m1c .bot { position: absolute; left: 72px; right: 72px; bottom: 200px; z-index: 2; }
+  .m1c .kick { font-size: 30px; font-weight: 700; color: var(--hl); letter-spacing: -.5px; margin-bottom: 14px; }
+  .m1c .kick b { color: var(--point); font-weight: 800; margin-left: 10px; }
+  .m1c .sub2 { margin-top: 26px; font-size: 28px; font-weight: 500; color: rgba(255,255,255,.72); letter-spacing: -.4px; }
+  .m1c h1 { font-size: 100px; font-weight: 700; line-height: 1.12; letter-spacing: -3.5px; }
+  /* 추천 카드: 두 칸 */
+  .reco { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-top: 8px; }
+  .reco div { border-top: 1px solid rgba(255,255,255,.22); padding-top: 24px; }
+  .reco .yes { border-top-color: var(--point); }
+  .reco h3 { font-size: 26px; font-weight: 700; letter-spacing: 1px; margin-bottom: 14px; color: rgba(255,255,255,.75); }
+  .reco .yes h3 { color: var(--hl); }
+  .reco li { list-style: none; font-size: 27px; line-height: 1.5; color: rgba(255,255,255,.8); padding-left: 22px; position: relative; margin-bottom: 10px; letter-spacing: -.5px; }
+  .reco li::before { content: "·"; position: absolute; left: 4px; }
+</style>
+</head>
+<body>
+<!--
+  영화 리뷰 틀 (노랑, 7장). 글자 크기와 줄바꿈은 posts/06 영화제 리뷰 기준.
+  [대괄호] 안을 채워요. 사진 위치는 style="object-position: X% Y%" 로 맞춰요.
+-->
+
+<!-- 1. 표지 -->
+<section class="card m1c" id="c1">
+  <img class="bg" src="images/r1.jpg" style="object-position: 50% 30%" onerror="this.remove()">
+  <div class="top-label">ONSPACE REVIEW [번호 두 자리]</div>
+  <div class="bot">
+    <div class="kick">[감독 또는 배우] · &lt;[영화 제목]&gt;</div>
+    <h1>[표지 제목 첫 줄],<br>[표지 제목 둘째 줄]</h1>
+    <div class="sub2">스포일러 없는 솔직 리뷰</div>
+  </div>
+  <div class="credit">© [배급사]</div>
+</section>
+
+<!-- 2. 별점 + 한 줄 평 -->
+<section class="card shade" id="c2">
+  <div class="tlabel">ONSPACE SCORE</div>
+  <img class="bg" src="images/r2.jpg" style="object-position: 50% 40%" onerror="this.remove()">
+  <div class="body">
+    <div class="kick">온우주별점</div>
+    <div class="meta">[원제] · [감독] · [개봉일 또는 공개처]</div>
+    <div class="score"><b>[4.0]</b><span>/ 5</span></div>
+    <!-- 별 칸 너비: 별점 ÷ 5 × 100%. 단 3.5는 70%, 4.5는 90% -->
+    <div class="stars">★★★★★<i style="width:80%">★★★★★</i></div>
+    <div class="quote">[한 줄 평 첫 줄]<br>[한 줄 평 둘째 줄]</div>
+  </div>
+  <div class="credit">© [배급사]</div>
+</section>
+
+<!-- 3~5. 좋았던 점 1~3 (같은 모양으로 세 장) -->
+<section class="card shade" id="c3">
+  <div class="tlabel">GOOD POINT 01</div>
+  <img class="bg" src="images/r3.jpg" style="object-position: 50% 40%" onerror="this.remove()">
+  <div class="body">
+    <div class="kick">좋았던 점 1</div>
+    <h2>[좋았던 점 제목]</h2>
+    <p class="txt">[2~3줄. 줄마다 &lt;br&gt;로 끊어요.<br>강조할 말은 <em>이렇게</em>, 인물 이름은 <strong>굵게</strong>.]</p>
+  </div>
+  <div class="credit">© [배급사]</div>
+</section>
+
+<section class="card shade" id="c4">
+  <div class="tlabel">GOOD POINT 02</div>
+  <img class="bg" src="images/r4.jpg" style="object-position: 50% 40%" onerror="this.remove()">
+  <div class="body">
+    <div class="kick">좋았던 점 2</div>
+    <h2>[좋았던 점 제목]</h2>
+    <p class="txt">[2~3줄]</p>
+  </div>
+  <div class="credit">© [배급사]</div>
+</section>
+
+<section class="card shade" id="c5">
+  <div class="tlabel">GOOD POINT 03</div>
+  <img class="bg" src="images/r5.jpg" style="object-position: 50% 40%" onerror="this.remove()">
+  <div class="body">
+    <div class="kick">좋았던 점 3</div>
+    <h2>[좋았던 점 제목]</h2>
+    <p class="txt">[2~3줄]</p>
+  </div>
+  <div class="credit">© [배급사]</div>
+</section>
+
+<!-- 6. 총평 + 추천 -->
+<section class="card shade" id="c6">
+  <div class="tlabel">VERDICT</div>
+  <img class="bg" src="images/r6.jpg" style="object-position: 50% 40%" onerror="this.remove()">
+  <div class="body">
+    <div class="kick">총평</div>
+    <h2>[총평 첫 줄],<br>[총평 둘째 줄]</h2>
+    <div class="reco">
+      <div class="yes"><h3>이런 분께 추천</h3><ul>
+        <li>[추천 1]</li>
+        <li>[추천 2]</li>
+        <li>[추천 3]</li>
+      </ul></div>
+      <div class="no"><h3>보기 전 참고</h3><ul>
+        <li>[참고 1]</li>
+        <li>[참고 2]</li>
+      </ul></div>
+    </div>
+  </div>
+  <div class="credit">© [배급사]</div>
+</section>
+
+<!-- 7. 마무리 -->
+<section class="card shade" id="c7">
+  <div class="tlabel">ONSPACE.FILM_</div>
+  <div class="poster"><img src="images/poster.jpg" onerror="this.remove()"></div>
+  <div class="body center">
+    <h2>[댓글을 부르는 질문 첫 줄]<br>[둘째 줄]</h2>
+    <p class="txt"><span class="nw">&lt;[영화 제목]&gt;</span>을 보셨다면<br>여러분의 생각도 댓글로 들려주세요.</p>
+    <div class="cta">@onspace.film_ #온우주리뷰</div>
+  </div>
+  <div class="credit">공식 포스터 © [배급사]</div>
+</section>
+
+<script>
+  const q = new URLSearchParams(location.search);
+  if (q.has('guide')) { document.body.classList.add('guide'); document.querySelectorAll('.card').forEach(c => c.insertAdjacentHTML('beforeend', '<i class="guide-v"></i><i class="guide-h"></i>')); }
+  const n = location.hash.slice(1);
+  if (n) { document.body.classList.add('single'); document.getElementById('c' + n).classList.add('on'); }
+</script>
+</body>
+</html>

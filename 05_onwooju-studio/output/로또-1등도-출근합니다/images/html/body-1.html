@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  /* ===== 공통 토큰 (모든 템플릿 동일) ===== */
+  :root {
+    --page: #f4f6f5; --paper: #ffffff; --bar: #dff5ec;
+    --ink: #1f2328; --muted: #6b7280; --line: #e6e8eb;
+    --accent: #0b8a5f; --accent-2: #0a7d8c; --accent-soft: #eef8f3;
+    --mono: "Cascadia Code", Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--page); font-family: "Pretendard", "Malgun Gothic", sans-serif; color: var(--ink); }
+  .canvas { width: 860px; padding: 36px; background: var(--page); }
+  .window { background: var(--paper); border-radius: 14px; box-shadow: 0 6px 20px rgba(0,0,0,.08); overflow: hidden; }
+  .bar { height: 34px; background: var(--bar); display: flex; align-items: center; gap: 8px; padding: 0 14px; }
+  .bar i { width: 12px; height: 12px; border-radius: 50%; display: block; }
+  .bar i:nth-child(1) { background: #ff6159; } .bar i:nth-child(2) { background: #ffbd2e; } .bar i:nth-child(3) { background: #28c941; }
+  .bar span { margin-left: 10px; font: 13px var(--mono); color: var(--muted); }
+  .body { padding: 32px 36px 36px; }
+  .label { font-size: 15px; font-weight: 700; color: var(--accent); margin-bottom: 8px; }
+  h1 { font-size: 30px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.3; }
+
+  /* ===== 핵심 포인트 카드: 3개면 3열, 4개면 2x2, 5개면 3+2 ===== */
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 24px; }
+  .cards.n4 { grid-template-columns: repeat(2, 1fr); }
+  .card { border: 1px solid var(--line); border-radius: 12px; padding: 20px 18px; box-shadow: inset 0 4px 0 var(--accent); }
+  .card .no { font: 700 14px var(--mono); color: var(--accent); }
+  .card h2 { margin-top: 8px; font-size: 21px; font-weight: 800; line-height: 1.35; word-break: keep-all; }
+  .card p { margin-top: 8px; font-size: 16px; color: var(--muted); line-height: 1.5; word-break: keep-all; }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="window">
+    <div class="bar"><i></i><i></i><i></i><span>info.md</span></div>
+    <div class="body">
+      <div class="label">// 몇부작 · 공개일</div>
+      <h1>작품 정보 한눈에</h1>
+      <div class="cards">
+        <div class="card"><div class="no">01</div><h2>총 10부작</h2><p>10회로 완결된 드라마</p></div>
+        <div class="card"><div class="no">02</div><h2>티빙 9월 10일</h2><p>매주 목요일 2회씩 공개</p></div>
+        <div class="card"><div class="no">03</div><h2>tvN 월화 밤 9시</h2><p>9월 14일~10월 13일</p></div>
+        <div class="card"><div class="no">04</div><h2>극본·연출 윤영빈</h2><p>영화 '강릉' 감독</p></div>
+        <div class="card"><div class="no">05</div><h2>동명 웹소설 원작</h2><p>웹툰을 거쳐 드라마로</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

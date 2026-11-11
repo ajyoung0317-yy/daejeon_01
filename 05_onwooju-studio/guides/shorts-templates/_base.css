@@ -1,0 +1,51 @@
+/* 온우주 쇼츠 장면 공통 스타일 — 1080x1920 세로. 이 파일의 :root 토큰은 바꾸지 않는다.
+   시리즈 색은 각 장면 HTML의 <body class="..."> 로 고른다: review(노랑, 기본) / release(블루) */
+:root { --brand: #E5322D; --point: #F2B23A; --hl: #FFC861;
+        --safe-top: 288px; --safe-bottom: 288px; --safe-side: 72px; --safe-right: 130px; }
+body.release { --point: #4FA8FF; --hl: #8CC8FF; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: #111; }
+body { font-family: 'Pretendard', 'Malgun Gothic', sans-serif; color: #fff; word-break: keep-all; }
+em { font-style: normal; color: var(--hl); }
+
+.canvas { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+
+/* 사진: --still 에 공식 스틸 경로. 비어 있으면 어두운 그라데이션 */
+.photo { position: absolute; inset: 0; background: radial-gradient(120% 80% at 40% 30%, #3a3a46 0%, #15151b 60%, #000 100%);
+         background-image: var(--still, radial-gradient(120% 80% at 40% 30%, #3a3a46 0%, #15151b 60%, #000 100%));
+         background-size: cover; background-position: center; }
+.photo.top { bottom: auto; height: 1180px; -webkit-mask-image: linear-gradient(#000 70%, transparent); mask-image: linear-gradient(#000 70%, transparent); }
+.fade { position: absolute; left: 0; right: 0; bottom: 0; height: 65%;
+        background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.6) 30%, rgba(0,0,0,.94) 60%, #000); }
+
+/* 로고: 안전 영역 왼쪽 위 */
+.logo { position: absolute; top: calc(var(--safe-top) - 96px); left: var(--safe-side); z-index: 3;
+        font-size: 38px; font-weight: 800; letter-spacing: -.5px; text-shadow: 0 2px 12px rgba(0,0,0,.5); }
+.logo i { font-style: normal; color: var(--brand); }
+
+/* 글자 영역: 안전 영역 아래쪽에 붙인다 */
+.copy { position: absolute; left: var(--safe-side); right: var(--safe-right); bottom: var(--safe-bottom); z-index: 2; }
+.label { display: flex; align-items: center; gap: 18px; margin-bottom: 28px; font-size: 30px; font-weight: 700; letter-spacing: 3px; color: var(--hl); }
+.label::after { content: ""; width: 110px; height: 4px; background: var(--point); }
+.hook { font-size: 92px; font-weight: 800; line-height: 1.2; letter-spacing: -3px; text-shadow: 0 4px 24px rgba(0,0,0,.6); }
+.line { font-size: 76px; font-weight: 800; line-height: 1.24; letter-spacing: -2.4px; }
+.sub { margin-top: 30px; font-size: 40px; font-weight: 500; line-height: 1.5; letter-spacing: -1px; color: rgba(255,255,255,.78); }
+.nospo { display: inline-block; margin-top: 40px; padding: 10px 24px; border: 2px solid rgba(255,255,255,.7); border-radius: 999px;
+         font-size: 30px; font-weight: 600; background: rgba(0,0,0,.35); }
+/* 출처: 밝은 사진 위에서도 읽히도록 반투명 바탕 칸을 기본으로 (2026-11-11 하트 오브 비스트에서 배움) */
+.credit { position: absolute; right: var(--safe-right); top: calc(var(--safe-top) - 84px); z-index: 3; font-size: 22px; color: rgba(255,255,255,.85);
+          background: rgba(0,0,0,.5); padding: 4px 12px; border-radius: 6px; }
+
+/* 별점 */
+.score { display: flex; align-items: baseline; gap: 18px; }
+.score b { font-size: 150px; font-weight: 800; letter-spacing: -5px; line-height: 1; }
+.score span { font-size: 44px; color: rgba(255,255,255,.5); }
+.stars { margin: 14px 0 40px; font-size: 60px; letter-spacing: 8px; color: var(--point); }
+.who { margin-top: 36px; padding-top: 30px; border-top: 2px solid rgba(255,255,255,.2); font-size: 40px; line-height: 1.5; color: rgba(255,255,255,.85); }
+.ask { margin-top: 56px; font-size: 48px; font-weight: 700; line-height: 1.35; }
+.handle { margin-top: 22px; font-size: 34px; color: rgba(255,255,255,.6); }
+
+/* 검수용: <body class="guide"> 로 열면 안전 영역이 점선으로 보인다 */
+.safe { display: none; position: absolute; z-index: 9; top: var(--safe-top); bottom: var(--safe-bottom); left: var(--safe-side); right: var(--safe-right);
+        outline: 3px dashed rgba(0,255,170,.8); }
+body.guide .safe { display: block; }

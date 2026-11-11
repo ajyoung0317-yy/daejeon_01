@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root {
+    --ink: #1f2328; --muted: #6b7280;
+    --accent: #0b8a5f; --label: #6ee7b7;
+    --mono: "Cascadia Code", Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #111; font-family: "Pretendard", "Malgun Gothic", sans-serif; }
+
+  /* ===== 대표 이미지: 1080x1080 고정, 글씨 영역은 화면의 25% 이하 ===== */
+  .canvas { position: relative; width: 1080px; height: 1080px; overflow: hidden;
+    /* 공식 배포 이미지가 있으면 background-image: url('../source/파일.jpg') 로 바꾼다 */
+    background: #0c1110 url('../source/still-final-interview.jpg');
+    background-size: cover; background-position: 72% center; }
+  .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,.55) 65%, rgba(0,0,0,.88) 100%); }
+  .deco { position: absolute; top: 108px; left: 108px; right: 108px; font: 26px/1.7 var(--mono); color: rgba(255,255,255,.28); }
+  .copy { position: absolute; left: 108px; right: 108px; bottom: 112px; }
+  .tag { display: inline-block; padding: 8px 20px; border-radius: 999px; background: var(--label); color: #064e3b; font-size: 26px; font-weight: 800; }
+  /* 라벨 색: 공개 예정=민트, 영화 리뷰=앰버, 드라마 리뷰=하늘, 영화 큐레이션=라벤더 */
+  .tag.upcoming { background: #6ee7b7; color: #064e3b; }
+  .tag.movie { background: #fcd34d; color: #78350f; }
+  .tag.drama { background: #93c5fd; color: #1e3a8a; }
+  .tag.curation { background: #c4b5fd; color: #3b0764; }
+  .line { margin-top: 18px; color: #fff; font-size: 66px; font-weight: 900; line-height: 1.22; letter-spacing: -1.5px; word-break: keep-all;
+    -webkit-text-stroke: 2px rgba(0,0,0,.35); paint-order: stroke fill; }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="shade"></div>
+  <div class="copy">
+    <span class="tag curation">영화 큐레이션</span>
+    <div class="line">11월 극장 개봉작<br>놓치기 아쉬운 9편 🍿</div>
+  </div>
+</div>
+</body>
+</html>

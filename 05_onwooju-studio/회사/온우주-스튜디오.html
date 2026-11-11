@@ -1,0 +1,473 @@
+<title>온우주 스튜디오</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* 레이아웃: 어두운 우주 배경 위 한 줄 스크롤. 위에 고정 내비, 히어로는 디렉터를 중심으로 도는 스테이션, 섹션마다 큰 제목 */
+:root{
+  --bg:#0a0b12; --bg2:#0e1020; --panel:#13162a; --panel2:#191d36; --line:#252a45; --line2:#333a5c;
+  --text:#ecedf5; --muted:#9097ae; --dim:#5f6682; --accent:#F2B23A; --brand:#FF5047;
+  --ok:#4ade80; --warn:#fbbf24; --bad:#f87171;
+  --c-dir:#ffffff; --c-op:#F2B23A;
+  --c-plan:#a78bfa; --c-res:#38bdf8; --c-blog:#4ade80; --c-card:#facc15; --c-sp:#f472b6; --c-sd:#fb923c; --c-se:#2dd4bf; --c-br:#f87171; --c-pa:#60a5fa;
+  --f-body:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --radius:14px; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--f-body);line-height:1.6;font-size:15px;word-break:keep-all;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+code,.mono{font-family:var(--f-mono);font-size:.86em}
+::selection{background:#F2B23A55}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:49;background:var(--bg)}
+
+nav.top{position:fixed;inset:0 0 auto 0;z-index:50;display:flex;align-items:center;gap:20px;padding-top:calc(12px + env(safe-area-inset-top,0px));padding-bottom:12px;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px));background:linear-gradient(#0a0b12f0,#0a0b1200)}
+nav.top .brand{font-weight:900;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;white-space:nowrap;text-decoration:none}
+nav.top .brand em{font-style:normal;color:var(--brand)}
+nav.top .brand small{font-weight:500;color:var(--muted);font-size:13px}
+nav.top ul{display:flex;gap:2px;list-style:none;margin:0 0 0 auto;padding:0;overflow-x:auto;scrollbar-width:none}
+nav.top a{text-decoration:none;font-size:13px;color:var(--muted);padding:6px 10px;border-radius:999px;white-space:nowrap}
+nav.top a:hover,nav.top a.on{color:var(--text);background:#ffffff12}
+@media (max-width:720px){nav.top ul{display:none}}
+#progress{position:fixed;top:env(safe-area-inset-top,0px);left:0;height:2px;width:0;z-index:60;background:linear-gradient(90deg,var(--c-plan),var(--c-res),var(--c-blog),var(--c-card),var(--c-sp),var(--c-sd))}
+
+section{position:relative;padding-block:110px;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px));max-width:1240px;margin:0 auto}
+@media (max-width:720px){section{padding-block:72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;margin-bottom:14px}
+h2{font-size:clamp(28px,4vw,44px);line-height:1.2;letter-spacing:-.03em;margin:0 0 14px;font-weight:900;text-wrap:balance}
+h3{margin:0;font-weight:700}
+.lead{color:var(--muted);font-size:16.5px;max-width:700px;margin:0 0 44px}
+.reveal.in{animation:rise .7s ease both}
+@keyframes rise{from{opacity:.4;transform:translateY(16px)}to{opacity:1;transform:none}}
+.tag{display:inline-block;font-family:var(--f-mono);font-size:11px;padding:1px 7px;border-radius:6px;border:1px solid currentColor;line-height:1.6;white-space:nowrap}
+.t-op{color:var(--c-op)}.t-src{color:var(--c-plan)}.t-fix{color:var(--c-br)}.t-dim{color:var(--muted)}
+.note{font-size:12px;color:var(--dim);font-family:var(--f-mono)}
+
+#hero{max-width:none;height:min(86vh,760px);min-height:540px;padding:0;display:grid;place-items:center;overflow:hidden}
+#heroCanvas{position:absolute;inset:0;width:100%;height:100%}
+.hero-copy{position:relative;text-align:center;pointer-events:none;padding:0 20px}
+.hero-copy .kick{font-family:var(--f-mono);font-size:12px;letter-spacing:.2em;color:var(--muted);margin-bottom:18px}
+.hero-copy h1{font-size:clamp(38px,7vw,88px);line-height:1.04;letter-spacing:-.045em;margin:0 0 20px;font-weight:900}
+.hero-copy h1 span{background:linear-gradient(90deg,var(--c-plan),var(--c-res) 28%,var(--c-blog) 50%,var(--c-card) 72%,var(--c-sp));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-copy p{color:var(--muted);font-size:clamp(15px,1.6vw,18px);margin:0 auto 28px;max-width:600px}
+.hero-stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.hero-stats div{background:#ffffff0a;border:1px solid var(--line);border-radius:999px;padding:7px 16px;font-size:14px}
+.hero-stats b{font-family:var(--f-mono);margin-right:6px}
+.scroll-cue{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);font-family:var(--f-mono);font-size:11px;color:var(--dim);letter-spacing:.2em}
+@media (prefers-reduced-motion:no-preference){.scroll-cue{animation:bob 2s ease-in-out infinite}}
+@keyframes bob{50%{transform:translate(-50%,6px)}}
+
+.principles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+@media (max-width:980px){.principles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.principles{grid-template-columns:minmax(0,1fr)}}
+.pr{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px;position:relative;overflow:hidden}
+.pr .n{font-family:var(--f-mono);color:var(--dim);font-size:12px}
+.pr h3{margin:8px 0;font-size:18px}
+.pr p{margin:0;color:var(--muted);font-size:14px}
+.pr::after{content:"";position:absolute;right:-60px;bottom:-80px;width:200px;height:200px;border-radius:50%;background:radial-gradient(var(--glow),transparent 70%);pointer-events:none}
+
+.org{display:grid;grid-template-columns:320px minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:900px){.org{grid-template-columns:minmax(0,1fr)}}
+.dir-card{position:sticky;top:84px;background:linear-gradient(160deg,#1d2140,#121528);border:1px solid var(--line2);border-radius:var(--radius);padding:24px}
+@media (max-width:900px){.dir-card{position:static}}
+.badge{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-family:var(--f-mono);color:var(--muted)}
+.badge i{width:9px;height:9px;border-radius:50%;background:#fff;box-shadow:0 0 10px #fff}
+.dir-card h3{font-size:24px;margin:10px 0 6px}
+.dir-card ul{margin:12px 0 0;padding-left:18px;color:var(--muted);font-size:14px}
+.dir-card li{margin:3px 0}
+.detail{margin-top:18px;border-top:1px solid var(--line);padding-top:18px;min-height:230px}
+.detail h4{margin:0 0 2px;font-size:19px}
+.detail .en{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.detail dl{display:grid;grid-template-columns:64px minmax(0,1fr);gap:7px 10px;margin:14px 0 0;font-size:13.5px}
+.detail dt{color:var(--dim)}
+.detail dd{margin:0}
+.detail dd code{background:#ffffff0c;padding:1px 6px;border-radius:5px;word-break:break-all}
+.agents{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.ag{--c:#fff;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 16px 18px;position:relative;transition:transform .25s,border-color .25s,box-shadow .25s,opacity .25s}
+.ag:hover,.ag.sel{transform:translateY(-3px);border-color:var(--c);box-shadow:0 10px 40px -14px var(--c)}
+.ag .dot{width:34px;height:34px;border-radius:10px;background:color-mix(in srgb,var(--c) 18%,transparent);border:1px solid color-mix(in srgb,var(--c) 60%,transparent);display:grid;place-items:center;font-family:var(--f-mono);font-size:12px;color:var(--c);font-weight:600}
+.ag h4{margin:12px 0 0;font-size:16px}
+.ag .en{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.ag p{margin:8px 0 0;font-size:13px;color:var(--muted);line-height:1.5}
+.ag .kind{position:absolute;top:16px;right:14px;font-family:var(--f-mono);font-size:10.5px;color:var(--dim)}
+.ag .st{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:11.5px;color:var(--muted)}
+.ag .st i{width:7px;height:7px;border-radius:50%}
+.s-ok{background:var(--ok)}.s-warn{background:var(--warn)}.s-idle{background:var(--dim)}
+.ag .rv{position:absolute;right:12px;bottom:12px;font-size:11px;padding:2px 8px;border-radius:999px;background:var(--bad);color:#2a0606;font-weight:700;opacity:0;transform:scale(.8);transition:.25s}
+.agents.focus .ag:not(.sel):not(.isrev){opacity:.38}
+.ag.isrev{border-color:var(--bad);border-style:dashed}
+.ag.isrev .rv{opacity:1;transform:none}
+.ag.final{background:linear-gradient(160deg,#2a1420,var(--panel))}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--muted);margin-top:14px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:7px;height:7px;border-radius:50%}
+
+.sim-head{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;flex-wrap:wrap;margin-bottom:20px}
+.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{background:var(--panel2);border:1px solid var(--line2);border-radius:10px;padding:8px 15px;font-size:14px}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--text);color:#0a0b12;border-color:var(--text);font-weight:700}
+.speed{display:flex;background:var(--panel2);border:1px solid var(--line2);border-radius:10px;overflow:hidden}
+.speed button{background:none;border:0;padding:8px 11px;font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.speed button.on{background:#ffffff18;color:var(--text)}
+.rail{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:6px;margin-bottom:16px}
+@media (max-width:720px){.rail{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.rail div{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 6px;text-align:center;font-size:12.5px;color:var(--dim);transition:.35s}
+.rail div b{display:block;font-family:var(--f-mono);font-size:10px;font-weight:400;opacity:.75}
+.rail div.done{color:var(--muted);border-color:var(--line2)}
+.rail div.on{color:#0a0b12;background:var(--text);border-color:var(--text);transform:translateY(-3px)}
+.stage{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px}
+@media (max-width:900px){.stage{grid-template-columns:minmax(0,1fr)}}
+.board{background:radial-gradient(ellipse at center,#171b36 0%,var(--bg2) 72%);border:1px solid var(--line);border-radius:var(--radius);position:relative;overflow:hidden}
+.board svg{display:block;width:100%;height:auto}
+.board .caption{position:absolute;left:14px;bottom:10px;font-size:11.5px;color:var(--dim)}
+.spoke{stroke:#ffffff14;stroke-width:1}
+.spoke.hot{stroke:var(--hc);stroke-width:2}
+.node circle.base{fill:var(--panel2);stroke:var(--nc);stroke-width:1.5}
+.node circle.ring{fill:none;stroke:var(--nc);stroke-width:2;opacity:0}
+.node.act circle.ring{opacity:.9}
+.node.act circle.base{fill:color-mix(in srgb,var(--nc) 30%,#191d36)}
+.node text{fill:var(--text);font-size:13px;font-weight:700;text-anchor:middle;font-family:var(--f-body)}
+.node text.sub{fill:var(--muted);font-size:10px;font-weight:400;font-family:var(--f-mono)}
+.side{display:grid;gap:12px;align-content:start}
+.counters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.counters div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.counters b{display:block;font-family:var(--f-mono);font-size:22px}
+.counters span{font-size:12px;color:var(--muted)}
+.logbox{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;max-height:430px;overflow-y:auto}
+.logbox .lh{display:flex;justify-content:space-between;font-size:12px;color:var(--dim);font-family:var(--f-mono);margin-bottom:8px}
+.log{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:13.5px}
+.log li{display:grid;grid-template-columns:36px minmax(0,1fr);gap:8px;padding-bottom:8px;border-bottom:1px dashed var(--line)}
+.log li:last-child{border-bottom:0}
+.log .n{font-family:var(--f-mono);font-size:11px;color:var(--dim);padding-top:2px}
+.log .who{font-weight:700;font-size:12.5px}
+.log small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+.empty{color:var(--dim);font-size:13px;padding:18px 0;text-align:center}
+
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:900px){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.steps{grid-template-columns:minmax(0,1fr)}}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;display:grid;gap:6px;align-content:start}
+.step .num{font-family:var(--f-mono);font-size:12px;color:var(--dim)}
+.step h3{font-size:17px}
+.step p{margin:0;font-size:13.5px;color:var(--muted)}
+.step .k{font-family:var(--f-mono);font-size:11.5px;color:var(--c-plan)}
+.step.op{border-color:color-mix(in srgb,var(--c-op) 55%,transparent);background:linear-gradient(160deg,#2a2110,var(--panel))}
+.step.op .num{color:var(--c-op)}
+
+.ev{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:18px}
+@media (max-width:820px){.ev{grid-template-columns:minmax(0,1fr)}}
+.scenes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-content:start}
+.scene{aspect-ratio:9/16;max-width:100%;border-radius:10px;background:#05060a;border:1px solid var(--line);display:flex;flex-direction:column;justify-content:flex-end;padding:8px;text-align:left;font-size:11px;line-height:1.35;transition:.2s}
+.scene b{font-family:var(--f-mono);font-size:10.5px;color:var(--c-card);font-weight:600}
+.scene:hover{border-color:var(--line2)}
+.scene.sel{border-color:var(--c-card);box-shadow:0 8px 30px -12px var(--c-card)}
+.chain{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px;display:grid;gap:16px;align-content:start}
+.link{display:grid;gap:6px;padding-left:14px;border-left:3px solid var(--line2)}
+.link.op{border-left-color:var(--c-op)}.link.src{border-left-color:var(--c-plan)}
+.link .lb{font-size:12px;color:var(--dim);font-family:var(--f-mono)}
+.link .big{font-size:20px;font-weight:700;line-height:1.4}
+.link .why{font-size:13px;color:var(--muted)}
+.keys{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:12.5px;color:var(--muted);margin-top:14px}
+
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:18px}
+@media (max-width:640px){.kpis{grid-template-columns:minmax(0,1fr)}}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.kpi .l{font-size:12.5px;color:var(--muted)}
+.kpi .v{font-family:var(--f-mono);font-size:26px;font-weight:600;font-variant-numeric:tabular-nums}
+.kpi .v small{font-size:13px;color:var(--muted);font-weight:400}
+.bar{height:5px;border-radius:3px;background:var(--line);margin-top:10px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--c-card))}
+.cal{list-style:none;margin:0;padding:0;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.cal li{display:grid;grid-template-columns:92px minmax(0,1fr) auto;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);font-size:14px;align-items:baseline}
+.cal li:last-child{border-bottom:0}
+.cal .d{font-family:var(--f-mono);font-size:12.5px;color:var(--muted)}
+
+.learn{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.learn{grid-template-columns:minmax(0,1fr)}}
+.ln{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;display:grid;gap:6px;font-size:14px}
+.ln .h{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.ln .ch{font-family:var(--f-mono);font-size:11px;color:var(--c-plan)}
+.ln .why{color:var(--muted);font-size:13.5px}
+.ln .nx::before{content:"다음엔 → ";color:var(--accent);font-weight:700}
+.file{font-family:var(--f-mono);font-size:12.5px;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px;display:inline-block;margin-bottom:16px}
+footer{max-width:1240px;margin:0 auto;padding-block:28px 48px;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px));border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px 24px;font-size:12.5px;color:var(--dim)}
+footer b{color:var(--text)}footer em{font-style:normal;color:var(--brand)}
+</style>
+
+<div id="progress"></div>
+<nav class="top" aria-label="섹션">
+  <a class="brand" href="#hero">onspace<em>.</em>film_ <small>온우주 스튜디오</small></a>
+  <ul>
+    <li><a href="#org">조직</a></li>
+    <li><a href="#sim">작전 재생</a></li>
+    <li><a href="#steps">8단계</a></li>
+    <li><a href="#chain">근거 사슬</a></li>
+    <li><a href="#december">12월</a></li>
+    <li><a href="#learn">학습</a></li>
+  </ul>
+</nav>
+
+<section id="hero">
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="hero-copy">
+    <div class="kick">AI AGENT STUDIO · FILM &amp; DRAMA</div>
+    <h1>한 명의 운영자,<br><span>아홉 개의 스테이션</span></h1>
+    <p>주말에 영화를 보고 감상을 남기면, 디렉터가 조사·블로그·카드뉴스·릴스 팀을 부르고 서로 검토하게 합니다. 감상과 별점은 늘 운영자의 것입니다.</p>
+    <div class="hero-stats">
+      <div><b>1</b>디렉터</div><div><b>9</b>스테이션</div><div><b>3</b>채널</div><div><b>2</b>운영자 확인 / 작품</div>
+    </div>
+  </div>
+  <div class="scroll-cue">SCROLL ↓</div>
+</section>
+
+<section id="how">
+  <div class="eyebrow">How it works</div>
+  <h2>팀이 굴러가는 네 가지 원칙</h2>
+  <p class="lead">에이전트는 서로를 부를 수 없고, 대화 맥락을 모르고, 운영자에게 직접 묻지 못합니다. 그 위에서 일하도록 정한 규칙입니다.</p>
+  <div class="principles">
+    <div class="pr reveal" style="--glow:#ffffff22"><div class="n">01</div><h3>디렉터가 잇는다</h3><p>모든 호출과 취합은 메인 대화가 합니다. 앞 단계 결과는 파일 경로로 넘깁니다.</p></div>
+    <div class="pr reveal" style="--glow:#F2B23A33"><div class="n">02</div><h3>감상은 한 곳에서</h3><p>운영자 감상과 별점은 작품마다 <code>감상.md</code> 한 장에만. 에이전트는 문장을 지어내거나 다듬지 않습니다.</p></div>
+    <div class="pr reveal" style="--glow:#f8717133"><div class="n">03</div><h3>남이 검토한다</h3><p>만든 에이전트가 자기 결과를 검토하지 않습니다. 정해진 검토자를 새로 부르고, 최종 관문은 검수팀입니다.</p></div>
+    <div class="pr reveal" style="--glow:#a78bfa33"><div class="n">04</div><h3>근거로 이어진다</h3><p>자막 한 줄마다 <code>[S번호]</code>, <code>[운영자]</code>, <code>[미확인]</code> 중 하나. 꼬리표 없는 문장은 통과하지 못합니다.</p></div>
+  </div>
+</section>
+
+<section id="org">
+  <div class="eyebrow">Organization</div>
+  <h2>누가 무엇을 맡나</h2>
+  <p class="lead">카드를 누르면 담당, 쓰는 곳, 지금 상태가 보이고, 그 결과를 <b style="color:var(--bad)">검토하는 스테이션</b>이 표시됩니다.</p>
+  <div class="org">
+    <div class="dir-card">
+      <div class="badge"><i></i>MAIN CONVERSATION</div>
+      <h3>디렉터</h3>
+      <div class="mono" style="color:var(--muted)">모든 스테이션을 부를 수 있는 유일한 자리</div>
+      <ul>
+        <li>접수 · 지시문 · 호출 · 취합</li>
+        <li>검수 판정 저장 → <code>reviews/</code></li>
+        <li>운영자 결정 기록 → <code>decisions.md</code></li>
+        <li>작품장부 · 배움 기록 갱신</li>
+      </ul>
+      <div class="detail" id="detail" aria-live="polite"><div style="color:var(--dim);font-size:14px">← 스테이션 카드를 눌러 보세요</div></div>
+    </div>
+    <div>
+      <div class="agents" id="agentGrid"></div>
+      <div class="legend"><span><i class="s-ok"></i>실전에서 돌려 봄</span><span><i class="s-warn"></i>실전 전</span><span><i class="s-idle"></i>차례 전</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="sim">
+  <div class="sim-head">
+    <div>
+      <div class="eyebrow">Replay · 실제 기록</div>
+      <h2 style="margin:0">하트 오브 비스트 30초 리뷰</h2>
+    </div>
+    <div class="controls">
+      <button class="btn primary" id="play" type="button">▶ 재생</button>
+      <button class="btn" id="stepBtn" type="button">⏭ 한 단계</button>
+      <button class="btn" id="reset" type="button">↺ 처음부터</button>
+      <div class="speed" role="group" aria-label="재생 속도"><button type="button" data-sp="0.5">0.5×</button><button type="button" data-sp="1" class="on">1×</button><button type="button" data-sp="2">2×</button><button type="button" data-sp="4">4×</button></div>
+    </div>
+  </div>
+  <div class="rail" id="rail"></div>
+  <div class="stage">
+    <div class="board"><svg id="net" viewBox="0 0 800 560" role="img" aria-label="디렉터를 중심으로 스테이션 사이에 지시와 결과가 오가는 그림"></svg><div class="caption">스테이션끼리는 직접 연결되지 않습니다</div></div>
+    <div class="side">
+      <div class="counters"><div><b id="cCall">0</b><span>호출</span></div><div><b id="cRev">0</b><span>교차 검토</span></div><div><b id="cOp">0</b><span>운영자 결정</span></div></div>
+      <div class="logbox"><div class="lh"><span>작업 로그</span><span>output/하트오브비스트/shorts/</span></div><ol class="log" id="log"><li class="empty" style="display:block">▶ 재생을 누르면 실제 작업 순서대로 흘러갑니다</li></ol></div>
+    </div>
+  </div>
+  <p class="note" style="margin-top:12px">※ 검수 판정과 수정 내용은 reviews/ 파일 그대로입니다. 시험작이라 올리지는 않았고, 여기서 배운 규칙은 장면 틀과 기획 지침에 반영됐습니다.</p>
+</section>
+
+<section id="steps">
+  <div class="eyebrow">Procedure · weekend-review</div>
+  <h2>주말 리뷰 8단계</h2>
+  <p class="lead">"정가네 준비해 줘"로 시작해 "정가네 봤어"로 이어집니다. 노란 칸만 운영자가 손을 댑니다.</p>
+  <div class="steps" id="stepGrid"></div>
+</section>
+
+<section id="chain">
+  <div class="eyebrow">Evidence chain</div>
+  <h2>자막 한 줄의 출처를 거슬러 올라가기</h2>
+  <p class="lead">장면을 고르면 큰 자막은 감상.md의 어느 문장에서, 작은 자막은 조사 자료 몇 번에서 왔는지 보입니다.</p>
+  <div class="ev">
+    <div class="scenes" id="scenes" role="group" aria-label="장면 선택"></div>
+    <div class="chain" id="chainBox" aria-live="polite"></div>
+  </div>
+  <div class="keys"><span><span class="tag t-op">[운영자]</span> 감상.md 원문</span><span><span class="tag t-src">[S7]</span> research.md 출처 7번</span><span><span class="tag t-dim">고정</span> 브랜드 고정 요소</span></div>
+</section>
+
+<section id="december">
+  <div class="eyebrow">December · 기획팀 캘린더 v4</div>
+  <h2>12월 작전표</h2>
+  <p class="lead">블로그 13 · 카드뉴스 10 · 릴스 2 · 주말 관람 2. 릴스는 새로 본 작품으로만 만듭니다.</p>
+  <div class="kpis">
+    <div class="kpi"><div class="l">블로그 하루 방문</div><div class="v">20 <small>→ 1월 60</small></div><div class="bar"><i style="width:33%"></i></div></div>
+    <div class="kpi"><div class="l">인스타 팔로워</div><div class="v">27 <small>→ 1월 150</small></div><div class="bar"><i style="width:18%"></i></div></div>
+    <div class="kpi"><div class="l">최종 목표 · 2027년 4월</div><div class="v" style="font-family:var(--f-body);font-size:18px;padding-top:6px">첫 협찬 · 시사회 초대</div></div>
+  </div>
+  <ul class="cal">
+    <li><span class="d">12/2 수</span><span>정가네 개봉 · 조사 보강</span><span class="tag t-src">조사</span></li>
+    <li><span class="d">12/5–6</span><span>정가네 관람 · 감상</span><span class="tag t-op">운영자</span></li>
+    <li><span class="d">12/7–12</span><span>정가네 블로그 → 카드뉴스 → 릴스</span><span class="tag t-src">제작</span></li>
+    <li><span class="d">12/14 월</span><span>디거·로또 한 줄 평과 스틸</span><span class="tag t-fix">마감</span></li>
+    <li><span class="d">12/16 수</span><span>12월 OTT 공개작 정리 (영화·드라마)</span><span class="tag t-src">제작</span></li>
+    <li><span class="d">12/18–19</span><span>디거 · 로또 1등도 출근합니다 카드뉴스</span><span class="tag t-src">제작</span></li>
+    <li><span class="d">12/19–20</span><span>듄: 파트 3 관람 · 감상</span><span class="tag t-op">운영자</span></li>
+    <li><span class="d">12/21–26</span><span>듄 블로그 → 카드뉴스 → 릴스</span><span class="tag t-src">제작</span></li>
+    <li><span class="d">12/23–24</span><span>온우주 2026 결산: 올해 본 영화·드라마 10편</span><span class="tag t-src">특집</span></li>
+  </ul>
+</section>
+
+<section id="learn">
+  <div class="eyebrow">Learning loop</div>
+  <h2>작업이 끝날 때마다 한 줄씩 똑똑해진다</h2>
+  <p class="lead">작업을 마치면 배움 기록에 한 줄을 남기고, 다음 작업을 설계하기 전에 먼저 읽습니다. 아래는 실제 기록입니다.</p>
+  <div class="file">회사/learnings.md</div>
+  <div class="learn" id="learnList"></div>
+</section>
+
+<footer><span><b>onspace<em>.</em>film_</b> 온우주 스튜디오</span><span>기준일 2026-11-11 · 회사 문서, 작품장부, 검수 기록으로 만든 페이지</span></footer>
+
+<script>
+const AG=[
+ {id:'plan',ko:'기획팀',sh:'PL',en:'content-planner',kind:'에이전트',st:'ok',role:'다음 달 개봉·공개작을 조사해 운영자 부담(관람/정보형/재활용)에 맞춘 월간 캘린더.',where:'회사/캘린더/YYYY-MM.md',rev:[],now:'12월 캘린더 v4'},
+ {id:'res',ko:'조사',sh:'RS',en:'researcher',kind:'에이전트',st:'ok',role:'카드·릴스만 만들 작품의 조사. 블로그 조사는 블로그 스킬 1단계가 함께 합니다.',where:'output/[작품]/research.md',rev:[],now:'정가네 조사 11건'},
+ {id:'blog',ko:'글팀',sh:'BL',en:'movie-blog-review',kind:'스킬',st:'ok',role:'조사 → 원고 → 썸네일 → 발행용 원고. 표 금지, 공식 스틸 5장, ✍️ 자리는 감상.md 원문.',where:'output/[작품]/final.md',rev:['br'],now:'블로그 8편 발행'},
+ {id:'card',ko:'디자인팀',sh:'CN',en:'card-news',kind:'스킬',st:'warn',role:'인스타 카드뉴스 7장과 캡션. 리뷰 노랑, 영화제 핑크, 개봉작 블루.',where:'영화인스타그램/posts/',rev:['br'],now:'카드 8개 · 한 번에 모드 실전 전'},
+ {id:'sp',ko:'영상 기획',sh:'SP',en:'shorts-planner',kind:'에이전트',st:'ok',role:'훅 3안, 장면표(초·사진·자막·근거), 붙여넣기용 업로드 문구. 화면 검토도 맡습니다.',where:'shorts/01_plan/',rev:['br'],now:'하트 오브 비스트 v2'},
+ {id:'sd',ko:'영상 화면',sh:'SD',en:'shorts-designer',kind:'에이전트',st:'ok',role:'세로 장면 틀(1080×1920)을 채워 PNG로. 안전 영역 점선으로 자체 검수.',where:'shorts/02_frames/',rev:['sp'],now:'장면 9 · 수정 v3'},
+ {id:'se',ko:'영상 편집',sh:'SE',en:'shorts-editor',kind:'에이전트',st:'ok',role:'ffmpeg로 30fps MP4. 길이·해상도·무음 트랙을 확인합니다.',where:'shorts/03_edit/',rev:['br'],now:'36.0초 출력'},
+ {id:'br',ko:'검수팀',sh:'BR',en:'brand-reviewer',kind:'에이전트',st:'warn',role:'스포, 사실 근거, 지어낸 감상, 저작권, 표기·말투. 파일은 쓰지 않고 판정만 돌려줍니다.',where:'읽기 전용 → 디렉터가 reviews/에 저장',rev:[],now:'쇼츠 3회 · 블로그·카드 실전 전',gate:1},
+ {id:'pa',ko:'성과팀',sh:'PA',en:'performance-analyst',kind:'에이전트',st:'idle',role:'운영자가 준 숫자로 월간 리포트. 숫자를 만들지 않고, 이유는 늘 "추정"으로.',where:'회사/성과/리포트-YYYY-MM.md',rev:[],now:'출발점 기록 · 첫 리포트 12/1'}
+];
+const A=Object.fromEntries(AG.map(a=>[a.id,a]));
+const col=id=>getComputedStyle(document.documentElement).getPropertyValue('--c-'+id).trim()||'#fff';
+const NAME=id=>id==='dir'?'디렉터':id==='op'?'운영자':A[id].ko;
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+(function hero(){const cv=document.getElementById('heroCanvas'),cx=cv.getContext('2d');let W,H,t=0;const parts=[];const ids=AG.map(a=>a.id);const cols=ids.map(col);
+ function rs(){const d=Math.min(devicePixelRatio||1,2);W=cv.clientWidth;H=cv.clientHeight;cv.width=W*d;cv.height=H*d;cx.setTransform(d,0,0,d,0,0)}rs();addEventListener('resize',rs);
+ const stars=Array.from({length:130},()=>({x:Math.random(),y:Math.random(),r:Math.random()*1.2,a:Math.random()}));
+ function pos(i){const R=Math.min(W,H)*.36,a=i/ids.length*Math.PI*2+t*.00012;return[W/2+Math.cos(a)*R*1.4,H/2+Math.sin(a)*R*.62]}
+ function frame(){t+=reduce?0:16;cx.clearRect(0,0,W,H);
+  stars.forEach(s=>{cx.fillStyle=`rgba(255,255,255,${.15+.25*Math.sin(t*.001+s.a*6)})`;cx.beginPath();cx.arc(s.x*W,s.y*H,s.r,0,7);cx.fill()});
+  const c=[W/2,H/2];
+  for(let i=0;i<ids.length;i++){const p=pos(i);const g=cx.createLinearGradient(c[0],c[1],p[0],p[1]);g.addColorStop(0,'rgba(255,255,255,.1)');g.addColorStop(1,cols[i]+'55');cx.strokeStyle=g;cx.lineWidth=1;cx.beginPath();cx.moveTo(c[0],c[1]);cx.lineTo(p[0],p[1]);cx.stroke()}
+  if(!reduce&&Math.random()<.18){parts.push({i:Math.random()*ids.length|0,out:Math.random()<.5,p:0,v:.006+Math.random()*.008})}
+  for(let k=parts.length-1;k>=0;k--){const q=parts[k];q.p+=q.v;if(q.p>=1){parts.splice(k,1);continue}const p=pos(q.i),u=q.out?q.p:1-q.p;cx.fillStyle=q.out?'#fff':cols[q.i];cx.beginPath();cx.arc(c[0]+(p[0]-c[0])*u,c[1]+(p[1]-c[1])*u,2.2,0,7);cx.fill()}
+  for(let i=0;i<ids.length;i++){const p=pos(i);cx.fillStyle=cols[i]+'22';cx.beginPath();cx.arc(p[0],p[1],16,0,7);cx.fill();cx.fillStyle=cols[i];cx.beginPath();cx.arc(p[0],p[1],5,0,7);cx.fill()}
+  const pr=1+.08*Math.sin(t*.003);const rg=cx.createRadialGradient(c[0],c[1],0,c[0],c[1],70*pr);rg.addColorStop(0,'rgba(255,255,255,.32)');rg.addColorStop(1,'rgba(255,255,255,0)');cx.fillStyle=rg;cx.beginPath();cx.arc(c[0],c[1],70*pr,0,7);cx.fill();
+  if(!reduce)requestAnimationFrame(frame)}
+ frame()})();
+
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
+const observe=()=>document.querySelectorAll('.reveal:not(.in)').forEach(el=>io.observe(el));
+addEventListener('scroll',()=>{const h=document.documentElement;document.getElementById('progress').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+ let cur='';document.querySelectorAll('section[id]').forEach(s=>{if(s.getBoundingClientRect().top<200)cur=s.id});
+ document.querySelectorAll('nav.top ul a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+cur))},{passive:true});
+
+const grid=document.getElementById('agentGrid');
+AG.forEach(a=>{const b=document.createElement('button');b.type='button';b.className='ag reveal'+(a.gate?' final':'');b.style.setProperty('--c',col(a.id));b.dataset.id=a.id;
+ b.innerHTML=`<div class="dot">${a.sh}</div><span class="kind">${a.kind}</span><h4>${a.ko}${a.gate?' · 최종 관문':''}</h4><div class="en">${a.en}</div><p>${a.role}</p><span class="st"><i class="s-${a.st}"></i>${a.now}</span><span class="rv">검토자</span>`;
+ b.onclick=()=>pick(a.id);grid.appendChild(b)});
+function pick(id){const a=A[id],cards=grid.querySelectorAll('.ag'),d=document.getElementById('detail');const same=grid.querySelector('.ag.sel')?.dataset.id===id;
+ cards.forEach(c=>c.classList.remove('sel','isrev'));grid.classList.remove('focus');
+ if(same){d.innerHTML='<div style="color:var(--dim);font-size:14px">← 스테이션 카드를 눌러 보세요</div>';return}
+ grid.classList.add('focus');grid.querySelector(`[data-id=${id}]`).classList.add('sel');a.rev.forEach(r=>grid.querySelector(`[data-id=${r}]`).classList.add('isrev'));
+ const by=AG.filter(x=>x.rev.includes(id)).map(x=>x.ko);
+ d.innerHTML=`<h4 style="color:${col(id)}">${a.ko}</h4><div class="en">${a.en} · ${a.kind}</div><dl><dt>담당</dt><dd>${a.role}</dd><dt>쓰는 곳</dt><dd><code>${a.where}</code></dd><dt>검토자</dt><dd>${a.rev.length?a.rev.map(r=>`<span style="color:${col(r)}">${A[r].ko}</span>`).join(', '):(a.gate?'— 본인이 최종 관문':'운영자 · 디렉터')}</dd>${by.length?`<dt>검토 담당</dt><dd>${by.join(', ')}</dd>`:''}<dt>지금</dt><dd>${a.now}</dd></dl>`}
+
+const STEPS=[['A · 평일','준비','조사, 감상 양식, 스틸 점검, 작품장부 한 줄','research.md'],['B · 주말','감상 받기','운영자 감상을 원문 그대로','감상.md',1],['C','세 채널 동시 초안','블로그 · 카드뉴스 · 릴스 기획을 한꺼번에','에이전트 3 동시'],['D','검수','채널마다 검수자를 새로. 형식 문제는 바로 고침','reviews/'],['E · 확인 ①','초안 고르기','릴스 훅, 블로그 제목, 판단이 필요한 것만','decisions.md',1],['F','마무리 제작','카드 업로드용, 릴스 화면 → 편집 → 최종 검수','mp4 · 업로드용/'],['G · 확인 ②','완성본','미리보기, 카드, 영상, 업로드 문구','업로드 체크리스트',1],['H','정리','작품장부, 캘린더, 배움 기록, 커밋','learnings.md']];
+document.getElementById('stepGrid').innerHTML=STEPS.map((s,i)=>`<div class="step reveal${s[4]?' op':''}"><div class="num">${s[0]}</div><h3>${s[1]}</h3><p>${s[2]}</p><div class="k">${s[3]}</div></div>`).join('');
+
+const PHASES=['접수','기획','교차 검토','운영자 결정','화면','장면 검토','편집','최종 검수','보고'];
+const S=[
+ {f:'op',to:'dir',p:0,t:'작품을 하트 오브 비스트로 바꿈',s:'조사·발행한 캡션의 감상·별점 4.0·스틸 10장이 이미 있음',op:1},
+ {w:'dir',p:0,t:'brief.md 작성',s:'감상 출처는 발행한 캡션 문장만'},
+ {f:'dir',to:'sp',p:1,t:'기획 지시문',s:'폴더 · 먼저 읽을 파일 · 할 일 · 산출물 · 완료 기준 · 쓰기 허용 폴더',call:1},
+ {w:'sp',p:1,t:'기획 v1: 장면 9개, 37초',s:'후반부가 보이는 (5)번 스틸은 제외'},
+ {f:'dir',to:'br',p:2,t:'교차 검토 요청 (새로 호출)',rv:1,call:1},
+ {f:'br',to:'dir',p:2,t:'판정',v:'fix',s:'"울컥" + "휴지 챙기세요" + 끌어안는 사진 → 슬픈 결말 신호. 포스터 "절찬상영중". "93km"는 결말까지 담긴 줄거리 출처'},
+ {f:'dir',to:'op',p:3,t:'결정 요청 (질문 한 번)'},
+ {f:'op',to:'dir',p:3,t:'결정 4개',s:'훅 확정 · "휴지" 삭제 · "두 번째" · 출처 롯데엔터테인먼트 · Paramount Pictures',op:4},
+ {f:'dir',to:'sp',p:1,t:'v2 지시 + decisions.md',call:1},
+ {w:'sp',p:1,t:'기획 v2: 36초',s:'"93km" 삭제, 마지막 장면을 웃는 훈련 사진으로'},
+ {f:'dir',to:'sd',p:4,t:'화면 지시문',call:1},
+ {w:'sd',p:4,t:'장면 PNG 9장 (1080×1920)',s:'안전 영역 점선으로 자체 확인'},
+ {f:'dir',to:'sp',p:5,t:'장면 검토 요청',rv:1,call:1},
+ {f:'sp',to:'dir',p:5,t:'판정',v:'fix',s:'"교감" 장면에 오딘이 없음, 로고가 눈 위, 밝은 사진 위 출처'},
+ {f:'dir',to:'sd',p:4,t:'3·6·8번 v2',s:'포스터 왼쪽 아래로 오딘 머리를 살림',call:1},
+ {f:'dir',to:'se',p:6,t:'편집 지시문',call:1},
+ {w:'se',p:6,t:'MP4 v1',s:'36.0초 · 1080×1920 · 30fps · 무음 트랙'},
+ {f:'dir',to:'br',p:7,t:'최종 관문 검수',rv:1,call:1},
+ {f:'br',to:'dir',p:7,t:'판정',v:'fix',s:'결정 4개 모두 반영 확인. 6·8번 출처가 흐림, 업로드 문구에 꼬리표가 남음'},
+ {f:'dir',to:'sd',p:7,t:'6·8번 v3: 출처 바탕 칸',call:1},
+ {f:'dir',to:'sp',p:7,t:'upload.md: 꼬리표 없는 붙여넣기용',call:1},
+ {w:'se',p:7,t:'MP4 v2',s:'21초·29초 프레임에서 출처 확인'},
+ {f:'op',to:'dir',p:8,t:'협찬 아님, 직접 관람',op:1},
+ {w:'dir',p:8,t:'최종 보고 + 배움 기록 한 줄',s:'출처 바탕 칸을 기본으로, 기획엔 자르기 숫자 대신 "보여야 할 것"'}
+];
+const rail=document.getElementById('rail');rail.innerHTML=PHASES.map((p,i)=>`<div><b>STEP ${i+1}</b>${p}</div>`).join('');
+const NS='http://www.w3.org/2000/svg',svg=document.getElementById('net'),C={x:400,y:300},POS={dir:C,op:{x:400,y:56}};
+AG.forEach((a,i)=>{const ang=(-40+i*(260/(AG.length-1)))*Math.PI/180;POS[a.id]={x:C.x+Math.cos(ang)*312,y:C.y+Math.sin(ang)*215}});
+const el=(t,at,p)=>{const e=document.createElementNS(NS,t);for(const k in at)e.setAttribute(k,at[k]);(p||svg).appendChild(e);return e};
+const gS=el('g',{}),gN=el('g',{}),gP=el('g',{});const SP={},ND={};
+['op',...AG.map(a=>a.id)].forEach(id=>{const p=POS[id];SP[id]=el('line',{x1:C.x,y1:C.y,x2:p.x,y2:p.y,class:'spoke'},gS)});
+function node(id,label,sub,r,c){const p=POS[id],g=el('g',{class:'node',transform:`translate(${p.x},${p.y})`},gN);g.style.setProperty('--nc',c);el('circle',{class:'ring',r:r+6},g);el('circle',{class:'base',r},g);const t=el('text',{y:id==='dir'?-2:4},g);t.textContent=label;if(sub){const s=el('text',{class:'sub',y:id==='dir'?14:r+15},g);s.textContent=sub}ND[id]=g}
+node('dir','디렉터','MAIN',40,'#ffffff');node('op','운영자','',26,col('op'));AG.forEach(a=>node(a.id,a.ko,a.en.split('-')[0],29,col(a.id)));
+const logEl=document.getElementById('log');let idx=0,timer=null,speed=1,calls=0,revs=0,ops=0,maxP=-1,busy=false;
+function hot(id,on,c){SP[id].classList.toggle('hot',on);if(c)SP[id].style.setProperty('--hc',c)}
+function packet(a,b,c,done){const pa=POS[a],pb=POS[b];if(reduce||speed>=4){done();return}const dot=el('circle',{r:6,fill:c},gP);const dur=650/speed,t0=performance.now();
+ (function f(n){const u=Math.min(1,(n-t0)/dur);dot.setAttribute('cx',pa.x+(pb.x-pa.x)*u);dot.setAttribute('cy',pa.y+(pb.y-pa.y)*u);if(u<1)requestAnimationFrame(f);else{dot.remove();done()}})(t0)}
+function addLog(e,n){if(n===0)logEl.innerHTML='';const li=document.createElement('li');const who=e.w?NAME(e.w):`${NAME(e.f)} → ${NAME(e.to)}`;const c=col(e.w||e.f);
+ const v=e.v?` <span class="tag t-fix">수정 후 통과</span>`:'';li.innerHTML=`<span class="n">${String(n+1).padStart(2,'0')}</span><div><span class="who" style="color:${c}">${who}</span> · ${e.t}${v}${e.s?`<small>${e.s}</small>`:''}</div>`;logEl.appendChild(li);logEl.parentElement.scrollTop=1e6}
+function run(){if(busy||idx>=S.length)return;busy=true;const e=S[idx],n=idx;idx++;
+ Object.values(ND).forEach(g=>g.classList.remove('act'));Object.keys(SP).forEach(k=>hot(k,false));
+ maxP=Math.max(maxP,e.p);[...rail.children].forEach((d,k)=>d.className=k===e.p?'on':(k<=maxP?'done':''));
+ const fin=()=>{calls+=e.call||0;revs+=e.rv||0;ops+=e.op||0;['cCall','cRev','cOp'].forEach((k,j)=>document.getElementById(k).textContent=[calls,revs,ops][j]);addLog(e,n);busy=false;if(idx>=S.length)stopT(true)};
+ if(e.w){ND[e.w].classList.add('act');if(e.w!=='dir')hot(e.w,true,col(e.w));setTimeout(fin,reduce?0:350/speed);return}
+ ND[e.f].classList.add('act');ND[e.to].classList.add('act');const spoke=e.f==='dir'?e.to:e.f;hot(spoke,true,col(spoke));packet(e.f,e.to,e.v?'#f87171':col(e.f),fin)}
+function stopT(end){clearInterval(timer);timer=null;document.getElementById('play').textContent=end?'■ 끝':'▶ 재생'}
+document.getElementById('play').onclick=()=>{if(timer){stopT();return}if(idx>=S.length)reset();run();timer=setInterval(run,1250/speed);document.getElementById('play').textContent='❚❚ 일시정지'};
+document.getElementById('stepBtn').onclick=()=>{if(timer)stopT();run()};
+function reset(){stopT();idx=0;calls=revs=ops=0;maxP=-1;busy=false;gP.innerHTML='';logEl.innerHTML='<li class="empty" style="display:block">▶ 재생을 누르면 실제 작업 순서대로 흘러갑니다</li>';['cCall','cRev','cOp'].forEach(k=>document.getElementById(k).textContent='0');[...rail.children].forEach(d=>d.className='');Object.values(ND).forEach(g=>g.classList.remove('act'));Object.keys(SP).forEach(k=>hot(k,false))}
+document.getElementById('reset').onclick=reset;
+document.querySelectorAll('[data-sp]').forEach(b=>b.onclick=()=>{speed=+b.dataset.sp;document.querySelectorAll('[data-sp]').forEach(x=>x.classList.toggle('on',x===b));if(timer){clearInterval(timer);timer=setInterval(run,1250/speed)}});
+
+const SC=[
+ {n:1,lab:'#온우주리뷰',big:'홀로 남은 한 남자 / 곁을 지킨 단 하나',bt:'op',btag:'[운영자]',bs:'캡션 원문 "알래스카에 홀로 남은 한 남자, 그 곁을 지킨 단 하나"를 줄임. 운영자가 훅으로 직접 고름',small:'🔒 스포 없어요',st:'dim',stag:'고정',ss:'모든 리뷰의 기본값'},
+ {n:2,lab:'어떤 영화?',big:'비행기가 추락해 / 알래스카에 고립돼요',bt:'src',btag:'[S5][S7]',bs:'줄거리 설정까지만. 결말은 쓰지 않음',small:'전직 특수부대원 제임스와 은퇴 군견 오딘',st:'src',stag:'[S7][S10]',ss:'인물 설정'},
+ {n:3,lab:'살아서 돌아가기',big:'문명 세계까지 / 둘이서 걸어가요',bt:'src',btag:'[S1][S7]',bs:'v1의 "약 93km"는 결말까지 담긴 줄거리의 이동 총거리라 검수에서 뺌',small:'예고편 대사 "마지막 임무야. 같이 살아남는 거야"',st:'src',stag:'[S7]',ss:'공식 예고편 대사를 글자로만 인용'},
+ {n:4,lab:'두 전우',big:'전장을 함께 누빈 / 전우 사이예요',bt:'src',btag:'[S7]',bs:'두 인물의 관계 설정',small:'<퓨리> 감독과 12년 만의 재회',st:'src',stag:'[S2][S7]',ss:'v1의 긴 문장을 검수 의견으로 줄임'},
+ {n:5,lab:'01 좋았던 점',big:'말없이도 상처가 / 전해지는 연기',bt:'op',btag:'[운영자]',bs:'캡션 "말없이도 상처가 전해지는 브래드 피트의 연기"',small:'PTSD를 안고 사는 참전 군인 제임스, 브래드 피트',st:'src',stag:'[S1][S5]',ss:'배역 설정'},
+ {n:6,lab:'02 좋았던 점',big:'서로를 지키고 / 버티게 하는 교감',bt:'op',btag:'[운영자]',bs:'캡션 "서로를 지키고 버티게 하는 제임스와 오딘의 교감"',small:'오딘은 개 네 마리가 함께 연기했어요',st:'src',stag:'[S1][S11]',ss:'제작 정보'},
+ {n:7,lab:'03 좋았던 점',big:'한순간도 안심할 수 / 없는 생존의 긴장감',bt:'op',btag:'[운영자]',bs:'캡션 "한순간도 안심할 수 없는 생존의 긴장감"',small:'산악 지대, 급류, 야생동물까지',st:'src',stag:'[S1][S7]',ss:'작품 소개의 위험 요소'},
+ {n:8,lab:'한 줄 총평',big:'내내 손에 땀을 쥐고 / 몇 번이나 울컥했어요',bt:'op',btag:'[운영자]',bs:'캡션 "러닝타임 내내 손에 땀을 쥐고, 몇 번이나 울컥하며 봤어요". v1 "쥐다가"는 검수 의견으로 원문에 가깝게',small:'10월 28일 극장 개봉 · 12세 이상 · 101분',st:'src',stag:'[S9][S10]',ss:'"상영 중"은 확인 못 해 개봉일만'},
+ {n:9,lab:'🌌 온우주별점',big:'4.0 / 5 · ★★★★☆',bt:'op',btag:'[운영자]',bs:'발행한 캡션의 운영자 별점. 초안 별점은 만들지 않음',small:'👥 반려견과 함께 사는 분께 권해요',st:'op',stag:'[운영자 승인]',ss:'"휴지 챙겨가세요"를 빼고 운영자가 고른 문구'}
+];
+const scenesEl=document.getElementById('scenes'),box=document.getElementById('chainBox');const esc=t=>t.replace(/</g,'&lt;');
+SC.forEach(s=>{const b=document.createElement('button');b.type='button';b.className='scene';b.dataset.n=s.n;b.innerHTML=`<b>${String(s.n).padStart(2,'0')}</b><span>${esc(s.big.split(' / ')[0])}</span>`;b.onclick=()=>show(s.n);scenesEl.appendChild(b)});
+function show(n){const s=SC.find(x=>x.n===n);scenesEl.querySelectorAll('.scene').forEach(b=>b.classList.toggle('sel',+b.dataset.n===n));
+ box.innerHTML=`<div class="eyebrow" style="margin:0">장면 ${s.n} · ${esc(s.lab)}</div>
+ <div class="link ${s.bt}"><span class="lb">큰 자막</span><span class="big">${esc(s.big)}</span><span class="why"><span class="tag t-${s.bt}">${s.btag}</span> ${esc(s.bs)}</span></div>
+ <div class="link ${s.st}"><span class="lb">작은 자막</span><span>${esc(s.small)}</span><span class="why"><span class="tag t-${s.st}">${s.stag}</span> ${esc(s.ss)}</span></div>`}
+show(1);
+
+const LN=[
+ ['영상','ffmpeg 첫 출력','마지막 장면이 3초 더 붙음','출력 명령에 길이 합계(-t)를 넣는다'],
+ ['영상','하트 오브 비스트 첫 시험','글씨 없는 스틸이 부족해 포스터를 잘라 씀. 밝은 사진 위 출처는 그림자로 부족','출처에 바탕 칸을 기본으로, 기획엔 자르기 숫자 대신 보여야 할 것'],
+ ['공통','본사 폴더 합치기','같은 저장소의 두 복사본이 갈라져 있었음. 폴더 이름 규칙이 채널마다 달랐음','작업 끝마다 커밋, 같은 작품 폴더를 먼저 찾아 쓴다'],
+ ['기획','12월 캘린더','"12월 개봉작" 검색에 지난해 기사가 섞임. 관람 가능 요일을 몰라 다시 짬','관람 가능 요일부터 묻고, 검색어에 연도를 넣는다'],
+ ['블로그','블로그 방식 정리','규칙이 스킬·가이드·에이전트 세 곳에 나뉘어 서로 달랐음','규칙 원본은 스킬 한 곳만, 고치면 백업 후 커밋'],
+ ['영상·기획','릴스는 새 작품만','묻지 않고 재활용 릴스를 계획해 시험작과 기획 1건이 버려짐','채널마다 지난 작품도 다시 쓰는지 먼저 묻는다'],
+ ['공통','정가네 관람 전 준비','개봉 전이라 러닝타임·등급이 비어 있고 스틸 0장','개봉 주에 조사를 한 번 더 돌린다']
+];
+document.getElementById('learnList').innerHTML=LN.map(r=>`<div class="ln reveal"><div class="h"><span class="ch">${r[0]}</span><b>${r[1]}</b></div><span class="why">${r[2]}</span><span class="nx">${r[3]}</span></div>`).join('');
+observe();
+</script>

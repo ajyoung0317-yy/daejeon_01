@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<style>
+  /* ===== 공식 스틸 창 프레임: SRC 자리에 ../source/파일명 을 넣는다 ===== */
+  /* 세로 포스터는 <div class="window portrait"> 로 폭을 줄인다 */
+  :root { --page: #f4f6f5; --paper: #ffffff; --bar: #dff5ec; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--page); }
+  .canvas { width: 860px; padding: 36px; background: var(--page); }
+  .window { background: var(--paper); border-radius: 14px; box-shadow: 0 6px 20px rgba(0,0,0,.08); overflow: hidden; }
+  .window.portrait { width: 540px; margin: 0 auto; }
+  .bar { height: 34px; background: var(--bar); display: flex; align-items: center; gap: 8px; padding: 0 14px; }
+  .bar i { width: 12px; height: 12px; border-radius: 50%; display: block; }
+  .bar i:nth-child(1) { background: #ff6159; } .bar i:nth-child(2) { background: #ffbd2e; } .bar i:nth-child(3) { background: #28c941; }
+  .window img { display: block; width: 100%; height: auto; }
+</style>
+</head>
+<body><div class="canvas"><div class="window CLS"><div class="bar"><i></i><i></i><i></i></div><img src="SRC" alt=""></div></div></body>
+</html>
