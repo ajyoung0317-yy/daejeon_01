@@ -38,6 +38,15 @@
 | `회사/스킬-백업/` | `movie-blog-review`, `card-news` 스킬의 기록용 사본. 고치지 않는다 |
 | `_보관/` | 쓰지 않는 예전 파일 (블로그 에이전트 4단계 방식 등) |
 
+## 토큰 아끼기 (2026-11-12)
+에이전트 한 번 호출에 3만~8만 토큰이 든다 (지침·회사 문서·조사 자료를 매번 새로 읽기 때문). 하트 오브 비스트 쇼츠 1편에 약 60만 토큰이 들었다.
+- **검수는 묶는다**: 한 작품에 `brand-reviewer`는 초안 1번(세 채널 함께) + 최종 1번.
+- **장면 검토는 디렉터가 직접**: 장면 PNG를 한 장으로 모아 보고, 문제 장면만 돌려보낸다.
+- **지시문에 읽을 범위를 적는다**: "영상팀-구상 3·5장만", "research.md 핵심 정리와 출처 목록만"처럼. 문서 전체를 읽히지 않는다.
+- **이어 고치기는 3번까지**: 같은 에이전트를 SendMessage로 3번 넘게 고치면 쌓인 대화가 비싸진다(캘린더 v5 때 한 번에 약 26만). 그 뒤에는 요약을 주고 새로 부른다.
+- **결정은 처음에 모은다**: 관람 요일, 대상 작품 범위, 지난 작품을 쓰는지, 협찬 여부를 작업 시작 때 한 번에 묻는다.
+- **가벼운 모델**: `shorts-editor`, `performance-analyst`는 Sonnet으로 돈다(에이전트 파일 `model:`). 판단이 중요한 기획·검수·글은 기본 모델.
+
 ## 메인의 역할: 오케스트레이터
 - **메인은 직접 리서치하거나 글을 쓰지 않는다.** 모든 작업은 서브 에이전트나 스킬에 맡긴다.
 - 메인이 하는 일: 단계 호출, 산출물이 생겼는지 확인, 검수 결과 저장, 사용자에게 진행 상황 알리기.
@@ -61,7 +70,7 @@
 | 1. 접수 | 메인 | `shorts/brief.md` (작품, 영상 종류, **운영자 감상 3줄·별점**). research.md가 없으면 `researcher` 먼저 |
 | 2. 기획 | `shorts-planner` → 검토 `brand-reviewer` | `shorts/01_plan/plan.md`, `shorts/reviews/01_plan.md` |
 | 3. 운영자 확인 | 사용자 | 훅·자막 선택과 수정 → `shorts/decisions.md` |
-| 4. 화면 | `shorts-designer` → 검토 `shorts-planner` | `shorts/02_frames/scene-NN.png`, `shorts/reviews/02_frames.md` |
+| 4. 화면 | `shorts-designer` → **디렉터가 직접 검토** (장면 모음 한 장. 구성을 바꿔야 할 때만 `shorts-planner`) | `shorts/02_frames/scene-NN.png`, `shorts/reviews/02_frames.md` |
 | 5. 편집 | `shorts-editor` → 최종 검수 `brand-reviewer` | `shorts/03_edit/[주제]_v1.mp4`, `shorts/reviews/03_final.md` |
 | 6. 보고 | 메인 | `shorts/final-report.md`, `회사/learnings.md`에 한 줄 |
 
