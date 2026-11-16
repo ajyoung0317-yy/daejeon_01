@@ -36,7 +36,8 @@ def hosts(src):
 
 
 def is_nf(v):
-    return v.strip().startswith(NF)
+    # "못 찾음", "못 찾음 (공개 안 함)", "못 찾음 (확인 못 함)", "해당 없음"은 모두 값이 없는 칸으로 본다
+    return v.strip().startswith(NF) or v.strip().startswith("해당 없음")
 
 
 def main():
@@ -64,6 +65,8 @@ def main():
             a, b = old[co].get(col, ""), new[co].get(col, "")
             if a == b:
                 continue
+            if is_nf(a) and is_nf(b):
+                continue  # 빈칸끼리 설명이나 분류만 바뀐 것은 바뀐 곳으로 세지 않는다
             if is_nf(a) != is_nf(b):
                 items.append(dict(kind="확인 필요", co=co, col=col, a=a, b=b, memo='"못 찾음"과 값이 바뀜. 직접 열어 확인'))
             elif src_changed:
@@ -76,6 +79,11 @@ def main():
 
     day = (next(iter(new.values()), {}).get("조사일") or now[:10])
     out = f"changes_{day}.csv"
+    if os.path.exists(out):  # 같은 날 앞 비교 결과는 번호를 붙여 남긴다
+        k = 1
+        while os.path.exists(f"changes_{day}_{k}.csv"):
+            k += 1
+        shutil.copy(out, f"changes_{day}_{k}.csv")
     with open(out, "w", encoding="utf-8-sig", newline="") as f:
         w = csv.writer(f)
         w.writerow(["비교 시각", "앞 파일", "새 파일", "구분", "경쟁사", "칸", "앞 값", "새 값", "메모"])
