@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>경쟁사 상세페이지 비교</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#1d2330;--sub:#5b6474;--line:#e3e6ec;--accent:#e8590c;--accent-soft:#fff1e6;--muted:#a3a9b4;--chip:#eef0f4}
+@media (prefers-color-scheme:dark){:root{--bg:#14171c;--card:#1d2128;--ink:#e9ecf1;--sub:#a3abb8;--line:#2e343e;--accent:#ff8a3d;--accent-soft:#3a2618;--muted:#666e7a;--chip:#272c35}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:22px;margin:0 0 4px}
+.lead{color:var(--sub);margin:0 0 16px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.stat b{display:block;font-size:22px}
+.stat span{color:var(--sub);font-size:13px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+.bar .lbl{font-size:13px;color:var(--sub);min-width:64px}
+button.chip{border:1px solid var(--line);background:var(--chip);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:14px;cursor:pointer}
+button.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.file{font-size:13px;color:var(--sub);margin:6px 0 18px}
+.file input{font-size:13px;max-width:100%}
+h2{font-size:16px;margin:22px 0 10px}
+.price{display:grid;gap:8px}
+.prow{display:grid;grid-template-columns:120px 1fr;gap:10px;align-items:center;font-size:14px}
+.ptrack{background:var(--chip);border-radius:6px;height:26px;position:relative}
+.pfill{background:var(--accent);height:100%;border-radius:6px;min-width:2px}
+.pval{position:absolute;left:8px;top:3px;font-weight:600;font-size:13px;color:var(--ink)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.card h3{margin:0 0 10px;font-size:18px}
+.field{border-top:1px solid var(--line);padding:8px 0}
+.field:first-of-type{border-top:0}
+.k{font-size:12px;color:var(--sub);margin-bottom:2px}
+.v{font-size:14px;word-break:break-word}
+.v a{color:var(--accent);word-break:break-all}
+.nf{color:var(--muted);font-style:italic}
+.hl .v{background:var(--accent-soft);border-radius:6px;padding:4px 6px}
+footer{margin-top:30px;color:var(--sub);font-size:13px;border-top:1px solid var(--line);padding-top:14px}
+.empty{color:var(--sub);padding:20px 0}
+@media (max-width:560px){.stats{grid-template-columns:1fr 1fr 1fr}.stat b{font-size:18px}.prow{grid-template-columns:84px 1fr}h1{font-size:19px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>째깍악어 경쟁사 상세페이지 한눈에 보기</h1>
+  <p class="lead">경쟁 돌봄 서비스의 문구, 광고, 요금, 별점을 한 화면에서 나란히 비교해 줍니다.</p>
+  <div class="stats">
+    <div class="stat"><span>조사일</span><b id="sDate">-</b></div>
+    <div class="stat"><span>경쟁사 수</span><b id="sCount">-</b></div>
+    <div class="stat"><span>"못 찾음" 칸</span><b id="sNf">-</b></div>
+  </div>
+
+  <div class="bar" id="coBar"><span class="lbl">경쟁사</span></div>
+  <div class="bar" id="colBar"><span class="lbl">칸</span></div>
+  <div class="file">다른 CSV로 바꿔 보기: <input type="file" id="csvFile" accept=".csv,text/csv"> <span id="fileMsg"></span></div>
+
+  <h2>공개된 최저 가격 비교 (원)</h2>
+  <div class="price" id="price"></div>
+
+  <h2>경쟁사별 비교</h2>
+  <div class="cards" id="cards"></div>
+
+  <footer>공개 자료로 만든 학습용 MVP(Minimum Viable Product)이며, 조사한 회사와 관계없습니다</footer>
+</div>
+<script>
+const EMBED = "조사일,경쟁사,대표 문구(홈페이지),광고 문구(메타),광고 시작일,요금 방식,공개된 최저 가격(원),서비스 종류,앱스토어 별점(한국),출처 링크\n2026-11-16,맘시터,\"좋은 시터 / 빨리 찾는, 맘시터\",산후도우미끝나고막막하시죠.,26/09/03시작,\"이용권을 사고, 시터와 합의한 시급으로 앱에서 정산 (앱 설명: \"\"돌봄 결제: 합의된 시급과 일지를 기반으로 깔끔하게 정산\"\")\",44900,\"신생아/영아 풀타임 돌봄, 등하원 돌봄, 놀이/학습 돌봄\",4.1 (평가 1.9천개),\"https://www.mom-sitter.com ; https://apps.apple.com/kr/app/id1452104879 ; 광고: 내가 직접 봄, 메타 광고 라이브러리\"\n2026-11-16,자란다,\"돌봄과 배움을 함께, 우리아이 단짝쌤 찾기 / 아이가 자라며 필요한 모든 것, 자란다 하나로\",요즘맞벌이부부종일반대신00한다는데.,26/10/15시작,\"1회 방문, 정기 방문, 긴급돌봄 중 선택 (홈페이지: \"\"1회 방문부터 정기 방문, 긴급돌봄까지.\"\")\",못 찾음,\"돌봄(놀이·책읽기 등), 외국어, 수학/과학, 한글/국어, 운동, 예능, 등하원\",4.6 (평가 844개),\"https://www.jaranda.kr ; https://apps.apple.com/kr/app/id1469857402 ; 광고: 내가 직접 봄, 메타 광고 라이브러리\"\n2026-11-16,아워스팟,등하원 픽업은 아워스팟,못 찾음,못 찾음,\"월 멤버십 (Light 멤버십 월~토 19,000원, 주중 멤버십 염리·한서 49,000원) + 클래스 따로 결제\",19000,\"하교 픽업, 학원 이동, 거점 돌봄(간식·숙제·보드게임), 방학·주말 클래스\",못 찾음,https://ourspot.kr ; https://ourspot.kr/membership\n";
+const NF = "못 찾음";
+const KEY_COLS = ["요금 방식","공개된 최저 가격(원)","광고 문구(메타)"]; // 꼭 볼 칸: 강조
+let head=[], rows=[], selCo=new Set(), selCol=new Set();
+
+function parseCSV(text){
+  text=text.replace(/^﻿/,"");
+  const out=[]; let row=[], cell="", q=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(q){
+      if(c==='"'){ if(text[i+1]==='"'){cell+='"';i++;} else q=false; }
+      else cell+=c;
+    }else{
+      if(c==='"') q=true;
+      else if(c===','){row.push(cell);cell="";}
+      else if(c==='\n'||c==='\r'){ if(c==='\r'&&text[i+1]==='\n') i++; row.push(cell); out.push(row); row=[]; cell=""; }
+      else cell+=c;
+    }
+  }
+  if(cell!==""||row.length){row.push(cell);out.push(row);}
+  return out.filter(r=>r.some(x=>x.trim()!==""));
+}
+function esc(s){return s.replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));}
+function isNf(v){return v.trim().startsWith(NF);}
+function linkify(v){
+  return esc(v).replace(/https?:\/\/[^\s;,]+/g,u=>`<a href="${u}" target="_blank" rel="noopener">${u}</a>`);
+}
+function load(text){
+  const all=parseCSV(text);
+  if(all.length<2){document.getElementById("cards").innerHTML='<p class="empty">표에 내용이 없습니다.</p>';return;}
+  head=all[0].map(h=>h.trim()); rows=all.slice(1).map(r=>head.map((_,i)=>(r[i]||"").trim()));
+  selCo=new Set(); selCol=new Set();
+  buildBars(); render();
+}
+function iCo(){return Math.max(0,head.indexOf("경쟁사"));}
+function iDate(){return head.indexOf("조사일");}
+function dataCols(){return head.map((h,i)=>i).filter(i=>i!==iCo()&&i!==iDate());}
+function chip(label,on,fn){const b=document.createElement("button");b.className="chip";b.textContent=label;b.setAttribute("aria-pressed",on);b.onclick=fn;return b;}
+function buildBars(){
+  const cb=document.getElementById("coBar"), lb=document.getElementById("colBar");
+  cb.querySelectorAll("button").forEach(b=>b.remove()); lb.querySelectorAll("button").forEach(b=>b.remove());
+  const cos=[...new Set(rows.map(r=>r[iCo()]))];
+  cb.appendChild(chip("전체",selCo.size===0,()=>{selCo.clear();buildBars();render();}));
+  cos.forEach(c=>cb.appendChild(chip(c,selCo.has(c),()=>{selCo.has(c)?selCo.delete(c):selCo.add(c);buildBars();render();})));
+  lb.appendChild(chip("전체",selCol.size===0,()=>{selCol.clear();buildBars();render();}));
+  dataCols().forEach(i=>{const h=head[i];lb.appendChild(chip(h,selCol.has(h),()=>{selCol.has(h)?selCol.delete(h):selCol.add(h);buildBars();render();}));});
+}
+function render(){
+  const vis=rows.filter(r=>selCo.size===0||selCo.has(r[iCo()]));
+  const cols=dataCols().filter(i=>selCol.size===0||selCol.has(head[i]));
+  const dates=[...new Set(rows.map(r=>iDate()>=0?r[iDate()]:"").filter(Boolean))];
+  document.getElementById("sDate").textContent=dates.join(", ")||"-";
+  document.getElementById("sCount").textContent=new Set(rows.map(r=>r[iCo()])).size+"곳";
+  document.getElementById("sNf").textContent=rows.reduce((n,r)=>n+r.filter(isNf).length,0)+"칸";
+  // 가격 막대
+  const pi=head.findIndex(h=>h.includes("가격"));
+  const pe=document.getElementById("price"); pe.innerHTML="";
+  if(pi<0){pe.innerHTML='<p class="empty">가격 칸이 없습니다.</p>';}
+  else{
+    const nums=vis.map(r=>parseInt(r[pi].replace(/[^0-9]/g,""),10));
+    const max=Math.max(1,...nums.filter(n=>!isNaN(n)));
+    vis.forEach((r,k)=>{
+      const n=nums[k], d=document.createElement("div"); d.className="prow";
+      const fill=isNaN(n)?"":`<div class="pfill" style="width:${Math.round(n/max*100)}%"></div>`;
+      const val=isNaN(n)?`<span class="pval nf">${NF}</span>`:`<span class="pval">${n.toLocaleString("ko-KR")}원</span>`;
+      d.innerHTML=`<div>${esc(r[iCo()])}</div><div class="ptrack">${fill}${val}</div>`;
+      pe.appendChild(d);
+    });
+  }
+  // 카드
+  const ce=document.getElementById("cards"); ce.innerHTML="";
+  if(!vis.length){ce.innerHTML='<p class="empty">고른 경쟁사가 없습니다.</p>';return;}
+  vis.forEach(r=>{
+    const c=document.createElement("div"); c.className="card";
+    let h=`<h3>${esc(r[iCo()])}</h3>`;
+    cols.forEach(i=>{
+      const v=r[i]||NF, hl=KEY_COLS.includes(head[i])?" hl":"";
+      h+=`<div class="field${hl}"><div class="k">${esc(head[i])}</div><div class="v${isNf(v)?" nf":""}">${linkify(v)}</div></div>`;
+    });
+    c.innerHTML=h; ce.appendChild(c);
+  });
+}
+document.getElementById("csvFile").addEventListener("change",e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const rd=new FileReader();
+  rd.onload=()=>{load(rd.result);document.getElementById("fileMsg").textContent=f.name+" 불러옴";};
+  rd.readAsText(f,"utf-8");
+});
+load(EMBED);
+</script>
+</body>
+</html>
